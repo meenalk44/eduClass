@@ -1,0 +1,15 @@
+{
+  "name": "MyApp",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "ejs": "*",
+    "express": "3.2.6",
+    "googleapis": "^14.2.0",
+    "mongoose": "^4.7.6"
+  }
+}
