@@ -7,9 +7,9 @@ var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
   , driveController = require('./routes/driveController')
-//  , qnaDbConn = require('./routes/qnaDb')
+  , dbconn = require('./models/dbconn')
+  ,	qnaSchema = require('./models/qnaSchema')
   , qnaController = require('./routes/qnaController')
-  , qnaAnswerController = require('./routes/qnaAnswer')
   , http = require('http')
   , path = require('path');
 
@@ -31,7 +31,6 @@ app.use(bodyParser.json());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
-//app.use(qnaDbConn);
 
 // development only
 if ('development' == app.get('env')) {
@@ -41,14 +40,10 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/users', user.list);
 app.get('/driveController', driveController.dController);
-app.get('/qna', qnaController.qna);
-app.get('/qnaAnswer',qnaAnswerController.qnaAns);
-app.post('/askQuestion',function(req,resp){
-	console.log(req.body.topic);
-	console.log(req.body.que);
-	console.log("--------"+ JSON.stringify(req.body));
-});
-//driveController.list();
+app.get('/qna', qnaController.qnaShow);
+app.post('/qna',qnaController.qnaPostQ);
+app.post('/qna/:que',qnaController.qnaWriteAns);
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
