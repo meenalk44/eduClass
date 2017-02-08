@@ -1,21 +1,21 @@
-
-var qnaDb = require('./qnaDb');
+/*
+//var qnaDb = require('./qnaDb');
 var mongoose = require('mongoose');
 //var QnA = require('./qnaDb').QnA;
 var db = mongoose.connection;
 var dbURI = 'mongodb://localhost/qnaDb1';
-var QnA;
-module.exports.qna = function(req, res){
-		
-	
-		//qnaDb.qnaDbConn() ;
-	
-	mongoose.connect(dbURI);
+*/
+var mongoose = require('mongoose');
+var dbconn = require('../models/dbconn');
+var db = mongoose.connection;
+var QnA = require('../models/qnaSchema').QnA;
+/*
+module.exports.DbConn = function(req,res){
+	//mongoose.connect(dbURI);
 	db.on('error', console.error);
-	/*db.on('connected',function(){
+	db.on('connected',function(){
 		console.log('Mongoose connection open to ' + dbURI);
-	});*/
-
+	});
 	db.once('open', function(){
 		var qnaSchema = new mongoose.Schema({
 			topic : String,
@@ -29,50 +29,97 @@ module.exports.qna = function(req, res){
 
 		QnA = mongoose.model('QnA',qnaSchema);
 	});
+};
 
-	
+*/
+
+module.exports.qnaShow = function(req, res){
 		console.log("fetching data from mongo");
-		QnA.find({}).exec(function(err,entries){
+		mongoose.model('QnA').find({}).exec(function(err,entries){
 			if(err){
 				res.send("Error");
 			}else{
 				console.log(entries);
-				//res.json(entries);
 			}
 			res.render('qna',{entries : JSON.stringify(entries)});	
 		});
 		
 		
-				
-		/*
-		var testRec = new QnA({
-			topic : 'general',
-			question : 'How to solve a problem?',
-			answers : [{body : 'By procrasting!',
-						user_id : 'ABC1234',
-						username : 'Meenal',
-						rating	:	'4'
-						},
-						{body : 'By procrastinating!',
-						user_id : 'ABC12345',
-						username : 'MeenalK',
-						rating	:	'5'
-							}]
-						
-						
-		});
+};		
+
+module.exports.qnaPostQ = function(req,res){
+	var newQue = new QnA({
+		topic: req.body.topic,
+		question : req.body.que,
+		quetimestamp: new Date(),
+		user_id : 'userid',
+		username : 'UserName',
+	});
+	console.log(newQue);
+	newQue.save(function(err,entryQue){
+		if(err){
+			return console.log("Error while posting question to db");
+		}else{
+			console.log("Question saved to db:  "+entryQue);
+			QnA.find({}).exec(function(err,entries){
+				if(err){
+					res.send("Error");
+				}else{
+					console.log(entries);
+				}
+				res.render('qna',{entries : JSON.stringify(entries)});	
+			});
+		}
+	});
+};	
+
+module.exports.qnaWriteAns = function(req,res){
+	console.log("---------*****"+JSON.stringify(req.body));
+	console.log("---------*****"+req.params.que);
+	console.log(JSON.stringify(req.params));
+	/*QnA.findOneAndUpdate({ question: entry.question }, { username: 'starlord88' }, function(err, user) {
+		  if (err) throw err;
+
+		  // we have the updated user returned to us
+		  console.log(user);
+		});*/
+};	
+
+	
+	
+	/*
+	var testRec = new QnA({
+		topic : 'general',
+		question : 'How to solve a problem?',
+		answers : [{body : 'By procrasting!',
+					user_id : 'ABC1234',
+					username : 'Meenal',
+					rating	:	'4'
+					},
+					{body : 'By procrastinating!',
+					user_id : 'ABC12345',
+					username : 'MeenalK',
+					rating	:	'5'
+						}]
+					
+					
+	});
+	
+	console.log(testRec);
+	
+	testRec.save(function(err){
+		if(err){
+			return console.log("error");
+		}else{
+			console.log("Saved record");
+		}
 		
-		console.log(testRec);
-		
-		testRec.save(function(err){
-			if(err){
-				return console.log("error");
-			}else{
-				console.log("Saved record");
-			}
-			
-		});
-		*/
+	});
+	*/
+	
+
+	
+
 	
 	
 	
@@ -81,6 +128,5 @@ module.exports.qna = function(req, res){
 	
 	
 	
-	
-};
+
 
