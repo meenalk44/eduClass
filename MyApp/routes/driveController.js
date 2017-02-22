@@ -1,16 +1,16 @@
-/**
- * New node file
- */
+
 var async = require('async');
 
+var url = require('url');
+var q = require('querystring');
 var google = require('googleapis');
 
 module.exports.dController = function(req, res){
 	
 	console.log("Drive controller");
 	
-	var CLIENT_ID = "42298233427-km2vupbbpv4h250tajomiu4u12k7ojd3.apps.googleusercontent.com";
-	var CLIENT_SECRET = "bYqfCUSgoo870Xd0JVhwTMvt";
+	var CLIENT_ID = "110421461548-vsh3f9kv35it7vig9o2hvbvmn1g1kjq1.apps.googleusercontent.com";
+	var CLIENT_SECRET = "z2-Gw4uk0hpqmyHM9T6FKKm5";
 	//var REDIRECT_URL = "http://www.example.com/oauth2callback";
 	var REDIRECT_URL = "http://localhost:3000";
 	var REFRESH_TOKEN = "";
@@ -36,19 +36,30 @@ module.exports.dController = function(req, res){
 	              	'https://www.googleapis.com/auth/drive.file',
 	              	];
 
-	var url = oauth2Client.generateAuthUrl({
+	var myurl = oauth2Client.generateAuthUrl({
 		access_type : 'offline',
 		scope : scopes
 	});
-	console.log(url);
-	
-	oauth2Client.getToken(function(err, tokens) {
+	console.log(myurl);
+	/*var urlobj = url.parse(myurl);
+	var qs = q.parse(urlobj);
+	console.log(qs);
+	var code = qs[code];
+	console.log("***  "+code);*/
+	oauth2Client.getToken(code,function(err, tokens) {
 	      // Now tokens contains an access_token and an optional refresh_token. Save them.
 	      if(!err) {
 	        console.log("tokens: ",tokens);
 	      }
 	        //refresh_token
-	        oauth2Client.setCredentials(tokens);
+	        oauth2Client.setCredentials({
+	        	  refresh_token: saved_refresh_token
+	        });
+	        oauth2Client.refreshAccessToken(function(err, tokens){
+	          response.send({
+	            access_token: tokens.access_token
+	          });
+	        });
 	      });
 	
 	function listFiles(auth) {

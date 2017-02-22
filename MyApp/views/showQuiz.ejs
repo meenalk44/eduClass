@@ -1,0 +1,31 @@
+<html>
+	<head>
+		<%include ../views/partials/head.ejs%>
+	</head>
+	<style>
+		body { padding-top: 60px; padding-bottom: 30px; }
+	</style>
+	<body>
+		
+		<div class="row">
+		<div class="col-sm-2">
+   
+		</div>
+		<div class="col-sm-7">
+		<% var entries = JSON.parse(entries) %>
+		<% entries.forEach((entry) => { %> 
+   			<%= entry.question%>
+			<form action="/quizAns" method="post">
+			<textarea class="form-control" rows="5" id="ans" name="ans"></textarea>
+			
+		<%})%>
+		</div>
+		<div class="col-sm-9">
+		</div>
+		<div class="col-sm-2">
+			<input type="submit" class="btn btn-success" name="submitQuiz" value="Submit Quiz">
+			</form>
+		</div>
+		
+	</body>
+</html>
