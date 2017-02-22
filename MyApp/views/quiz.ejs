@@ -1,0 +1,38 @@
+<html>
+	<head>
+		<%include ../views/partials/head.ejs%>
+		
+		
+	</head>
+	<style>
+		body { padding-top: 60px; padding-bottom: 30px; }
+	</style>
+	<body>
+	
+		<div class="row">
+		<div class="col-sm-2">
+   
+		</div>
+		<form action="/quizCreate" method="post">
+		<div class="col-sm-5">
+			<input type="text" placeholder="Add a Question" id="que1" name="que1">
+		</div>
+		
+		<div class="col-sm-1">
+  			<button type="button" class="btn addbtn  btn-default" ><span class="glyphicon glyphicon-plus"></span></button>
+		</div>
+		</div>
+		<div class="row"></div>
+		<div class="row">	
+		<div class="col-sm-7">
+		</div>
+		
+		<div class="col-sm-3">
+			<input type="submit" class="btn btn-success"  name="create" value="Create Quiz">
+		</div>	
+					
+		</div>		
+			</form>
+		
+	</body>
+</html>

@@ -75,7 +75,7 @@ module.exports.qnaPostQ = function(req,res){
 
 module.exports.qnaWriteAns = function(req,res){
 	console.log("---------*****"+JSON.stringify(req.body));
-	console.log("---------*****"+req.params.que);
+	console.log("---------*****"+req.body.entryID);
 	console.log(JSON.stringify(req.params));
 	/*QnA.findOneAndUpdate({ question: entry.question }, { username: 'starlord88' }, function(err, user) {
 		  if (err) throw err;
@@ -85,37 +85,42 @@ module.exports.qnaWriteAns = function(req,res){
 		});*/
 };	
 
+module.exports.qnaRating = function(req,res){
+	
+	
+};	
+	
 	
 	
 	/*
-	var testRec = new QnA({
-		topic : 'general',
-		question : 'How to solve a problem?',
-		answers : [{body : 'By procrasting!',
-					user_id : 'ABC1234',
-					username : 'Meenal',
-					rating	:	'4'
-					},
-					{body : 'By procrastinating!',
-					user_id : 'ABC12345',
-					username : 'MeenalK',
-					rating	:	'5'
-						}]
-					
-					
-	});
-	
-	console.log(testRec);
-	
-	testRec.save(function(err){
-		if(err){
-			return console.log("error");
-		}else{
-			console.log("Saved record");
-		}
+	  		var testRec = new QnA({
+			topic : 'general',
+			question : 'Question 3......?',
+			answers : [{body : 'Answer 3............',
+						user_id : 'ABC1234',
+						username : 'Meenal',
+						rating	:	'4'
+						},
+						{body : 'Answer 3.2..........',
+						user_id : 'ABC12345',
+						username : 'MeenalK',
+						rating	:	'5'
+							}]
+						
+						
+		});
 		
-	});
-	*/
+		console.log(testRec);
+		
+		testRec.save(function(err){
+			if(err){
+				return console.log("error");
+			}else{
+				console.log("Saved record");
+			}
+			
+		});
+*/
 	
 
 	

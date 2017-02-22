@@ -2,32 +2,7 @@
 <html>
   <head>
     <% include ../views/partials/head.ejs%>
-  
-   
-   		<% var entries = JSON.parse(entries) %>
-		<% entries.forEach((entry) => { %> 
-		<script>
-   			var current = entry._id;
-		$(".anspost").each(function() {
-  		 $(this).data("que", current);
-		});
-   		</script>
-   		<%})%>
-   		<script>
-   		var value = $(".anspost").data("que");
-   		$('.answerForm').submit(function(){ //listen for submit event
-    		$.each(params, function(i,param){
-        	$('<input />').attr('type', 'hidden')
-            .attr('qnum', param.name)
-            .attr(value, param.value)
-            .appendTo('.answerForm');
-    	});
-
-    		return true;
-		}); 
-   		</script>
-   		
-  <script>
+     <script>
   $( function() {
     $( "#accordion" ).accordion({
     	heightStyle: "content"
@@ -35,28 +10,32 @@
   } );
   </script>
    <style>  
+   		body { padding-top: 60px; padding-bottom: 30px; }
          #accordion{font-size: 16px;}
-         #accordion.ui-accordion .ui-accordion-header.ui-state-active { background: #d83848; }
+         #accordion.ui-accordion .ui-accordion-header.ui-state-active { background: #007acc; }
       </style>  
+   
   </head>
   
   <body>
+  	
 	<div class="row">
 		<div class="col-sm-1">
    
 		</div>
 		<div class="col-sm-10">
-			<div class="panel panel-danger">
+			<div class="container-fluid">
+			<div class="panel panel-primary">
 				<div class="panel-heading">
 					<h3>Discussion Board
-					<button type="button" class="btn btn-danger btn-md pull-right" data-toggle="modal" data-target="#questionModal"><span class="glyphicon glyphicon-question-sign">Ask</span></button>
+					<button type="button" class="btn btn-default btn-md pull-right" data-toggle="modal" data-target="#questionModal"><span class="glyphicon glyphicon-question-sign">Ask</span></button>
 					</h3>
-					<div class="modal fade" id="questionModal" role="dialog">
+					<div class="modal" id="questionModal" role="dialog" aria-labelledby="questionModalAria">
     					<div class="modal-dialog modal-sm">
       						<div class="modal-content">
         						<div class="modal-header">
           							<button type="button" class="close" data-dismiss="modal">&times;</button>
-          							<h5 class="modal-title">Ask a Question</h5>
+          							<h5 class="modal-title" id="questionModalAria">Ask a Question</h5>
         						</div>
         						<div class="modal-body">
         							<form method="post" action="/qna">
@@ -82,14 +61,14 @@
 					<div id="accordion">
 						<% var entries = JSON.parse(entries) %>
 						<% entries.forEach((entry) => { %> 
-  
+  						
 						<h3   class="text-justify"><span class="label label-default"> <%=entry.topic%> </span>
 							&nbsp; &nbsp;<%=entry.question%>
 													
 	  				
 						</h3>
 						<div>
-							<div class="well well-lg">
+							<!-- <div class="well well-lg">  -->
 								<div class="row text-justify">
 									<div class="media">
 										<div class="media-left media-top">
@@ -97,20 +76,21 @@
 										</div>
 										<div class="media-body">
 											<h6 class="media-heading"><%=entry.username%> <small><i> Posted on <%=entry.quetimestamp%></i></small>
-											<button type="button"  class="btn btn-default btn-sm pull-right" data-toggle="modal" data-target="#answerModal">
+											<button type="button"  class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#answerModal">
 											<span class="glyphicon glyphicon-pencil">Answer</span></button></h6>
 											<%=entry.question%> 
 											
 											<!--Answer Modal-->
-											<div class="modal fade" id="answerModal" role="dialog">
-												<div class="modal-dialog modal-sm">
+											<div class="modal" id="answerModal" role="dialog" aria-labelledby="ansMod">
+												<div class="modal-dialog modal-lg">
 													<div class="modal-content">
 														<div class="modal-header">
+														<h5 class="modal-title" id="ansMod"><%=entry.question%>
 														<button type="button" class="close" data-dismiss="modal">&times;</button>
-														<h5 class="modal-title">Write an Answer</h5>
+														</h5>
 														</div>
 														<div class="modal-body">
-														<form class="answerForm" method="post" action="/qna">
+														<form class="answerForm" method="post" action="/qnaAns">
 															<div class="form-group">
 															<label for="ans">Your Answer:</label>
 															<textarea class="form-control" rows="5" id="ans" name="ansBody"></textarea>
@@ -118,6 +98,7 @@
   										
 														</div>
 														<div class="modal-footer">
+															<input type="hidden" name="entryID" value="<%= entry.id%>">
 															<input type="submit" data-que="0" class="anspost btn btn-success" name="answer" value="Post">
 														</div>
 														</form>
@@ -125,16 +106,13 @@
 												</div>
 											</div>
   										<!--Answer modal Ends-->
-											
-										</div>
+											</div>
+										
 									</div>
       			    
 								</div>
-								<!--<%=entry.question%>
-								<p class="text-right"><small> <%=entry.username%> <i> Posted on <%=entry.quetimestamp%></i></small>
-								<button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#answerModal">
-								<span class="glyphicon glyphicon-pencil">Answer</span></button></p>-->
-							</div>
+								
+							<!-- </div> -->
 						
 						
 						
@@ -155,69 +133,16 @@
 							</div>
 							
 							<div class="row text-right">
-								<button type="button" class="btn btn-info btn-xs">Rate</button>
-							<!--	<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#commentModal" value="Comment">
-								<span class="glyphicon glyphicon-comment"></span></button>-->
-							</div>
-							<!--Comment modal-->
-       					<!--	<div class="text-left">
-								<div class="modal fade" id="commentModal" role="dialog">
-									<div class="modal-dialog modal-sm">
-										<div class="modal-content">
-											<div class="modal-header">
-												<button type="button" class="close" data-dismiss="modal">&times;</button>
-												<h5 class="modal-title">Write a Comment</h5>
-											</div>
-											<div class="modal-body">
-												<div class="form-group">
-												<label for="reply">Comment:</label>
-												<textarea class="form-control" rows="5" id="comment"></textarea>
-												</div>
-											</div>
-											<div class="modal-footer">
-											<input type="submit" class="btn btn-success" data-dismiss="modal" name="comment" value="Comment">
-											</div>
-										</div>
-									</div>
-								</div>
-	   						</div> -->
-							<!--Comment modal ends-->
+								<form action="/qna" method="post">
+								<h6><button type="button" class="btn btn-success btn-xs" value="Approve"><span class="glyphicon glyphicon-ok-sign">Approve</span></button></h6>
+								</form>
 							
-							<!--</div>-->
+							</div>
+							
        				
        				<% }) %>
        				
-       				<!--<div class="text-center">
-	  				<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#answerModal">
-	  				<span class="glyphicon glyphicon-pencil">Answer</span></button>
-	  				
-	  				<div class="text-left">
-	  				 <div class="modal fade" id="answerModal" role="dialog">
-    					<div class="modal-dialog modal-sm">
-      						<div class="modal-content">
-        						<div class="modal-header">
-          							<button type="button" class="close" data-dismiss="modal">&times;</button>
-          							<h5 class="modal-title">Write an Answer</h5>
-        						</div>
-        						<div class="modal-body">
-        						<form method="post" action="/qna">
-          							<div class="form-group">
-  										<label for="ans">Your Answer:</label>
-  										<textarea class="form-control" rows="5" id="ans" name="ansBody"></textarea>
-									</div>
-  										
-        						</div>
-        						<div class="modal-footer">
-          							<input type="submit" class="btn btn-success" name="answer" value="Post">
-        						</div>
-        						</form>
-      						</div>
-    					</div>
-  					</div>
-  					</div>
-	  				</div>-->
-	  		
-						</div>
+       					</div>
 	  			
 	   			<% }) %>
 	   			
@@ -230,8 +155,9 @@
 		<div class="col-sm-1">
    
 		</div>
-   
+   		</div>
 	</div>
    
 </body>
+
 </html>

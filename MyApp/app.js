@@ -10,6 +10,7 @@ var express = require('express')
   , dbconn = require('./models/dbconn')
   ,	qnaSchema = require('./models/qnaSchema')
   , qnaController = require('./routes/qnaController')
+  , quizController = require('./routes/quizController')
   , http = require('http')
   , path = require('path');
 
@@ -42,8 +43,13 @@ app.get('/users', user.list);
 app.get('/driveController', driveController.dController);
 app.get('/qna', qnaController.qnaShow);
 app.post('/qna',qnaController.qnaPostQ);
-app.post('/qna/:que',qnaController.qnaWriteAns);
-
+app.post('/qnaAns',function(req,res){
+	console.log("-----------* "+ req.body.entryID +"    : "+ req.body.ansBody);
+});
+app.post('/qna',qnaController.qnaRating);
+app.get('/quiz',quizController.quizShow);
+app.post('/quizCreate', quizController.quizCreate);
+app.post('/quizAns',quizController.storeAns);
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
