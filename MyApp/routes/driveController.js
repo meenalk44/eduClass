@@ -52,14 +52,7 @@ module.exports.dController = function(req, res){
 	        console.log("tokens: ",tokens);
 	      }
 	        //refresh_token
-	        oauth2Client.setCredentials({
-	        	  refresh_token: saved_refresh_token
-	        });
-	        oauth2Client.refreshAccessToken(function(err, tokens){
-	          response.send({
-	            access_token: tokens.access_token
-	          });
-	        });
+	        oauth2Client.setCredentials();
 	      });
 	
 	function listFiles(auth) {
