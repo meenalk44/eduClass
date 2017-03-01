@@ -52,7 +52,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(flash());
 
-
+app.get('*', function(req, res, next) {
+	res.locals.currentUser = req.user;	
+	next();
+});
 
 
 
@@ -65,7 +68,12 @@ if ('development' == app.get('env')) {
 
 //app.get('/', routes.index);
 app.get('/',function(req,res){
-	res.render('login',{'entry':null});
+	if(req.user) {
+		res.redirect("/profile");
+	} else {
+		res.render('login',{'entry':null});
+	}
+	
 	/*User.remove({}, function(){
 		console.log("----");
 	});*/
@@ -122,19 +130,19 @@ function emailInDB(req, res, next) {
 	var emailParam = req.param('email');
 	console.log(emailParam);
 	
-	User.find({}).exec(function(err,entries){
-		if(err){
-		res.send("Error");
-		}else{
-		console.log(entries);
-		}
-		
-	});
+//	User.find({}).exec(function(err,entries){
+//		if(err){
+//		res.send("Error");
+//		}else{
+//		console.log(entries);
+//		}
+//		
+//	});
 	User.find({'email': emailParam}, function(err, users) {
 		if(err) {
 			console.log(err);
 		} else {
-			console.log("else "+ users.length);
+			//console.log("else "+ users.length);
 			if(users.length === 0) {
 				// send error saying not a valid user
 				console.log("No users found");
@@ -145,7 +153,7 @@ function emailInDB(req, res, next) {
 				
 			}
 		}
-		console.log("kuch nai mila");
+		
 	});
     
 }

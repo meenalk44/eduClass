@@ -21,7 +21,7 @@ module.exports.signUp = function(req,res){
 				}else{
 					console.log(entries);
 				}
-				res.render('login',{'entry':JSON.stringify(entry)});
+				res.redirect('/');
 					
 			});
 		}
