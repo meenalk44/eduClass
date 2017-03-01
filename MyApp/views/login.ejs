@@ -13,16 +13,18 @@
 			<div class="col-sm-4">
 			<div class="well">
 			<h3>eduClass</h3>
-    		<form  method="get" >
+    		<form  method="get" action="/auth/google">
 				<div class="input-group">
 					<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
       				<input id="email" type="text" class="form-control" name="email" placeholder="Email">
 				</div>
 				<p><div class="input-group">
-					<a href="/auth/google">Login with Google</a>
-					<!-- <input type="submit" class="btn btn-success" name="login" value="Login with Gmail"> -->
-<!-- 					<button class="btn btn-primary" name="signup">"Sign Up as Teacher"</button> -->
-				 <a href="./signUp" class="btn btn-primary" role="button">Sign Up as Teacher</a> 
+					<input type="submit" class="btn btn-success" name="login" value="Login with Gmail">&nbsp;&nbsp;&nbsp;
+<!-- 					<a href="/auth/google" class="btn btn-success" role="button">Login with Google</a>&nbsp;&nbsp;&nbsp; -->
+					<% var user = JSON.parse(entry) %>
+					<% if(user == null || user.length > 0){%>
+					<a href="./signUp" class="btn btn-primary" role="button">Sign Up as Teacher</a> 
+					<% } %>
 				</div></p>
 			</form>
 			</div>

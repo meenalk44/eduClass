@@ -12,26 +12,31 @@
 
     <div class="page-header text-center">
         <h1> Profile</h1>
-        <a href="/logout" class="btn btn-default btn-sm">Logout</a>
+<!--         <a href="/logout" class="btn btn-default btn-sm">Logout</a> -->
     </div>
 
     <div class="row">
-
-        <div class="col-sm-6">
+		<div class="col-sm-2"></div>
+        <div class="col-sm-8">
             <div class="well">
-                <h3 class="text-danger"><span class="fa fa-google-plus"></span> Profile Info</h3>
-
-                    <p>
-                        <strong>id</strong>: <%= user.id %><br>
-                        <strong>token</strong>: <%= user.token %><br>
-                        <strong>email</strong>: <%= user.email %><br>
-                        <strong>name</strong>: <%= user.fullname %>
-                        
-                    </p>
+            	<div class="container">
+                <h3 class="text-danger"> Profile Info</h3>
+                    <div class="col-sm-4">
+                    	<div class="embed-responsive embed-responsive-4by3">
+                    	<img src=<%= user.profile_img %> class="embed-responsive-item" width="100"><br>
+                    	</div>
+                    </div>
+                    <div class="col-sm-4">
+                        <strong>Id</strong>: <%= user.id %><br>
+                        <strong>Name</strong>: <%= user.fullname %><br>
+                        <strong>Email</strong>: <%= user.email %><br>
+                    </div>
+                </div>   
+                    
 
             </div>
         </div>
-
+		<div class="col-sm-2"></div>
     </div>
 
 </div>
