@@ -1,8 +1,8 @@
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+var GoogleStrategy = require('passport-google-oauth2').Strategy;
 var User = require('../models/userSchema');
 var configAuth = require('./auth');
 module.exports = function(passport){
-	//console.log("passport.js");
+	//console.log("in passport.js");
 	passport.serializeUser(function(user,done){
 		done(null, user.id);
 	});
@@ -24,37 +24,72 @@ module.exports = function(passport){
 
     },
     
-    function(token, refreshToken, profile, done){
+    function(accessToken, refreshToken, profile, done){
     	process.nextTick(function() {
-    		//console.log("*** passport :"+ profile);
+    		console.log("*** passport :"+ profile);
             //find the user based on their google id
             User.findOne({ 'google_id' : profile.id }, function(err, user) {
                 if (err){
                 	return done(err);
                 }
                 if (user) {
-
+                	console.log(user.profile_img +"*** Picture : "+ profile.photos[0].value);
+                	/*User.find({}).exec(function(err,entries){
+        				if(err){
+        					res.send("Error");
+        				}else{
+        					console.log(entries);
+        				}
+        					
+        			});*/
                     // user is found, log them in
                     return done(null, user);
                 } else {
                     // if the user is not in db create a new user
-                    var newUser = new User({
+                    /*var newUser = new User({
                     	// set all of the relevant information
                         google_id : profile.id,
-                        token : token,
+                        token : accessToken,
                         refresh_token : refreshToken,
                         //newUser.username
                         fullname  : profile.displayName,
                         profile_img : profile.picture,
                         email : profile.emails[0].value
                     	
-                    });
-                    newUser.save(function(err) {
+                    });*/
+                   /* newUser.save(function(err) {
                         if (err){
                             throw err;
                         }
+                        else{
+                        	User.find({}).exec(function(err,entries){
+                				if(err){
+                					res.send("Error");
+                				}else{
+                					console.log(entries);
+                				}
+                					
+                			});
+                        }
                         return done(null, newUser);
+                    });*/
+                    var newUser = {
+                    		google_id : profile.id,
+                            token : accessToken,
+                            refresh_token : refreshToken,
+                            //newUser.username
+                            fullname  : profile.displayName,
+                            profile_img : profile.photos[0].value
+                    		
+                    };
+                    User.findOneAndUpdate({'email':profile.emails[0].value},newUser, {new: true},function(err,users){
+                    	if(err)
+                    		console.log(err);
+                    	else
+                    		console.log("----- "+users);
+                    	return done(null, users);
                     });
+                   
                 }
             });
         });

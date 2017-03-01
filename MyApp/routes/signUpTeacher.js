@@ -14,13 +14,14 @@ module.exports.signUp = function(req,res){
 			return console.log("Error while posting teacher to db");
 		}else{
 			console.log("Teacher saved to db:  "+entry);
+			//req.flash('info','Successfully signed up as Teacher');
 			User.find({}).exec(function(err,entries){
 				if(err){
 					res.send("Error");
 				}else{
 					console.log(entries);
 				}
-				res.render('login');
+				res.render('login',{'entry':JSON.stringify(entry)});
 					
 			});
 		}
@@ -29,4 +30,3 @@ module.exports.signUp = function(req,res){
 	
 };
 		
-})

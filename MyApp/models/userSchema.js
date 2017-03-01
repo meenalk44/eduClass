@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var userSchema = new mongoose.Schema({
+	//_id	:	{ type: mongoose.Schema.Types.ObjectId, ref: 'Class' },
 	google_id: String,
 	token: String,
 	refresh_token: String,
