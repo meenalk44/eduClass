@@ -8,9 +8,7 @@ module.exports = function(passport){
 	});
 	
 	passport.deserializeUser(function(id,done){
-//		User.remove({}, function(){
-//			console.log("----");
-//		})
+		
 		User.findById(id, function(err, user) {
             done(err, user);
         });
@@ -33,46 +31,13 @@ module.exports = function(passport){
                 	return done(err);
                 }
                 if (user) {
-                	console.log(user.profile_img +"*** Picture : "+ profile.photos[0].value);
-                	/*User.find({}).exec(function(err,entries){
-        				if(err){
-        					res.send("Error");
-        				}else{
-        					console.log(entries);
-        				}
-        					
-        			});*/
+                	//console.log(user.profile_img +"*** Picture : "+ profile.photos[0].value);
+                	
                     // user is found, log them in
                     return done(null, user);
                 } else {
                     // if the user is not in db create a new user
-                    /*var newUser = new User({
-                    	// set all of the relevant information
-                        google_id : profile.id,
-                        token : accessToken,
-                        refresh_token : refreshToken,
-                        //newUser.username
-                        fullname  : profile.displayName,
-                        profile_img : profile.picture,
-                        email : profile.emails[0].value
-                    	
-                    });*/
-                   /* newUser.save(function(err) {
-                        if (err){
-                            throw err;
-                        }
-                        else{
-                        	User.find({}).exec(function(err,entries){
-                				if(err){
-                					res.send("Error");
-                				}else{
-                					console.log(entries);
-                				}
-                					
-                			});
-                        }
-                        return done(null, newUser);
-                    });*/
+
                     var newUser = {
                     		google_id : profile.id,
                             token : accessToken,
