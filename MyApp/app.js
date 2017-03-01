@@ -84,60 +84,12 @@ app.get('/signUp',function(req,res){
 
 app.post('/signUpTeacher',signUpTeacher.signUp);
 
-/*
-app.get('/auth/google', function(req,res) {
-	var emailParam = req.param('email');
-	console.log(emailParam);
-	
-	User.find({}).exec(function(err,entries){
-		if(err){
-		res.send("Error");
-		}else{
-		console.log(entries);
-		}
-		
-	});
-	User.find({'email': emailParam}, function(err, users) {
-		if(err) {
-			console.log(err);
-		} else {
-			console.log("else "+ users.length);
-			if(users.length === 0) {
-				// send error saying not a valid user
-				console.log("No users found");
-				res.render('error',{msg:'You are not registered! To sign up as Teacher click on "Sign Up as Teacher" button.'});
-			} else {
-				console.log("call to auth");
-				//process.nextTick(function(){
-					passport.authenticate('google',{
-						scope: [
-						        'profile',
-						        'email',
-						        'https://www.googleapis.com/auth/drive',
-						        'https://www.googleapis.com/auth/drive.file'
-						        ]
-					});
-					
-			//	});
-				
-			}
-		}
-		console.log("kuch nai mila");
-	});
-});
-*/
+
 function emailInDB(req, res, next) {
 	var emailParam = req.param('email');
 	console.log(emailParam);
 	
-//	User.find({}).exec(function(err,entries){
-//		if(err){
-//		res.send("Error");
-//		}else{
-//		console.log(entries);
-//		}
-//		
-//	});
+
 	User.find({'email': emailParam}, function(err, users) {
 		if(err) {
 			console.log(err);
@@ -166,14 +118,7 @@ app.get('/auth/google', emailInDB, passport.authenticate('google',
 
 
 
-/*
-app.get('/auth/google', passport.authenticate('google',
-		{ scope : ['profile', 
-		           'email',
-		           'https://www.googleapis.com/auth/drive',
-			       'https://www.googleapis.com/auth/drive.file'] }));
 
-*/
 
 
 app.get('/auth/google/callback',
