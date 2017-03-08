@@ -8,7 +8,7 @@ var dbURI = 'mongodb://localhost/qnaDb1';
 var mongoose = require('mongoose');
 var dbconn = require('../helpers/dbconn');
 var db = mongoose.connection;
-var QnA = require('../models/qnaSchema').QnA;
+var QnA = require('../models/qnaSchema');
 /*
 module.exports.DbConn = function(req,res){
 	//mongoose.connect(dbURI);

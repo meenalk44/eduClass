@@ -1,5 +1,8 @@
 var mongoose = require('mongoose');
 var qnaSchema = new mongoose.Schema({
+	_id	:	{type: String, ref : 'Class'},
+	class_id:String,
+	class_name: String,
 	topic : String,
 	question: String,
 	quetimestamp: Date,
@@ -13,8 +16,5 @@ var qnaSchema = new mongoose.Schema({
 	
 });
 
-var QnA = mongoose.model('QnA',qnaSchema);
+module.exports = mongoose.model('QnA',qnaSchema);
 
-module.exports = {
-		QnA:QnA
-		};

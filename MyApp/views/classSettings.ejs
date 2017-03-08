@@ -1,0 +1,49 @@
+<html>
+	<head>
+		<% include ../views/partials/head.ejs %>
+	
+	<style>
+		body { padding-top: 60px; padding-bottom: 30px; }
+	</style>
+	</head>
+<body>
+	<div class="row">
+		<div class="col-sm-2"></div>
+        <div class="col-sm-8">
+        
+        	<form method="post" action="/addStudents/<%=id%>">
+        		<div class="form-group">
+					<label for="addStudents">Enter email id of students you want to add to this class:</label>
+					<textarea class="form-control" rows="10"  name="stud_id"></textarea>
+				</div>
+        		<input type="submit" class="btn btn-success" value="Submit"> 
+        	</form>
+        	<%if(entries){%>
+        	<%var entries = JSON.parse(entries)%>
+        	<% entries.forEach((entry)=> {%>
+        	<table class="table table-striped">
+        		<thead>
+        			<tr>
+        				<th>Subject</th>
+        				<th>Enrolled Students</th>
+        				
+        			</tr>
+        		</thead>
+        		<tbody>
+        			
+        			<tr>
+        				
+        				<td><%= entry.class_name%></td>
+        				<%var stud = JSON.parse(entry)%>
+        				<% stud.forEach((stud_id)=> {%>
+        				<td><%=stud_id%></td>
+        				<%})%>
+        			</tr>
+        			<%})}%>
+        		</tbody>
+        	</table>
+        </div>
+        <div class="col-sm-2"></div>
+    </div>
+</body>
+</html>
