@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var dbconn = require('../helpers/dbconn');
 var db = mongoose.connection;
-var Quiz = require('../models/quizSchema').Quiz;
+var Quiz = require('../models/quizSchema');
 
 
 

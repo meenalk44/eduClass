@@ -1,0 +1,48 @@
+<html>
+<head>
+		<% include ../views/partials/head.ejs %>
+	
+	<style>
+		body { padding-top: 60px; padding-bottom: 30px; }
+	</style>
+	</head>
+<body>
+	<div class="row">
+		<div class="col-sm-2"></div>
+        <div class="col-sm-8">
+        	<div class="btn-group btn-group-sm">
+        		<form method="get" action="/classCreate">
+        		<input type="text" name="className">
+        		<input type="submit" class="btn btn-success" value="New Class">
+        		</form>
+<!--         		<button type="button" class="btn btn-success">Edit Class</button> -->
+        	</div>
+        	<table class="table table-striped">
+        		<thead>
+        			<tr>
+        				<th>Subject</th>
+        				<th>#Students</th>
+        				<th>Discussion Forum</th>
+        				<th>Class Settings</th> 
+        			</tr>
+        		</thead>
+        		<tbody>
+        			<%var entries = JSON.parse(entries)%>
+        			<% entries.forEach((entry)=> {%>
+        			<tr>
+        				
+        				<td><%= entry.class_name%></td>
+        				<td><span class="badge"><%= count%></td>
+        				<td><a href="<%=entry.qna_id%>"><span class="glyphicon glyphicon-copy"></a></td>
+        				<form method="get" action="/classes/<%=entry._id%>">
+        				<td><button type="submit" class="glyphicon glyphicon-cog" ></button></td>
+        				</form>
+        			</tr>
+        			<%})%>
+        		</tbody>
+        	</table>
+        
+        
+        </div>
+        <div class="col-sm-2"></div>
+</body>
