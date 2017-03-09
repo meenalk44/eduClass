@@ -23,7 +23,8 @@
         				<th>Subject</th>
         				<th>#Students</th>
         				<th>Discussion Forum</th>
-        				<th>Class Settings</th> 
+        				<th>Manage Students</th> 
+        				<th>Google Drive</th>
         			</tr>
         		</thead>
         		<tbody>
@@ -36,6 +37,7 @@
         				<td><a href="<%=entry.qna_id%>"><span class="glyphicon glyphicon-copy"></a></td>
         				<form method="get" action="/classes/<%=entry._id%>">
         				<td><button type="submit" class="glyphicon glyphicon-cog" ></button></td>
+        				<td><button type="submit" class="glyphicon glyphicon-folder-open" ></button></td>
         				</form>
         			</tr>
         			<%})%>
