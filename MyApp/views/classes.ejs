@@ -32,7 +32,7 @@
         			<tr>
         				
         				<td><%= entry.class_name%></td>
-        				<td><span class="badge"><%= count%></td>
+        				<td><span class="badge"><%= entry.student_ids.length%></td>
         				<td><a href="<%=entry.qna_id%>"><span class="glyphicon glyphicon-copy"></a></td>
         				<form method="get" action="/classes/<%=entry._id%>">
         				<td><button type="submit" class="glyphicon glyphicon-cog" ></button></td>
