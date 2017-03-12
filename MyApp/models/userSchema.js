@@ -4,7 +4,6 @@ var userSchema = new mongoose.Schema({
 	google_id: String,
 	token: String,
 	refresh_token: String,
-	username: String,
 	fullname: String,
 	email: String,
 	role: String,

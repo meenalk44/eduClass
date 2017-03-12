@@ -20,9 +20,8 @@
         	
       		</div>
       		<div class="col-sm-5">
-        		<%if(entries!=null){%>
-        		<%var entries = JSON.parse(entries)%>
-        	
+        		<%if(entries){%>
+        		<%var entry = JSON.parse(entries)%>
         		<table class="table table-striped">
         			<thead>
         				<tr>
@@ -30,11 +29,46 @@
         				</tr>
         			</thead>
         			<tbody>
-        				<tr>
-        					<td><%= entries.student_ids.length %></td>
-        				</tr>
+        					<%if(entry.student_ids.length == 1){%>
+        					<% var studId = entry.student_ids%>
+        						
+        						<%console.log(studId[0].email);%>
+								<form method="get" action="/classSettings/<%=id%>/<%= studId[0]._id%>">
+        						<tr>
+								
+        						<% if(studId[0].fullname){%>
+        						<td><%= studId[0].fullname%></td>
+        						
+        						<%}else{%>
+        						<td><%= studId[0].email%></td>
+        						
+        						<%}%>
+        						<td><button type="submit" class="glyphicon glyphicon-remove" ></button></td>
+								</tr>
+								</form>
+        					<%}else{%>
+        						<%var studIDS = JSON.stringify(entry.student_ids)%>
+        					<%var studId = JSON.parse(studIDS)%>
+        					<% studId.forEach((stud)=> {%>
+        					
+        					<form method="get" action="/classSettings/<%=id%>/<%=stud._id%>">
+        					<tr>
+        						
+        						<% if(stud.fullname){%>
+        							<td><%= stud.fullname%></td>
+        							
+        						<%}else{%>
+        						<td><%= stud.email%></td>
+        						<td><button type="submit" class="glyphicon glyphicon-remove" ></button></td>
+        						<%}%>
+        					</tr>
+        					<%})%>
+								</form>
+        					<%}%>
+        					
         			</tbody>
         		</table>
+        		<%}%>
         	</div> 
         	<div class="col-sm-2"></div>
     	</div>
