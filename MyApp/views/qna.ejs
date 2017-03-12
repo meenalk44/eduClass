@@ -59,6 +59,7 @@
 				
 				<div class="panel-body">  
 					<div id="accordion">
+						<%if(entries){%>
 						<% var entries = JSON.parse(entries) %>
 						<% entries.forEach((entry) => { %> 
   						
@@ -145,7 +146,7 @@
        					</div>
 	  			
 	   			<% }) %>
-	   			
+	   			<%}%>
 					</div>
 		 
 				</div>

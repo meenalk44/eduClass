@@ -15,6 +15,7 @@ var routes = require('./routes')
   , signUpTeacher = require('./routes/signUpTeacher')
   , driveController = require('./routes/driveController')
   , qnaController = require('./routes/qnaController')
+  ,	discussionController = require('./routes/discussionController')
   , quizController = require('./routes/quizController')
   ,	classController = require('./routes/classController')
   ,	qnaSchema = require('./models/qnaSchema')
@@ -141,12 +142,15 @@ app.get('/classes',classController.classDetails);
 
 app.get('/classes/:id', classController.classSettings);
 app.post('/addStudents/:id', classController.addStudents);
+app.get('/classSettings/:class_id/:id',classController.removeStudents);
 app.get('/classCreate',classController.createClass);
 
 app.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/');
 });
+
+app.get('/discussion/:id', discussionController.dicussionShow);
 
 app.get('/driveController', driveController.dController);
 app.get('/qna', qnaController.qnaShow);

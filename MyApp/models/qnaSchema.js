@@ -1,8 +1,6 @@
 var mongoose = require('mongoose');
 var qnaSchema = new mongoose.Schema({
-	_id	:	{type: String, ref : 'Class'},
-	class_id:String,
-	class_name: String,
+	class_id:	{type: mongoose.Schema.Types.ObjectId, ref : 'Class'},
 	topic : String,
 	question: String,
 	quetimestamp: Date,
