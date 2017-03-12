@@ -26,8 +26,16 @@ module.exports.createClass = function(req,res){
 					console.log("error in DF");
 				else{
 					console.log("*****&&& "+entryDF);
+					Class.findByIdAndUpdate(entry.id, {$set:{'discussion_id' : entryDF.id}},{new:true}, function(err,docs){
+						if(err)
+							console.log(err)
+						else{
+							console.log(docs);
+							res.render('success',{msg:'New Class Created!', redirect:'classes'});
+						}
+					});
 
-					res.render('success',{msg:'New Class Created!', redirect:'classes'});
+					
 				}
 			});	
 			
@@ -168,11 +176,12 @@ module.exports.classDetails = function(req,res){
 			console.log(err)
 		else{
 			//console.log(entries.student_ids.length);
-			Class.findById(teacherId)
+			/*Class.findById(teacherId)
 			.populate('discussion_id')
 			.exec(function(err,docs){
 				console.log("populated: "+docs);
 			});
+			*/
 			console.log("classDetails: "+ entries);
 			res.render('classes',{entries:JSON.stringify(entries)});
 		}
