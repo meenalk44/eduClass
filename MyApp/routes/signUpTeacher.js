@@ -20,6 +20,7 @@ module.exports.signUp = function(req,res){
 					res.send("Error");
 				}else{
 					console.log(entries);
+					
 				}
 				res.redirect('/');
 					
