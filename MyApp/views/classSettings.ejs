@@ -50,8 +50,8 @@
         						<%var studIDS = JSON.stringify(entry.student_ids)%>
         					<%var studId = JSON.parse(studIDS)%>
         					<% studId.forEach((stud)=> {%>
-        					
-        					<form method="get" action="/classSettings/<%=id%>/<%=stud._id%>">
+        				
+        					<!-- <form method="get" action="/classSettings/<%=id%>/<%=stud._id%>"> -->
         					<tr>
         						
         						<% if(stud.fullname){%>
@@ -59,11 +59,11 @@
         							
         						<%}else{%>
         						<td><%= stud.email%></td>
-        						<td><button type="submit" class="glyphicon glyphicon-remove" ></button></td>
+        						<td><a href="/classSettings/<%=id%>/<%=stud._id%>"><span class="glyphicon glyphicon-remove" ></a></td>
         						<%}%>
         					</tr>
         					<%})%>
-								</form>
+								<!-- </form> -->
         					<%}%>
         					
         			</tbody>

@@ -61,9 +61,7 @@ module.exports.classSettings = function(req,res){
 			res.render('classSettings',{entries : JSON.stringify(entries),id:id});
 		}
 	});
-	
-	//res.render('success',{msg:'',redirect:'/'});
-	
+		
 };
 
 
@@ -104,38 +102,24 @@ module.exports.addStudents = function(req,res){
 		.then(function (stud_id) {
 			// update student_ids in class object
 			console.log("-----++++ "+ stud_id);
+				
+			Class.update({'_id':class_id},
+					{$push:{'student_ids':{$each:stud_id}}},function(err,doc){
+						if(err)
+							console.log(err);
+						else{
+							console.log("$$$ "+doc);
+							Class.findById(class_id)
+							.populate('student_ids')
+							.exec(function(err,docs){
+								console.log(docs);
+								//res.send(docs);
+								res.render('classSettings',{entries:JSON.stringify(docs),id:class_id});
+							});
+						}
+					});
 			
-			Class.findByIdAndUpdate(class_id, {'student_ids' : stud_id},{new:true}, function(err,docs){
-				if(err){
-					console.log("Could not find classes");
-					console.log(err);
-				}
-				else{
-					console.log("addedToClass "+docs);
-					Class.findById(class_id)
-						.populate('student_ids')
-						.exec(function(err,docs){
-							console.log(docs);
-							//res.send(docs);
-							res.render('classSettings',{entries:JSON.stringify(docs),id:class_id});
-						});
-				}
-		});
 	});
-	
-	
-	
-	
-	/*Class.find({}).exec(function(err, entries){
-		if(err)
-			console.log(err)
-		else{
-			console.log("-------");
-			console.log(entries);
-			console.log("-------");
-			
-		}
-		});*/
 	
 };	
 	
@@ -152,13 +136,10 @@ module.exports.removeStudents = function(req,res){
 		console.log("+++++");
 		console.log(doc);
 		console.log("+++++");
-		//doc.student_ids.pull(stud_id);
-		//console.log(doc);
 		Class.findById(class_id)
 		.populate('student_ids')
 		.exec(function(err,docs){
 			console.log(docs);
-			//res.send(docs);
 			res.render('classSettings',{entries:JSON.stringify(docs),id:class_id});
 		});
 		}
@@ -175,14 +156,7 @@ module.exports.classDetails = function(req,res){
 		if(err)
 			console.log(err)
 		else{
-			//console.log(entries.student_ids.length);
-			/*Class.findById(teacherId)
-			.populate('discussion_id')
-			.exec(function(err,docs){
-				console.log("populated: "+docs);
-			});
-			*/
-			console.log("classDetails: "+ entries);
+			//console.log("classDetails: "+ entries);
 			res.render('classes',{entries:JSON.stringify(entries)});
 		}
 	});
