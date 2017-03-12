@@ -13,8 +13,4 @@ var quizSchema = new mongoose.Schema({
 	
 });
 
-var Quiz = mongoose.model('Quiz',quizSchema);
-
-module.exports = {
-		Quiz:Quiz
-		};
+module.exports = mongoose.model('Quiz',quizSchema);

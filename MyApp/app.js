@@ -15,9 +15,13 @@ var routes = require('./routes')
   , signUpTeacher = require('./routes/signUpTeacher')
   , driveController = require('./routes/driveController')
   , qnaController = require('./routes/qnaController')
+  ,	discussionController = require('./routes/discussionController')
   , quizController = require('./routes/quizController')
+  ,	classController = require('./routes/classController')
   ,	qnaSchema = require('./models/qnaSchema')
   , User = require('./models/userSchema')
+  , Class = require('./models/classSchema')
+  
   , http = require('http')
   , path = require('path');
 
@@ -88,7 +92,6 @@ app.post('/signUpTeacher',signUpTeacher.signUp);
 function emailInDB(req, res, next) {
 	var emailParam = req.param('email');
 	console.log(emailParam);
-	
 
 	User.find({'email': emailParam}, function(err, users) {
 		if(err) {
@@ -100,7 +103,6 @@ function emailInDB(req, res, next) {
 				console.log("No users found");
 				res.render('error',{msg:'You are not registered! To sign up as Teacher click on "Sign Up as Teacher" button.'});
 			} else {
-				console.log("go back");
 				return next();
 				
 			}
@@ -116,20 +118,11 @@ app.get('/auth/google', emailInDB, passport.authenticate('google',
 		           'https://www.googleapis.com/auth/drive',
 			       'https://www.googleapis.com/auth/drive.file'] }));
 
-
-
-
-
-
 app.get('/auth/google/callback',
         passport.authenticate('google', {
                 successRedirect : '/profile',
                 failureRedirect : '/'
         }));
-
-
-
-
 
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated())
@@ -145,10 +138,19 @@ app.get('/profile', isLoggedIn,function(req, res) {
     });
 });
 
+app.get('/classes',classController.classDetails);
+
+app.get('/classes/:id', classController.classSettings);
+app.post('/addStudents/:id', classController.addStudents);
+app.get('/classSettings/:class_id/:id',classController.removeStudents);
+app.get('/classCreate',classController.createClass);
+
 app.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/');
 });
+
+app.get('/discussion/:id', discussionController.dicussionShow);
 
 app.get('/driveController', driveController.dController);
 app.get('/qna', qnaController.qnaShow);

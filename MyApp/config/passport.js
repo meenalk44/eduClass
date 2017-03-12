@@ -8,7 +8,9 @@ module.exports = function(passport){
 	});
 	
 	passport.deserializeUser(function(id,done){
-		
+//		User.remove({}, function(){
+//			console.log("----");
+//		})
 		User.findById(id, function(err, user) {
             done(err, user);
         });
@@ -24,20 +26,27 @@ module.exports = function(passport){
     
     function(accessToken, refreshToken, profile, done){
     	process.nextTick(function() {
-    		console.log("*** passport :"+ profile);
+    		//console.log("*** passport :"+ profile);
             //find the user based on their google id
             User.findOne({ 'google_id' : profile.id }, function(err, user) {
                 if (err){
                 	return done(err);
                 }
                 if (user) {
-                	//console.log(user.profile_img +"*** Picture : "+ profile.photos[0].value);
-                	
+                	console.log(user.profile_img +"*** Picture : "+ profile.photos[0].value);
+                	/*User.find({}).exec(function(err,entries){
+        				if(err){
+        					res.send("Error");
+        				}else{
+        					console.log(entries);
+        				}
+        					
+        			});*/
                     // user is found, log them in
                     return done(null, user);
                 } else {
                     // if the user is not in db create a new user
-
+                    
                     var newUser = {
                     		google_id : profile.id,
                             token : accessToken,
@@ -50,8 +59,9 @@ module.exports = function(passport){
                     User.findOneAndUpdate({'email':profile.emails[0].value},newUser, {new: true},function(err,users){
                     	if(err)
                     		console.log(err);
-                    	else
+                    	else{
                     		console.log("----- "+users);
+                    	}
                     	return done(null, users);
                     });
                    

@@ -6,10 +6,21 @@
     "start": "node app.js"
   },
   "dependencies": {
+    "async": "^2.1.5",
+    "bluebird": "^3.5.0",
+    "body-parser": "^1.17.1",
     "bootstrap": "^3.3.7",
-    "ejs": "*",
-    "express": "3.2.6",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.3",
+    "ejs": "^2.5.6",
+    "ejs-lint": "^0.2.0",
+    "express": "^3.2.6",
+    "express-session": "^1.15.1",
     "googleapis": "^14.2.0",
-    "mongoose": "^4.7.6"
+    "http": "0.0.0",
+    "mongoose": "^4.8.6",
+    "passport": "^0.3.2",
+    "passport-google-oauth2": "^0.1.6",
+    "path": "^0.12.7"
   }
 }
