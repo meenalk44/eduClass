@@ -149,9 +149,10 @@ app.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/');
 });
-
+app.get('/classes/drive/:id',driveController.dController);
 app.get('/discussion/:id', discussionController.dicussionShow);
-
+app.post('/discussion/:id', discussionController.postQue);
+app.post('/discussion/:discussion_id/:ques_id',discussionController.postAns);
 app.get('/driveController', driveController.dController);
 app.get('/qna', qnaController.qnaShow);
 app.post('/qna',qnaController.qnaPostQ);
