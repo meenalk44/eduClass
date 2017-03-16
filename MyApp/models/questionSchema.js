@@ -6,7 +6,8 @@ var questionSchema	=	new mongoose.Schema({
 	discussion_id	:	{type: mongoose.Schema.Types.ObjectId, ref : 'Discussion'},
 	timeStamp		:	Date,
 	user_id			:	{type: mongoose.Schema.Types.ObjectId, ref : 'User'},
-	username		:	{type: mongoose.Schema.Types.String, ref : 'User'},
+	fullname		:	{type: mongoose.Schema.Types.String, ref : 'User'},
+	profile_img		:	{type: mongoose.Schema.Types.String, ref : 'User'},
 	topic			:	String,
 	que_body		:	String
 });
