@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var dbURI = 'mongodb://localhost/qnaDb2';
+var dbURI = 'mongodb://localhost/eduClassDB';
 mongoose.connect(dbURI);
 
 
