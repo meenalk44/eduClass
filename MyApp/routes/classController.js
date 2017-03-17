@@ -43,7 +43,7 @@ module.exports.createClass = function(req,res){
 	});
 };
 
-module.exports.classSettings = function(req,res){
+module.exports.manageStudents = function(req,res){
 	console.log("in classSettings");
 	var id = req.param('id');
 	console.log(id);
@@ -51,14 +51,11 @@ module.exports.classSettings = function(req,res){
 	
 	Class.findById(id)
 	.populate('student_ids')
-	.exec(function(err, entries){
+	.exec(function(err, entry){
 		if(err)
-			console.log(err)
+			console.log(err);
 		else{
-			console.log("-------");
-			console.log(entries);
-			console.log("-------");
-			res.render('classSettings',{entries : JSON.stringify(entries),id:id});
+			res.render('classSettings',{classEntry : JSON.stringify(entry),class_id:id});
 		}
 	});
 		
@@ -108,14 +105,7 @@ module.exports.addStudents = function(req,res){
 						if(err)
 							console.log(err);
 						else{
-							console.log("$$$ "+doc);
-							Class.findById(class_id)
-							.populate('student_ids')
-							.exec(function(err,docs){
-								console.log(docs);
-								//res.send(docs);
-								res.render('classSettings',{entries:JSON.stringify(docs),id:class_id});
-							});
+                            res.redirect("/classes/" + class_id + "/manage");
 						}
 					});
 			
@@ -133,15 +123,7 @@ module.exports.removeStudents = function(req,res){
 		if(err)
 			console.log(err);
 		else{
-		console.log("+++++");
-		console.log(doc);
-		console.log("+++++");
-		Class.findById(class_id)
-		.populate('student_ids')
-		.exec(function(err,docs){
-			console.log(docs);
-			res.render('classSettings',{entries:JSON.stringify(docs),id:class_id});
-		});
+            res.redirect("/classes/" + class_id + "/manage");
 		}
 	});
 	
@@ -149,7 +131,7 @@ module.exports.removeStudents = function(req,res){
 
 
 
-module.exports.classDetails = function(req,res){
+module.exports.classIndex = function(req,res){
 	var teacherId = req.user._id;
 	//console.log(teacherId);
 	Class.find({}).exec(function(err, entries){

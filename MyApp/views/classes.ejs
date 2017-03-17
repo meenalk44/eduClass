@@ -34,7 +34,7 @@
         				<td><%= entry.class_name%></td>
         				<td><span class="badge"><%= entry.student_ids.length%></td>
         				<td><a href="/discussion/<%=entry.discussion_id%>"><span class="glyphicon glyphicon-copy"></a></td>
-        				<form method="get" action="/classes/<%=entry._id%>">
+        				<form method="get" action="/classes/<%=entry._id%>/manage">
         				<td><button type="submit" class="glyphicon glyphicon-cog" ></button></td></form>
         				<form method="get" action="/classes/drive/<%=entry._id%>">
         				<td><button type="submit" class="glyphicon glyphicon-folder-open" ></button></td></form>
