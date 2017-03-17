@@ -8,7 +8,8 @@ var answerSchema	=	new mongoose.Schema({
 	que_id			:	{type: mongoose.Schema.Types.ObjectId, ref : 'Question'},
 	timeStamp		:	Date,
 	user_id			:	{type: mongoose.Schema.Types.ObjectId, ref : 'User'},
-	username		:	{type: mongoose.Schema.Types.String, ref : 'User'},
+	fullname		:	{type: mongoose.Schema.Types.String, ref : 'User'},
+	profile_img		:	{type: mongoose.Schema.Types.String, ref : 'User'},
 	ans_body		:	String
 });
 
