@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <% include ../views/partials/head.ejs%>
+    <% include ../views/partials/head.ejs %>
      <script>
   $( function() {
     $( "#accordion" ).accordion({
@@ -38,7 +38,7 @@
           							<h5 class="modal-title" id="questionModalAria">Ask a Question</h5>
         						</div>
         						<div class="modal-body">
-        							<form method="post" action="/qna">
+        							<form method="post" action="/discussion/<%=discussion_id%>">
           							<div class="form-group">
   										<label for="topic">Topic:</label>
   										<input type="text" class="form-control" id="topic" name="topic">

@@ -10,7 +10,7 @@ var Answer = require('../models/answerSchema');
 module.exports.dicussionShow = function(req, res){
 	var discussion_id = req.param('id');
 	console.log("fetching data from mongo");
-	Question.find({'discussion_id':discussion_id},function(err,posts){
+	Question.find({'discussion_id':discussion_id}).sort({'_id':-1}).exec(function(err,posts){
 		if(err)
 			console.log(err);
 		else{
@@ -40,7 +40,7 @@ module.exports.postQue = function(req,res){
 		if(err)
 			console.log(err);
 		else{
-			Question.find({'discussion_id':discussion_id},function(err,posts){
+			Question.find({'discussion_id':discussion_id}).sort({'_id':-1}).exec(function(err,posts){
 				if(err)
 					console.log(err);
 				else{
@@ -71,7 +71,7 @@ module.exports.postAns = function(req,res){
 		if(err)
 			console.log(err);
 		else{
-			Answer.find({'discussion_id':discussion_id},function(err,ans){
+			Answer.find({'discussion_id':discussion_id}).sort({'_id':-1}).exec(function(err,ans){
 				if(err)
 					console.log(err);
 				else{

@@ -114,7 +114,7 @@ module.exports.addStudents = function(req,res){
 							.exec(function(err,docs){
 								console.log(docs);
 								//res.send(docs);
-								res.render('classSettings',{entries:JSON.stringify(docs),id:class_id});
+								res.render('classSettings',{entries:JSON.stringify(docs),id:class_id.toString()});
 							});
 						}
 					});
