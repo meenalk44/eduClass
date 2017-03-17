@@ -56,7 +56,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(flash());
 
-app.get('*', function(req, res, next) {
+function isLoggedIn(req, res, next) {
+	console.log(req.url);
+    if (req.isAuthenticated() || req.url === "/" || req.url.startsWith("/auth/google") || req.url.startsWith("/auth/google/callback") || req.url.startsWith("/signUp")) {
+        return next();
+	} else {
+        res.redirect('/');
+	}
+}
+
+app.get('*', isLoggedIn, function(req, res, next) {
 	res.locals.currentUser = req.user;	
 	next();
 });
@@ -124,23 +133,15 @@ app.get('/auth/google/callback',
                 failureRedirect : '/'
         }));
 
-function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated())
-        return next();
-    //console.log("isLoggedIn");
-    // if user is not logged in
-    res.redirect('/');
-}
-
-app.get('/profile', isLoggedIn,function(req, res) {
+app.get('/profile',function(req, res) {
     res.render('profile.ejs', {
         user : req.user 
     });
 });
 
-app.get('/classes',classController.classDetails);
+app.get('/classes',classController.classIndex);
 
-app.get('/classes/:id', classController.classSettings);
+app.get('/classes/:id/manage', classController.manageStudents);
 app.post('/addStudents/:id', classController.addStudents);
 app.get('/classSettings/:class_id/:id',classController.removeStudents);
 app.get('/classCreate',classController.createClass);
