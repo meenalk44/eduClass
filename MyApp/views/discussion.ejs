@@ -23,7 +23,6 @@
 				<div class="panel panel-primary">
 					<div class="panel-heading">
 						<h3>Discussion Board
-						<button type="button" class="btn btn-default btn-md pull-right" data-toggle="modal" data-target="#questionModal"><span class="glyphicon glyphicon-question-sign">Ask</span></button>
 						</h3>
 					</div>
 					<div class="panel-body">
@@ -38,59 +37,50 @@
         							</div>
 						</form>
 						</div>
-  					 <div id="accordion">
-  						<%if(entries){%>
-	   					<%var entries = JSON.parse(entries)%>
-	   					<%entries.forEach((entry) =>{%>
-	   					<h5><%=entry.que_body%></h5>
-	   					<div>
-	   						<div class="well well-lg"> 
-								<div class="row text-justify">
-									<div class="media">
-										<div class="media-left media-top">
-											<img src="<%=entry.profile_img%>" class="media-object" style="width:45px">
-										</div>
-										<div class="media-body">
-											<h6 class="media-heading"><%=entry.fullname%> &nbsp; <small><i> Posted on <%=entry.timeStamp%></i></small>
-											</h6>
-											<%=entry.que_body%>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+							<h4>Questions:</h4>
+							</div>
+							<div class="panel-body">
+  					 		<div id="accordion">
+  								<%if(entries){%>
+	   							<%var entries = JSON.parse(entries)%>
+	   							<%entries.forEach((entry) =>{%>
+	   							<h5><span class="label label-default"> <%=entry.topic%> </span>
+								&nbsp; &nbsp;<%=entry.que_body%></h5>
+	   							<div>
+	   								<div class="well well-lg"> 
+										<div class="row text-justify">
+											<div class="media">
+												<div class="media-left media-top">
+												<img src="<%=entry.profile_img%>" class="media-object" style="width:45px">
+												</div>
+											<div class="media-body">
+												<h6 class="media-heading"><%=entry.fullname%> &nbsp; <small><i> Posted on <%=entry.timeStamp%></i></small>
+												</h6>
+												<%=entry.que_body%>
 											
-										</div>
+											</div>
 										
-									</div>
-									 <%if(answers){%>
-	   								<%var answers = JSON.parse(answers)%>
-	   								<%answers.forEach((ans) =>{%> 
-	   					
-	   								<div class="media">
-										<div class="media-left media-top">
-											<img src="<%=ans.profile_img%>" class="media-object" style="width:45px">
-										</div>
-										<div class="media-body">
-											<h6 class="media-heading"><%=ans.fullname%> &nbsp; <small><i> Posted on <%=ans.timeStamp%></i></small>
-											</h6>
-											<%=ans.ans_body%>
-											
-										</div>
-									</div>
-	   								<%})%>
-	   								<%}%>	
-									<div class="form-group">
-  										<form method="post" action="/discussion/<%=discussion_id%>/<%=entry._id%>">
-  										<h6><label for="que">Your Answer:</label></h6>
-  										<textarea class="form-control" rows="2" name="ansBody"></textarea>
-        								<button type="submit" class="glyphicon glyphicon-pencil pull-right" >Answer</button></form>
+											</div>
+									 
+											<div class="form-group">
+  												<form method="post" action="/discussion/<%=discussion_id%>/<%=entry._id%>">
+  												<h6><label for="que">Your Answer:</label></h6>
+  												<textarea class="form-control" rows="2" name="ansBody"></textarea>
+        										<button type="submit" class="glyphicon glyphicon-pencil pull-right" >Answer</button></form>
         				
+											</div>
+										</div>
 									</div>
 								</div>
-							</div>
-						</div>
-	   					<%})%>
-	   					<%}%>
-  					 </div>
+	   							<%})%>
+	   							<%}%>
+  						 </div>
+  						 </div>
 	   				</div>
 	   				
-	   						
+	   			</div>	
 	   			</div>
 			</div>
 		</div>
