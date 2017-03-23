@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<% include ../views/partials/head.ejs  %>
+		<% include partials/head.ejs %>
 	<style>
 		body { padding-top: 60px; padding-bottom: 30px; }
 	</style>
@@ -38,13 +38,16 @@
 
 									<%}else{%>
 										<td><%= stud.email%></td>
+
+									<%}%>
 										<td>
 											<a href="/classSettings/<%=class_id%>/<%=stud._id%>">
 												<span class="glyphicon glyphicon-remove" >
 											</a>
 										</td>
-									<%}%>
 								</tr>
+
+
         					<%})%>
 
 								<!-- </form> -->
@@ -53,7 +56,9 @@
         		</table>
         		<%}%>
         	</div> 
-        	<div class="col-sm-2"></div>
+        	<div class="col-sm-1">
+        	<a href="/classes">Back</a>
+        	</div>
     	</div>
 	</body>
 </html>

@@ -1,6 +1,6 @@
 <html>
   <head>
-    <% include ../views/partials/head.ejs%>
+    <% include partials/head.ejs %>
      <script>
   $( function() {
     $( "#accordion" ).accordion({
@@ -27,13 +27,13 @@
 					</div>
 					<div class="panel-body">
 						<div class="well"> 
-						<form method="post" action="/discussion/<%=discussion_id%>">
+						<form method="post" action="/classes/<%=class_id%>/discussion/<%=discussion_id%>">
           							<div class="form-group">
   										<label for="topic">Topic:</label>
   										<input type="text" class="form-control" id="topic" name="topic">
   										<label for="que">Question:</label>
   										<textarea class="form-control" rows="2" id="que" name="que"></textarea>
-										<button type="submit" class="btn btn-success"  name="ask" value="Ask"><span class="glyphicon glyphicon-question-sign">Ask</span></button>
+										<button type="submit" class="btn btn-success pull-right"  name="ask" value="Ask"><span class="glyphicon glyphicon-question-sign">Ask</span></button>
         							</div>
 						</form>
 						</div>
@@ -55,17 +55,16 @@
 												<div class="media-left media-top">
 												<img src="<%=entry.profile_img%>" class="media-object" style="width:45px">
 												</div>
-											<div class="media-body">
-												<h6 class="media-heading"><%=entry.fullname%> &nbsp; <small><i> Posted on <%=entry.timeStamp%></i></small>
-												</h6>
-												<%=entry.que_body%>
-											
-											</div>
-										
+												<div class="media-body">
+													<h6 class="media-heading"><%=entry.fullname%> &nbsp; <small><i> Posted on <%=entry.timeStamp%></i></small>
+													</h6>
+													<%=entry.que_body%>
+
+												</div>
 											</div>
 									 
 											<div class="form-group">
-  												<form method="post" action="/discussion/<%=discussion_id%>/<%=entry._id%>">
+  												<form method="post" action="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=entry._id%>">
   												<h6><label for="que">Your Answer:</label></h6>
   												<textarea class="form-control" rows="2" name="ansBody"></textarea>
         										<button type="submit" class="glyphicon glyphicon-pencil pull-right" >Answer</button></form>
@@ -73,6 +72,36 @@
 											</div>
 										</div>
 									</div>
+									<%if(entry.answers_level1){%>
+									<%var ansLevel1 = entry.answers_level1%>
+									<%ansLevel1.forEach((ans) =>{%>
+									<div class="row text-justify">
+										<div class="media">
+											<div class="media-left media-top">
+												<img src="<%=ans.profile_img%>" class="media-object" style="width:45px">
+											</div>
+											<div class="media-body">
+												<h6 class="media-heading"><%=ans.fullname%> &nbsp; <small><i> Posted on <%=ans.timeStamp%></i></small>
+												</h6>
+                                                <%=ans.ans_body%>
+												<%if(template == 'Nested'){%>
+													<div class="form-group">
+														<form method="post" action="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=entry._id%>/ans/<%ansLevel1._id%>>">
+														<h6><label for="que">Your Reply:</label></h6>
+															<textarea class="form-control" rows="2" name="ansBody"></textarea>
+															<button type="submit" class="glyphicon glyphicon-comment pull-right" >Reply</button>
+														</form>
+													</div>
+
+
+                                                <%}%>
+
+											</div>
+										</div>
+									</div>
+									<%})%>
+									<%}%>
+
 								</div>
 	   							<%})%>
 	   							<%}%>

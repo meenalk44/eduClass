@@ -1,51 +1,86 @@
 <html>
 <head>
-		<% include ../views/partials/head.ejs %>
+		<% include partials/head.ejs %>
 	
 	<style>
 		body { padding-top: 60px; padding-bottom: 30px; }
 	</style>
 	</head>
 <body>
+	<%if(currentUser.role != "Student"){%>
 	<div class="row">
-		<div class="col-sm-2"></div>
-        <div class="col-sm-8">
-        	<div class="btn-group btn-group-sm">
-        		<form method="get" action="/classCreate">
-        		<input type="text" name="className">
-        		<input type="submit" class="btn btn-success" value="New Class">
+		<div class="col-sm-4"></div>
+		<div class="col-sm-4">
+			<div class="panel panel-default">
+				<div class="panel-heading"><b>Create A New Class</b></div>
+				<div class="panel-body">
+
+        		<form method="post" action="/classCreate">
+					<input type="text" placeholder="Enter Class Name" name="className">
+					<div class="form-group">
+						<label>Template Pattern: </label>
+						<label class="radio-inline">
+							<input type="radio" name="radioOpt" id="flat" value="Flat">Flat
+						</label>
+						<label class="radio-inline">
+							<input type="radio" name="radioOpt" id="nested" value="Nested">Nested
+						</label>
+						<input type="submit" class="btn btn-success pull-right" value="Create Class">
+					</div>
         		</form>
+        		</div>
         	</div>
+		</div>
+		<div class="col-sm-4"></div>
+	</div>
+	<%}%>
+	<div class="row">
+		<div class="col-sm-1"></div>
+        <div class="col-sm-10">
+        	<div class="panel panel-default">
         	<table class="table table-striped">
+        	
         		<thead>
         			<tr>
         				<th>Subject</th>
+        				<%if(currentUser.role != "Student"){%>
         				<th>#Students</th>
+        				<th>Manage Students</th>
+						<th>Template Settings</th>
+        				<%}%>
         				<th>Discussion Forum</th>
-        				<th>Manage Students</th> 
         				<th>Google Drive</th>
         			</tr>
         		</thead>
+        	
         		<tbody>
         			<%var entries = JSON.parse(entries)%>
         			<% entries.forEach((entry)=> {%>
         			<tr>
         				
         				<td><%= entry.class_name%></td>
+        				
+        				<%if(currentUser.role != "Student"){%>
         				<td><span class="badge"><%= entry.student_ids.length%></td>
-        				<td><a href="/discussion/<%=entry.discussion_id%>"><span class="glyphicon glyphicon-copy"></a></td>
+
         				<form method="get" action="/classes/<%=entry._id%>/manage">
         				<td><button type="submit" class="glyphicon glyphicon-cog" ></button></td></form>
+						<td><form method="get" action="/classes/<%=entry._id%>/template">
+						<button type="submit" class="glyphicon glyphicon-text-size" ></button></form></td>
+						<%}%>
+						<td><a href="/classes/<%=entry._id%>/discussion/<%=entry.discussion_id%>"><span class="glyphicon glyphicon-copy"></a></td>
         				<form method="get" action="/classes/drive/<%=entry._id%>">
         				<td><button type="submit" class="glyphicon glyphicon-folder-open" ></button></td></form>
         				
         			</tr>
         			<%})%>
         		</tbody>
-        	</table>
         
+        	</table>
+        </div>
         
         </div>
-        <div class="col-sm-2"></div>
+        <div class="col-sm-1"></div>
+      </div>
 </body>
 </html>

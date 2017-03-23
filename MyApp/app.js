@@ -33,8 +33,9 @@ require('./config/passport')(passport);
 
 // all environments
 app.set('port', process.env.PORT || 3000);
-app.set('views', __dirname + '/views');
+
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
@@ -87,9 +88,6 @@ app.get('/',function(req,res){
 		res.render('login',{'entry':null});
 	}
 	
-	/*User.remove({}, function(){
-		console.log("----");
-	});*/
 });
 app.get('/signUp',function(req,res){
 	res.render('signUp');
@@ -110,7 +108,7 @@ function emailInDB(req, res, next) {
 			if(users.length === 0) {
 				// send error saying not a valid user
 				console.log("No users found");
-				res.render('error',{msg:'You are not registered! To sign up as Teacher click on "Sign Up as Teacher" button.'});
+				res.render('error',{msg:'Login Failed! You are not registered! To sign up as Teacher click on "Sign Up as Teacher" button.'});
 			} else {
 				return next();
 				
@@ -141,29 +139,44 @@ app.get('/profile',function(req, res) {
 
 app.get('/classes',classController.classIndex);
 
-app.get('/classes/:id/manage', classController.manageStudents);
+function checkRole(req,res,next){
+	if(req.user.role === "Student")
+		res.redirect('/error');
+	else
+		return next();
+	
+}
+app.get('/classes/:id/manage', checkRole,classController.manageStudents);
 app.post('/addStudents/:id', classController.addStudents);
-app.get('/classSettings/:class_id/:id',classController.removeStudents);
-app.get('/classCreate',classController.createClass);
+app.get('/classSettings/:class_id/:id',checkRole, classController.removeStudents);
+app.post('/classCreate',checkRole, classController.createClass);
+app.get('/classes/:id/template', classController.templateSettings);
+app.post('/classes/:id/changeTemplate', classController.changeTemplate);
+app.get('/error',function(req,res){
+	res.render('error',{msg:'You are not authorized to view this page!'});
+});
+app.get('/success',function(req,res){
+    res.render('success',{msg:'New Class Created!', redirect:'classes'});
+});
+
+app.get('/classes/drive/:id',driveController.dController);
+
+app.get('/classes/:class_id/discussion/:id', discussionController.dicussionShow);
+app.post('/classes/:class_id/discussion/:id', discussionController.postQue);
+app.post('/classes/:class_id/discussion/:discussion_id/que/:ques_id',discussionController.postAns);
+app.post('/classes/:class_id/discussion/:discussion_id/que/:ques_id/ans/:ans_id',discussionController.postReply);
+app.get('/driveController', driveController.dController);
+
+app.get('/quiz',quizController.quizShow);
+app.post('/quizCreate', quizController.quizCreate);
+app.post('/quizAns',quizController.storeAns);
 
 app.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/');
 });
-app.get('/classes/drive/:id',driveController.dController);
-app.get('/discussion/:id', discussionController.dicussionShow);
-app.post('/discussion/:id', discussionController.postQue);
-app.post('/discussion/:discussion_id/:ques_id',discussionController.postAns);
-app.get('/driveController', driveController.dController);
-app.get('/qna', qnaController.qnaShow);
-app.post('/qna',qnaController.qnaPostQ);
-app.post('/qnaAns',function(req,res){
-	console.log("-----------* "+ req.body.entryID +"    : "+ req.body.ansBody);
-});
-app.post('/qna',qnaController.qnaRating);
-app.get('/quiz',quizController.quizShow);
-app.post('/quizCreate', quizController.quizCreate);
-app.post('/quizAns',quizController.storeAns);
+
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });

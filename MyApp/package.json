@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node app.js"
+    "start": "nodemon app.js"
   },
   "dependencies": {
     "async": "^2.1.5",
@@ -19,6 +19,8 @@
     "googleapis": "^14.2.0",
     "http": "0.0.0",
     "mongoose": "^4.8.6",
+    "mongoose-tree2": "^0.2.2",
+    "nodemon": "^1.11.0",
     "passport": "^0.3.2",
     "passport-google-oauth2": "^0.1.6",
     "path": "^0.12.7"

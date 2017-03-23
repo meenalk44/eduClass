@@ -7,18 +7,21 @@ var Class = require('../models/classSchema');
 var Promise = require('bluebird');
 
 module.exports.createClass = function(req,res){
+	//console.log(req.body.className +" Radio: "+req.body.radioOpt);
+	var template = req.body.radioOpt;
 	var newClass = new Class({
-	class_name	: req.param('className'),
+	class_name	: req.body.className,
 	teacher_id : req.user.id,
-	//qna_id	:	qnaId
+	template	:	template
 	});
 	newClass.save(function(err,entry){
 		if(err)
 			console.log(err);
 		else{
 			var newDF = new Discussion({
-				class_id: entry.id,
-				
+				class_id: entry.id
+				//template: template
+
 			});
 			console.log("DF: "+ newDF);
 			newDF.save(function(err,entryDF){
@@ -31,7 +34,8 @@ module.exports.createClass = function(req,res){
 							console.log(err)
 						else{
 							console.log(docs);
-							res.render('success',{msg:'New Class Created!', redirect:'classes'});
+							res.redirect('/success');
+							//res.render('success',{msg:'New Class Created!', redirect:'classes'});
 						}
 					});
 
@@ -105,7 +109,9 @@ module.exports.addStudents = function(req,res){
 						if(err)
 							console.log(err);
 						else{
+
                             res.redirect("/classes/" + class_id + "/manage");
+
 						}
 					});
 			
@@ -129,7 +135,32 @@ module.exports.removeStudents = function(req,res){
 	
 };
 
+module.exports.templateSettings = function (req,res) {
+	var class_id = req.param('id');
+	//res.render('template',{class_id:class_id});
+    Class.findById(class_id,function(err, class_details){
+        if(err)
+            console.log(err)
+        else{
+            //console.log("classDetails: "+ entries);
+            res.render('template',{class_details:JSON.stringify(class_details)});
+        }
+    });
 
+};
+
+module.exports.changeTemplate = function(req,res){
+	var class_id = req.param('id');
+	var newTemplate = req.body.radioOpt;
+	Class.findByIdAndUpdate(class_id, {$set:{template:newTemplate}},{new:true},function (err,class_details) {
+		if(err)
+			console.log(err);
+		else{
+            res.redirect("/classes/" + class_id+ "/template");
+        }
+
+    })
+};
 
 module.exports.classIndex = function(req,res){
 	var teacherId = req.user._id;
@@ -144,3 +175,4 @@ module.exports.classIndex = function(req,res){
 	});
 
 };
+
