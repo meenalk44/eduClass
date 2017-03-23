@@ -7,18 +7,21 @@ var Class = require('../models/classSchema');
 var Promise = require('bluebird');
 
 module.exports.createClass = function(req,res){
+	//console.log(req.body.className +" Radio: "+req.body.radioOpt);
+	var template = req.body.radioOpt;
 	var newClass = new Class({
-	class_name	: req.param('className'),
+	class_name	: req.body.className,
 	teacher_id : req.user.id,
-	//qna_id	:	qnaId
+	template	:	template
 	});
 	newClass.save(function(err,entry){
 		if(err)
 			console.log(err);
 		else{
 			var newDF = new Discussion({
-				class_id: entry.id,
-				
+				class_id: entry.id
+				//template: template
+
 			});
 			console.log("DF: "+ newDF);
 			newDF.save(function(err,entryDF){
@@ -31,7 +34,8 @@ module.exports.createClass = function(req,res){
 							console.log(err)
 						else{
 							console.log(docs);
-							res.render('success',{msg:'New Class Created!', redirect:'classes'});
+							res.redirect('/success');
+							//res.render('success',{msg:'New Class Created!', redirect:'classes'});
 						}
 					});
 
@@ -43,7 +47,7 @@ module.exports.createClass = function(req,res){
 	});
 };
 
-module.exports.classSettings = function(req,res){
+module.exports.manageStudents = function(req,res){
 	console.log("in classSettings");
 	var id = req.param('id');
 	console.log(id);
@@ -51,14 +55,11 @@ module.exports.classSettings = function(req,res){
 	
 	Class.findById(id)
 	.populate('student_ids')
-	.exec(function(err, entries){
+	.exec(function(err, entry){
 		if(err)
-			console.log(err)
+			console.log(err);
 		else{
-			console.log("-------");
-			console.log(entries);
-			console.log("-------");
-			res.render('classSettings',{entries : JSON.stringify(entries),id:id});
+			res.render('classSettings',{classEntry : JSON.stringify(entry),class_id:id});
 		}
 	});
 		
@@ -108,14 +109,9 @@ module.exports.addStudents = function(req,res){
 						if(err)
 							console.log(err);
 						else{
-							console.log("$$$ "+doc);
-							Class.findById(class_id)
-							.populate('student_ids')
-							.exec(function(err,docs){
-								console.log(docs);
-								//res.send(docs);
-								res.render('classSettings',{entries:JSON.stringify(docs),id:class_id.toString()});
-							});
+
+                            res.redirect("/classes/" + class_id + "/manage");
+
 						}
 					});
 			
@@ -133,23 +129,40 @@ module.exports.removeStudents = function(req,res){
 		if(err)
 			console.log(err);
 		else{
-		console.log("+++++");
-		console.log(doc);
-		console.log("+++++");
-		Class.findById(class_id)
-		.populate('student_ids')
-		.exec(function(err,docs){
-			console.log(docs);
-			res.render('classSettings',{entries:JSON.stringify(docs),id:class_id});
-		});
+            res.redirect("/classes/" + class_id + "/manage");
 		}
 	});
 	
 };
 
+module.exports.templateSettings = function (req,res) {
+	var class_id = req.param('id');
+	//res.render('template',{class_id:class_id});
+    Class.findById(class_id,function(err, class_details){
+        if(err)
+            console.log(err)
+        else{
+            //console.log("classDetails: "+ entries);
+            res.render('template',{class_details:JSON.stringify(class_details)});
+        }
+    });
 
+};
 
-module.exports.classDetails = function(req,res){
+module.exports.changeTemplate = function(req,res){
+	var class_id = req.param('id');
+	var newTemplate = req.body.radioOpt;
+	Class.findByIdAndUpdate(class_id, {$set:{template:newTemplate}},{new:true},function (err,class_details) {
+		if(err)
+			console.log(err);
+		else{
+            res.redirect("/classes/" + class_id+ "/template");
+        }
+
+    })
+};
+
+module.exports.classIndex = function(req,res){
 	var teacherId = req.user._id;
 	//console.log(teacherId);
 	Class.find({}).exec(function(err, entries){
@@ -162,3 +175,4 @@ module.exports.classDetails = function(req,res){
 	});
 
 };
+

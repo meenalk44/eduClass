@@ -14,9 +14,19 @@
 			<div class="panel panel-default">
 				<div class="panel-heading"><b>Create A New Class</b></div>
 				<div class="panel-body">
-        		<form method="get" action="/classCreate">
-        		<input type="text" placeholder="Enter Class Name" name="className">
-        		<input type="submit" class="btn btn-success pull-right" value="Create Class">
+
+        		<form method="post" action="/classCreate">
+					<input type="text" placeholder="Enter Class Name" name="className">
+					<div class="form-group">
+						<label>Template Pattern: </label>
+						<label class="radio-inline">
+							<input type="radio" name="radioOpt" id="flat" value="Flat">Flat
+						</label>
+						<label class="radio-inline">
+							<input type="radio" name="radioOpt" id="nested" value="Nested">Nested
+						</label>
+						<input type="submit" class="btn btn-success pull-right" value="Create Class">
+					</div>
         		</form>
         		</div>
         	</div>
@@ -25,8 +35,8 @@
 	</div>
 	<%}%>
 	<div class="row">
-		<div class="col-sm-2"></div>
-        <div class="col-sm-8">
+		<div class="col-sm-1"></div>
+        <div class="col-sm-10">
         	<div class="panel panel-default">
         	<table class="table table-striped">
         	
@@ -35,7 +45,8 @@
         				<th>Subject</th>
         				<%if(currentUser.role != "Student"){%>
         				<th>#Students</th>
-        				<th>Manage Students</th> 
+        				<th>Manage Students</th>
+						<th>Template Settings</th>
         				<%}%>
         				<th>Discussion Forum</th>
         				<th>Google Drive</th>
@@ -51,11 +62,13 @@
         				
         				<%if(currentUser.role != "Student"){%>
         				<td><span class="badge"><%= entry.student_ids.length%></td>
-        				<form method="get" action="/classes/<%=entry._id%>">
+
+        				<form method="get" action="/classes/<%=entry._id%>/manage">
         				<td><button type="submit" class="glyphicon glyphicon-cog" ></button></td></form>
-        				<%}%>
-        				
-        				<td><a href="/discussion/<%=entry.discussion_id%>"><span class="glyphicon glyphicon-copy"></a></td>
+						<td><form method="get" action="/classes/<%=entry._id%>/template">
+						<button type="submit" class="glyphicon glyphicon-text-size" ></button></form></td>
+						<%}%>
+						<td><a href="/classes/<%=entry._id%>/discussion/<%=entry.discussion_id%>"><span class="glyphicon glyphicon-copy"></a></td>
         				<form method="get" action="/classes/drive/<%=entry._id%>">
         				<td><button type="submit" class="glyphicon glyphicon-folder-open" ></button></td></form>
         				
@@ -67,7 +80,7 @@
         </div>
         
         </div>
-        <div class="col-sm-2"></div>
+        <div class="col-sm-1"></div>
       </div>
 </body>
 </html>
