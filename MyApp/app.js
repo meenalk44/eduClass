@@ -57,7 +57,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(flash());
 
-app.get('*', function(req, res, next) {
+function isLoggedIn(req, res, next) {
+	console.log(req.url);
+    if (req.isAuthenticated() || req.url === "/" || req.url.startsWith("/auth/google") || req.url.startsWith("/auth/google/callback") || req.url.startsWith("/signUp")) {
+        return next();
+	} else {
+        res.redirect('/');
+	}
+}
+
+app.get('*', isLoggedIn, function(req, res, next) {
 	res.locals.currentUser = req.user;	
 	next();
 });
@@ -122,21 +131,13 @@ app.get('/auth/google/callback',
                 failureRedirect : '/'
         }));
 
-function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated())
-        return next();
-    //console.log("isLoggedIn");
-    // if user is not logged in
-    res.redirect('/');
-}
-
-app.get('/profile', isLoggedIn,function(req, res) {
+app.get('/profile',function(req, res) {
     res.render('profile.ejs', {
         user : req.user 
     });
 });
 
-app.get('/classes',classController.classDetails);
+app.get('/classes',classController.classIndex);
 
 function checkRole(req,res,next){
 	if(req.user.role === "Student")
@@ -145,22 +146,25 @@ function checkRole(req,res,next){
 		return next();
 	
 }
-
+app.get('/classes/:id/manage', checkRole,classController.manageStudents);
+app.post('/addStudents/:id', classController.addStudents);
+app.get('/classSettings/:class_id/:id',checkRole, classController.removeStudents);
+app.post('/classCreate',checkRole, classController.createClass);
+app.get('/classes/:id/template', classController.templateSettings);
+app.post('/classes/:id/changeTemplate', classController.changeTemplate);
 app.get('/error',function(req,res){
 	res.render('error',{msg:'You are not authorized to view this page!'});
 });
-
-app.get('/classes/:id', checkRole, classController.classSettings);
-app.post('/addStudents/:id',checkRole, classController.addStudents);
-app.get('/classSettings/:class_id/:id',checkRole, classController.removeStudents);
-app.get('/classCreate',checkRole,classController.createClass);
+app.get('/success',function(req,res){
+    res.render('success',{msg:'New Class Created!', redirect:'classes'});
+});
 
 app.get('/classes/drive/:id',driveController.dController);
 
-app.get('/discussion/:id', discussionController.dicussionShow);
-app.post('/discussion/:id', discussionController.postQue);
-app.post('/discussion/:discussion_id/:ques_id',discussionController.postAns);
-
+app.get('/classes/:class_id/discussion/:id', discussionController.dicussionShow);
+app.post('/classes/:class_id/discussion/:id', discussionController.postQue);
+app.post('/classes/:class_id/discussion/:discussion_id/que/:ques_id',discussionController.postAns);
+app.post('/classes/:class_id/discussion/:discussion_id/que/:ques_id/ans/:ans_id',discussionController.postReply);
 app.get('/driveController', driveController.dController);
 
 app.get('/quiz',quizController.quizShow);
