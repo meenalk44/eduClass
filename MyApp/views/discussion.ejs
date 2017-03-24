@@ -2,12 +2,36 @@
   <head>
     <% include partials/head.ejs %>
      <script>
-  $( function() {
-    $( "#accordion" ).accordion({
-    	heightStyle: "content"
-    });
-  } );
-  </script>
+		$( function() {
+			$( "#accordion" ).accordion({
+				heightStyle: "content"
+			});
+	  	} );
+        $(document).ready(function(){
+            $("#askWell").hide();
+		});
+        $(document).ready(function(){
+            $("#ask").click(function(){
+                $("#askWell").toggle();
+            });
+        });
+        $(document).ready(function(){
+            $("#ansForm").hide();
+        });
+        $(document).ready(function(){
+            $("#ansbtn").click(function(){
+                $("#ansForm").toggle();
+            });
+        });
+        $(document).ready(function(){
+            $("#replyForm").hide();
+        });
+        $(document).ready(function(){
+            $("#replybtn").click(function(){
+                $("#replyForm").toggle();
+            });
+        });
+  	</script>
    <style>  
    		body { padding-top: 60px; padding-bottom: 30px; }
          #accordion{font-size: 16px;}
@@ -23,10 +47,11 @@
 				<div class="panel panel-primary">
 					<div class="panel-heading">
 						<h3>Discussion Board
+						<button  id="ask" class="btn btn-default glyphicon glyphicon-question-sign pull-right">Ask</button>
 						</h3>
 					</div>
 					<div class="panel-body">
-						<div class="well"> 
+						<div id="askWell" class="well">
 						<form method="post" action="/classes/<%=class_id%>/discussion/<%=discussion_id%>">
           							<div class="form-group">
   										<label for="topic">Topic:</label>
@@ -59,15 +84,16 @@
 													<h6 class="media-heading"><%=entry.que_id.fullname%> &nbsp; <small><i> Posted on <%=entry.que_id.timeStamp%></i></small>
 													</h6>
 													<%=entry.que_id.que_body%>
+													<button id="ansbtn" class="btn btn-default glyphicon glyphicon-pencil pull-right" >Answer</button>
 
 												</div>
 											</div>
 									 
-											<div class="form-group">
+											<div id="ansForm" class="form-group">
   												<form method="post" action="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=entry._id%>">
   												<h6><label for="que">Your Answer:</label></h6>
   												<textarea class="form-control" rows="2" name="ansBody"></textarea>
-        										<button type="submit" class="glyphicon glyphicon-pencil pull-right" >Answer</button></form>
+        										<button type="submit" class="btn btn-success glyphicon glyphicon-pencil pull-right" >Answer</button></form>
         				
 											</div>
 										</div>
@@ -85,12 +111,13 @@
 												</h6>
                                                 <%=ans.ans_body%>
 												<%if(template == 'Nested'){%>
-													<div class="form-group">
+												<button id="replybtn" class="btn btn-default glyphicon glyphicon-comment pull-right" >Reply</button>
+													<div id="replyForm" class="form-group">
 														<form method="post" action="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=ans.que_id%>/ans/<%=ans._id%>">
 														<h6><label for="que">Your Reply:</label></h6>
 															<textarea class="form-control" rows="2" name="replyBody"></textarea>
 														<!--<a href="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=ans.que_id%>/ans/<%=ans._id%>">-->
-														<button type="submit" class="glyphicon glyphicon-comment pull-right" >Reply</button>
+														<button type="submit" class="btn btn-success glyphicon glyphicon-comment pull-right" >Reply</button>
 														</form>
 													</div>
 
