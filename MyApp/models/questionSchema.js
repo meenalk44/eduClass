@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var User = require('../models/userSchema');
 var Discussion = require('../models/discussionForumSchema');
-var tree = require('mongoose-tree2');
+//var tree = require('mongoose-tree2');
 
 var questionSchema	=	new mongoose.Schema({
 	discussion_id	:	{type: mongoose.Schema.Types.ObjectId, ref : 'Discussion'},
