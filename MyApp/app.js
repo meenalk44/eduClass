@@ -66,10 +66,12 @@ function isLoggedIn(req, res, next) {
 	}
 }
 
+/*
 app.get('*', isLoggedIn, function(req, res, next) {
 	res.locals.currentUser = req.user;	
 	next();
 });
+*/
 
 
 
@@ -146,25 +148,31 @@ function checkRole(req,res,next){
 		return next();
 	
 }
+
 app.get('/classes/:id/manage', checkRole,classController.manageStudents);
 app.post('/addStudents/:id', classController.addStudents);
 app.get('/classSettings/:class_id/:id',checkRole, classController.removeStudents);
 app.post('/classCreate',checkRole, classController.createClass);
 app.get('/classes/:id/template', classController.templateSettings);
 app.post('/classes/:id/changeTemplate', classController.changeTemplate);
+
+
 app.get('/error',function(req,res){
 	res.render('error',{msg:'You are not authorized to view this page!'});
 });
+
 app.get('/success',function(req,res){
     res.render('success',{msg:'New Class Created!', redirect:'classes'});
 });
 
-app.get('/classes/drive/:id',driveController.dController);
 
 app.get('/classes/:class_id/discussion/:id', discussionController.dicussionShow);
 app.post('/classes/:class_id/discussion/:id', discussionController.postQue);
 app.post('/classes/:class_id/discussion/:discussion_id/que/:ques_id',discussionController.postAns);
 app.post('/classes/:class_id/discussion/:discussion_id/que/:ques_id/ans/:ans_id',discussionController.postReply);
+app.get('/test', discussionController.test);
+
+app.get('/classes/drive/:id',driveController.dController);
 app.get('/driveController', driveController.dController);
 
 app.get('/quiz',quizController.quizShow);
