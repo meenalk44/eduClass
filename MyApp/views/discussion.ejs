@@ -47,7 +47,7 @@
 				<div class="panel panel-primary">
 					<div class="panel-heading">
 						<h3>Discussion Board
-						<button  id="ask" class="btn btn-default glyphicon glyphicon-question-sign pull-right">Ask</button>
+							<button  id="ask" class="btn btn-default pull-right"><span class="glyphicon glyphicon-question-sign">Ask</span></button>
 						</h3>
 					</div>
 					<div class="panel-body">
@@ -57,7 +57,7 @@
   										<label for="topic">Topic:</label>
   										<input type="text" class="form-control" id="topic" name="topic">
   										<label for="que">Question:</label>
-  										<textarea class="form-control" rows="2" id="que" name="que"></textarea>
+  										<textarea class="form-control" rows="2" id="que" name="que"></textarea><br>
 										<button type="submit" class="btn btn-success pull-right"  name="ask" value="Ask"><span class="glyphicon glyphicon-question-sign">Ask</span></button>
         							</div>
 						</form>
@@ -67,24 +67,26 @@
 							<h4>Questions:</h4>
 							</div>
 							<div class="panel-body">
-  					 		<div id="accordion">
+  					 			<div id="accordion">
   								<%if(entries){%>
 	   							<%var entries = JSON.parse(entries)%>
 	   							<%entries.forEach((entry) =>{%>
-	   							<h5><span class="label label-default"> <%=entry.que_id.topic%> </span>
-								&nbsp; &nbsp;<%=entry.que_id.que_body%></h5>
+	   							<h5>
+									<span class="label label-default"> <%=entry.topic%> </span>
+								&nbsp; &nbsp;	<%=entry.que_body%>
+								</h5>
 	   							<div>
 	   								<div class="well well-lg"> 
 										<div class="row text-justify">
 											<div class="media">
 												<div class="media-left media-top">
-												<img src="<%=entry.que_id.profile_img%>" class="media-object" style="width:45px">
+												<img src="<%=entry.profile_img%>" class="media-object" style="width:45px">
 												</div>
 												<div class="media-body">
-													<h6 class="media-heading"><%=entry.que_id.fullname%> &nbsp; <small><i> Posted on <%=entry.que_id.timeStamp%></i></small>
+													<h6 class="media-heading"><%=entry.fullname%> &nbsp; <small><i> Posted on <%=entry.timeStamp%></i></small>
 													</h6>
-													<%=entry.que_id.que_body%>
-													<button id="ansbtn" class="btn btn-default glyphicon glyphicon-pencil pull-right" >Answer</button>
+													<%=entry.que_body%>
+													<button id="ansbtn" class="btn btn-default btn-sm pull-right" ><span class="glyphicon glyphicon-pencil">Answer</span></button>
 
 												</div>
 											</div>
@@ -92,14 +94,14 @@
 											<div id="ansForm" class="form-group">
   												<form method="post" action="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=entry._id%>">
   												<h6><label for="que">Your Answer:</label></h6>
-  												<textarea class="form-control" rows="2" name="ansBody"></textarea>
-        										<button type="submit" class="btn btn-success glyphicon glyphicon-pencil pull-right" >Answer</button></form>
-        				
+  												<textarea class="form-control" rows="2" name="ansBody"></textarea><br>
+        										<button type="submit" class="btn btn-success btn-xs pull-right" >Post Answer</button></form>
+
 											</div>
 										</div>
 									</div>
-									<%if(entry.que_id.answers_level1){%>
-									<%var ansLevel1 = entry.que_id.answers_level1%>
+									<%if(entry.answers_level1){%>
+									<%var ansLevel1 = entry.answers_level1%>
 									<%ansLevel1.forEach((ans) =>{%>
 									<div class="row text-justify">
 										<div class="media">
@@ -111,36 +113,38 @@
 												</h6>
                                                 <%=ans.ans_body%>
 												<%if(template == 'Nested'){%>
-												<button id="replybtn" class="btn btn-default glyphicon glyphicon-comment pull-right" >Reply</button>
-													<div id="replyForm" class="form-group">
-														<form method="post" action="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=ans.que_id%>/ans/<%=ans._id%>">
-														<h6><label for="que">Your Reply:</label></h6>
-															<textarea class="form-control" rows="2" name="replyBody"></textarea>
-														<!--<a href="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=ans.que_id%>/ans/<%=ans._id%>">-->
-														<button type="submit" class="btn btn-success glyphicon glyphicon-comment pull-right" >Reply</button>
-														</form>
-													</div>
+													<button id="replybtn" class="btn btn-default pull-right" ><span class="glyphicon glyphicon-comment">Reply</span></button>
+														<div id="replyForm" class="form-group">
+															<form method="post" action="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=ans.que_id%>/ans/<%=ans._id%>">
+															<h6><label for="que">Your Reply:</label></h6>
+																<textarea class="form-control" rows="2" name="replyBody"></textarea>
+															<!--<a href="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=ans.que_id%>/ans/<%=ans._id%>">-->
+																<button type="submit" class="btn btn-success pull-right" ><span class="glyphicon glyphicon-comment ">Reply</span></button>
+															</form>
+														</div>
+
+														<br><%=JSON.stringify(ans.replies)%>
+												<%}%>
 
 
-                                                <%}%>
 
 											</div>
 										</div>
+										<hr>
 									</div>
 									<%})%>
 									<%}%>
-
 								</div>
 	   							<%})%>
 	   							<%}%>
-  						 </div>
-  						 </div>
+  						 		</div>
+  						 	</div>
+	   					</div>
 	   				</div>
-	   				
-	   			</div>	
 	   			</div>
 			</div>
 		</div>
+		<div class="col-sm-1"></div>
 	</div>
   </body>
 </html>

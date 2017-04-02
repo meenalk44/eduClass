@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var quizSchema = new mongoose.Schema({
 	subject : String,
-	question: String,
+	question: [String],
 	timestamp: Date,
 	user_id : String,
 	username : String,
