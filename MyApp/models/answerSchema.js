@@ -2,9 +2,6 @@ var mongoose = require('mongoose');
 var Discussion = require('../models/discussionForumSchema');
 var User = require('../models/userSchema');
 var Question = require('../models/questionSchema');
-var autopopulate = require('mongoose-autopopulate');
-//var tree = require('mongoose-tree2');
-//var Reply = require('../models/replySchema');
 
 var answerSchema	=	new mongoose.Schema({
 	//_id				:	String,
@@ -18,18 +15,5 @@ var answerSchema	=	new mongoose.Schema({
 	ans_level		:	Number,
 	replies			:	[{type: mongoose.Schema.Types.ObjectId, ref : 'Answer'}]
 });
-
-//answerSchema.plugin(tree);
-var deepPopulate = require('mongoose-deep-populate')(mongoose);
-/*answerSchema.plugin(deepPopulate,{
-    populate:{
-        'replies':{
-            options:{
-                limit:20
-            }
-        }
-    }
-});*/
-//answerSchema.plugin(autopopulate);
 
 module.exports	= mongoose.model('Answer',answerSchema);
