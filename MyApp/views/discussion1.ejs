@@ -24,16 +24,17 @@
                 });
             });
             $(document).ready(function(){
-                $("#replyForm").hide();
+                $(".replyForm").hide();
             });
             $(document).ready(function(){
-                $("#replybtn").click(function(){
-                    $("#replyForm").toggle();
+                $(".replybtn").click(function(e){
+                    $(e.currentTarget).next().toggle();
                 });
             });
         </script>
         <style>
             body { padding-top: 60px; padding-bottom: 30px; }
+            .pad-5 { padding: 5px}
             #accordion{font-size: 16px;}
             #accordion.ui-accordion .ui-accordion-header.ui-state-active { background: #007acc; }
         </style>
@@ -68,11 +69,11 @@
                         <div class="panel-body">
                             <div id="accordion">
                                 <%if(entries){%>
-                                <% entries.forEach((entry)=>{%>
+                                <% entries.forEach((entry,index)=>{%>
 
                                 <h5>
-                                    <span class="label label-default"> <%=entry.topic%> </span>
-                                    &nbsp; &nbsp;	<%=entry.que_body%>
+                                    <span class="label label-default pull-right"> <%=entry.topic%> </span>
+                                    &nbsp;#<%= index + 1%> - <%=entry.que_body%>
                                 </h5>
                                 <div>
                                     <div class="well well-lg">
@@ -85,94 +86,114 @@
                                                     <h6 class="media-heading"><%=entry.fullname%> &nbsp; <small><i> Posted on <%=entry.timeStamp%></i></small>
                                                     </h6>
                                                     <%=entry.que_body%>
-                                                    <button id="ansbtn" class="btn btn-default btn-sm pull-right" ><span class="glyphicon glyphicon-pencil"></span></button>
-                                                    <div id="ansForm" class="form-group">
-                                                        <form method="post" action="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=entry._id%>">
-                                                            <h6><label for="que">Your Answer:</label></h6>
-                                                            <textarea class="form-control" rows="2" name="ansBody"></textarea><br>
-                                                            <br><button type="submit" class="btn btn-success btn-xs pull-right" >Post Answer</button></form>
-
-                                                    </div>
                                                 </div>
                                             </div>
 
                                         </div>
                                     </div>
 
-                                    <%if(entry.answers_level1){%>
-                                    <%var ansLevel1 = entry.answers_level1%>
-                                    <%ansLevel1.forEach((ans) =>{%>
-                                    <div class="row text-justify">
-                                        <div class="media">
-                                            <div class="media-left media-top">
-                                                <img src="<%=ans.profile_img%>" class="media-object" style="width:45px">
-                                            </div>
-                                            <div class="media-body">
-                                                <h6 class="media-heading"><%=ans.fullname%> &nbsp; <small><i> Posted on <%=ans.timeStamp%></i></small>
-                                                </h6>
-                                                <%=ans.ans_body%>
-                                                <button id="replybtn" class="btn btn-default btn-sm pull-right"  ><span class="glyphicon glyphicon-comment"></span></button>
-                                                <div id="replyForm" class="form-group">
-                                                    <form method="post" action="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=entry._id%>/ans/<%=ans._id%>">
-                                                        <h6><label for="que">Your Reply:</label></h6>
-                                                        <textarea class="form-control" rows="2" name="replyBody"></textarea>
-                                                        <br><button type="submit" class="btn btn-success btn-xs pull-right" >Post Reply</button>
-                                                    </form>
+
+                                    <div class="well well-lg">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <b>Answers:</b> &nbsp;
+                                                <button id="ansbtn" class="btn btn-success btn-xs pad-5" >
+                                                    Add <span class="glyphicon glyphicon-plus"></span>
+                                                </button>
+                                                <div id="ansForm" class="form-group">
+                                                    <form method="post" action="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=entry._id%>">
+                                                        <h6><label for="que">Your Answer:</label></h6>
+                                                        <div class="pad-5">
+                                                            <textarea class="form-control" rows="2" name="ansBody"></textarea>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-success btn-xs pull-right" >Post Answer</button></form>
+                                                        <br>
                                                 </div>
-                                                <hr>
-
-                                                <%if(ans.replies){%>
-                                                <%ans.replies.forEach((reply)=>{%>
-                                                <%while(reply.replies){%>
-                                                <div class="media">
-                                                    <div class="media-left media-top">
-                                                        <img src="<%=reply.profile_img%>" class="media-object" style="width:45px">
-                                                    </div>
-                                                    <div class="media-body">
-                                                        <h5 class="media-heading"><%=reply.fullname%> &nbsp; <small><i> Posted on <%=reply.timeStamp%></i></small>
-                                                        </h5>
-                                                        <%=reply.ans_body%>
-                                                        <button id="replybtn1" class="btn btn-default btn-xs pull-right" data-toggle="collapse" data-target="replyForm1" ><span class="glyphicon glyphicon-comment"></span></button>
-                                                        <div id="replyForm1" class="collapse in">
-                                                            <form method="post" action="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=entry._id%>/ans/<%=reply._id%>">
-                                                                <h6><label for="que">Your Reply:</label></h6>
-                                                                <textarea class="form-control" rows="2" name="replyBody"></textarea>
-                                                                <br><button type="submit" class="btn btn-success btn-xs pull-right" >Post Reply</button>
-                                                            </form>
-                                                        </div>
-                                                        <%reply.replies.forEach((rep)=>{%>
-
-                                                        <div class="media">
-                                                            <div class="media-left media-top">
-                                                                <img src="<%=rep.profile_img%>" class="media-object" style="width:45px">
-                                                            </div>
-                                                            <div class="media-body">
-                                                                <h5 class="media-heading"><%=rep.fullname%> &nbsp; <small><i> Posted on <%=rep.timeStamp%></i></small>
-                                                                </h5>
-                                                                <%=rep.ans_body%><br>
-                                                                <button id="replybtn1" class="btn btn-default btn-xs pull-right" data-toggle="collapse" data-target="replyForm1" ><span class="glyphicon glyphicon-comment"></span></button>
-                                                                <div id="replyForm1" class="collapse in">
-                                                                    <form method="post" action="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=entry._id%>/ans/<%=rep._id%>">
-                                                                        <h6><label for="que">Your Reply:</label></h6>
-                                                                        <textarea class="form-control" rows="2" name="replyBody"></textarea>
-                                                                        <br><button type="submit" class="btn btn-success btn-xs pull-right" >Post Reply</button>
-                                                                    </form>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <%})%>
+                                            </div>
+                                            <br/><br/><br/>
+                                        </div>
+                                        <%if(entry.answers_level1){%>
+                                        <%var ansLevel1 = entry.answers_level1%>
+                                        <%ansLevel1.forEach((ans) =>{%>
+                                        <div class="row text-justify">
+                                            <div class="media">
+                                                <div class="media-left media-top">
+                                                    <img src="<%=ans.profile_img%>" class="media-object" style="width:45px">
+                                                </div>
+                                                <div class="media-body">
+                                                    <h6 class="media-heading">
+                                                        <%=ans.fullname%> &nbsp; <small><i> Posted on <%=ans.timeStamp%></i></small>
+                                                    </h6>
+                                                    <%=ans.ans_body%>
+                                                    <button class="replybtn btn btn-default btn-sm"  >
+                                                        <span class="glyphicon glyphicon-comment"></span>
+                                                    </button>
+                                                    <div class="replyForm form-group">
+                                                        <form method="post" action="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=entry._id%>/ans/<%=ans._id%>">
+                                                            <h6>
+                                                                <label for="que">Your Reply:</label>
+                                                            </h6>
+                                                            <textarea class="form-control" rows="2" name="replyBody"></textarea>
+                                                            <br><button type="submit" class="btn btn-success btn-xs pull-right" >Post Reply</button>
+                                                        </form>
                                                     </div>
                                                     <hr>
+
+                                                    <%if(ans.replies){%>
+                                                    <%ans.replies.forEach((reply)=>{%>
+                                                    <%while(reply.replies){%>
+                                                    <div class="media">
+                                                        <div class="media-left media-top">
+                                                            <img src="<%=reply.profile_img%>" class="media-object" style="width:45px">
+                                                        </div>
+                                                        <div class="media-body">
+                                                            <h5 class="media-heading"><%=reply.fullname%> &nbsp; <small><i> Posted on <%=reply.timeStamp%></i></small>
+                                                            </h5>
+                                                            <%=reply.ans_body%>
+                                                            <button class="replybtn btn btn-default btn-xs"  ><span class="glyphicon glyphicon-comment"></span></button>
+                                                            <div class="replyForm form-group">
+                                                                <form method="post" action="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=entry._id%>/ans/<%=reply._id%>">
+                                                                    <h6><label for="que">Your Reply:</label></h6>
+                                                                    <textarea class="form-control" rows="2" name="replyBody"></textarea>
+                                                                    <br><button type="submit" class="btn btn-success btn-xs pull-right" >Post Reply</button>
+                                                                </form>
+                                                            </div>
+                                                            <%reply.replies.forEach((rep)=>{%>
+
+                                                            <div class="media">
+                                                                <div class="media-left media-top">
+                                                                    <img src="<%=rep.profile_img%>" class="media-object" style="width:45px">
+                                                                </div>
+                                                                <div class="media-body">
+                                                                    <h5 class="media-heading"><%=rep.fullname%> &nbsp; <small><i> Posted on <%=rep.timeStamp%></i></small>
+                                                                    </h5>
+                                                                    <%=rep.ans_body%><br>
+                                                                    <button class="replybtn btn btn-default btn-xs pull-right" data-toggle="collapse" data-target="replyForm1" >
+                                                                        <span class="glyphicon glyphicon-comment"></span>
+                                                                    </button>
+                                                                    <div class="replyForm collapse in">
+                                                                        <form method="post" action="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=entry._id%>/ans/<%=rep._id%>">
+                                                                            <h6><label for="que">Your Reply:</label></h6>
+                                                                            <textarea class="form-control" rows="2" name="replyBody"></textarea>
+                                                                            <br><button type="submit" class="btn btn-success btn-xs pull-right" >Post Reply</button>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <%})%>
+                                                        </div>
+                                                        <hr>
+                                                    </div>
+                                                    <%reply = reply.ans_body%>
+                                                    <%}%>
+                                                    <%})%>
+                                                    <%}%>
                                                 </div>
-                                                <%reply = reply.ans_body%>
-                                                <%}%>
-                                                <%})%>
-                                                <%}%>
                                             </div>
                                         </div>
+                                        <%})%>
+                                        <%}%>
                                     </div>
-                                    <%})%>
-                                    <%}%>
 
                                 </div>
                                 <%})%>

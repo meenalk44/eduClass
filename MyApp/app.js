@@ -66,12 +66,12 @@ function isLoggedIn(req, res, next) {
 	}
 }
 
-/*
+
 app.get('*', isLoggedIn, function(req, res, next) {
 	res.locals.currentUser = req.user;	
 	next();
 });
-*/
+
 
 
 
