@@ -59,17 +59,22 @@ app.use(flash());
 
 function isLoggedIn(req, res, next) {
 	console.log(req.url);
-    if (req.isAuthenticated() || req.url === "/" || req.url.startsWith("/auth/google") || req.url.startsWith("/auth/google/callback") || req.url.startsWith("/signUp")) {
-        return next();
-	} else {
-        res.redirect('/');
-	}
+    // if (req.url === "/" || req.url.startsWith("/auth/google") || req.url.startsWith("/auth/google/callback") || req.url.startsWith("/signUp")) {
+    //     return next();
+	// } else {
+     //    res.redirect('/');
+	// }
 }
 
 
-app.get('*', isLoggedIn, function(req, res, next) {
-	res.locals.currentUser = req.user;	
-	next();
+app.get('*', function(req, res, next) {
+	User.find({}).exec()
+		.then(function (users) {
+			console.log(users);
+			req.user = users[0];
+            res.locals.currentUser = users[0];
+            next();
+        });
 });
 
 
