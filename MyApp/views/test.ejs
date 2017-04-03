@@ -1,0 +1,22 @@
+<%if(entries){%>
+<% entries.forEach((entry)=>{%>
+    <%=entry.que_body%><br>
+    <%if(entry.answers_level1){%>
+    <%var ansLevel1 = entry.answers_level1%>
+    <%ansLevel1.forEach((ans) =>{%>
+        <%=ans.ans_body%><br>
+        <%if(ans.replies){%>
+            <%ans.replies.forEach((reply)=>{%>
+                <%while(reply.replies){%>
+                    <%=reply.ans_body%><br>
+                    <%reply.replies.forEach((rep)=>{%>
+                    <%=rep.ans_body%><br>
+                    <%reply = reply.ans_body%>
+                    <%})%>
+                <%}%>
+            <%})%>
+        <%}%>
+    <%})%>
+    <%}%>
+<%})%>
+<%}%>
