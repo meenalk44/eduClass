@@ -7,6 +7,7 @@ var Class = require('../models/classSchema');
 var Question = require('../models/questionSchema');
 var Answer = require('../models/answerSchema');
 var async = require('async');
+var monkey = require('tree-monkey');
 
 module.exports.dicussionShow = function(req, res){
 	var discussion_id = req.param('id');
@@ -16,84 +17,134 @@ module.exports.dicussionShow = function(req, res){
 	console.log("fetching data from mongo");
     Class.findById(class_id)
         .exec(function (err, classInfo) {
-        if (err)
-            console.log(err);
-        else {
-            console.log(classInfo);
-            if (classInfo.template != 'Nested') {
-                current_template = 'Flat';
-            }
+            if (err)
+                console.log(err);
             else {
-                current_template = 'Nested';
-            }
+                console.log(classInfo);
+                if (classInfo.template != 'Nested') {
+                    current_template = 'Flat';
+                }
+                else {
+                    current_template = 'Nested';
+                }
                 //console.log("Template: "+current_template);
-                if(current_template === 'Flat'){
-                    Question.find({'discussion_id':discussion_id}).sort({'_id':-1})
+                if (current_template === 'Flat') {
+                    Question.find({'discussion_id': discussion_id}).sort({'_id': -1})
                         .populate([
                             {
-                                path:'answers_level1',
-                                model:'Answer'
+                                path: 'answers_level1',
+                                model: 'Answer'
                             }
                         ])
-                       // .sort({'answers_level1._id':-1})
-                        .exec(function (err,posts) {
-                        if(err)
-                            console.log(err);
-                        else{
-                            console.log("***Flat Posts: "+posts);
-                            //var date = posts[0].answers_level1[0].timeStamp;
-                           // console.log("time ",date.toDateString()+" "+ date.getDate()+"-" + date.getMonth()+"-" + date.getFullYear());
-                            res.render('discussion',{entries:JSON.stringify(posts),class_id:class_id,discussion_id:discussion_id,template:current_template});
+                        // .sort({'answers_level1._id':-1})
+                        .exec(function (err, posts) {
+                            if (err)
+                                console.log(err);
+                            else {
+                                console.log("***Flat Posts: " + posts);
+                                //var date = posts[0].answers_level1[0].timeStamp;
+                                // console.log("time ",date.toDateString()+" "+ date.getDate()+"-" + date.getMonth()+"-" + date.getFullYear());
+                                res.render('discussion', {
+                                    entries: JSON.stringify(posts),
+                                    class_id: class_id,
+                                    discussion_id: discussion_id,
+                                    template: current_template
+                                });
 
-                        }
+                            }
 
-                    });
+                        });
 
-                }else{
+                } else {
                     console.log("Nested posts");
 
-                    Question.find({'discussion_id':discussion_id})
-                        .exec(function (err,questions) {
-                        if(err)
-                            console.log("ERR0a: "+err);
-                        else{
-                            async.eachOf(questions,
-                                function (que, index, callback) {
-                                    console.log("\n iteratee function");
-                                    console.log("Que_id : "+que);
-                                    populateReplies(que)
-                                        .then(function (finalAnswer) {
-                                            console.log("Final Answer-------");
-                                            console.log(finalAnswer);
-                                            //que.answers_level1 = finalAnswer;
-                                            que.answers_level1 = finalAnswer;
+                    Question.find({'discussion_id': discussion_id}).sort({'_id': -1})
+                        .exec(function (err, questions) {
+                            if (err)
+                                console.log("ERR0a: " + err);
+                            else {
+                                async.eachOf(questions,
+                                    function (que, index, callback) {
+                                        console.log("\n iteratee function");
+                                        console.log("Que_id : " + que);
+                                        populateReplies(que)
+                                            .then(function (finalAnswer) {
+                                                console.log("Final Answer-------");
+                                                console.log(finalAnswer);
+                                                //que.answers_level1 = finalAnswer;
+                                                que.answers_level1 = finalAnswer;
 
 
-                                            callback();
-                                        })
-                                        .catch(function(err){
-                                            res.send("ERR 0b: "+err);
+                                                callback();
+                                            })
+                                            .catch(function (err) {
+                                                res.send("ERR 0b: " + err);
 
-                                        })
+                                            })
 
-                                    //console.log("\n iteratee function after callback");
-                                },
-                                function(err){
-                                    if(err){
-                                        console.log("End");
-                                        console.log("\n after end");
+                                        //console.log("\n iteratee function after callback");
+                                    },
+                                    function (err) {
+                                        if (err) {
+                                            console.log("End");
+                                            console.log("\n after end");
 
-                                    }else{
-                                        console.log("else after end");
-                                        // res.send(questions);
-                                        res.render('discussion',{entries:JSON.parse(questions),class_id:class_id,discussion_id:discussion_id,template:current_template});
+                                        } else {
+                                            console.log("else after end");
+                                            // res.send(questions);
+                                            console.log("\n--------\n");
+                                            console.log(questions);
+                                            console.log("\n---------\n");
+
+                                            console.log("______________\n");
+                                            console.log("-------------Preorder traversal-----------\n");
+                                            //console.log(questions[0]);
+                                            questions.forEach(function(que){
+                                                console.log("-------"+que);
+                                                function convertTreeToList(que) {
+                                                    var stack = [], array = [], hashMap = {};
+                                                    stack.push(que);
+
+                                                    while (stack.length !== 0) {
+                                                        var node = stack.pop();
+                                                        if (node.children === null) {
+                                                            visitNode(node, hashMap, array);
+                                                        } else {
+                                                            for (var i = node.children.length - 1; i >= 0; i--) {
+                                                                stack.push(node.children[i]);
+                                                            }
+                                                        }
+                                                    }
+
+                                                    console.log(array.toString());
+                                                }
+
+                                                function visitNode(node, hashMap, array) {
+                                                    if (!hashMap[node.data]) {
+                                                        hashMap[node.data] = true;
+                                                        array.push(node);
+                                                    }
+                                                }
+
+
+                                            })
+
+
+                                            console.log("______________\n");
+                                            //res.send(questions);
+                                            res.render('discussion1', {
+                                                entries: questions,
+                                                class_id: class_id,
+                                                discussion_id: discussion_id,
+                                                template: current_template
+                                            });
+                                        }
+
                                     }
+                                );
+                            }
 
-                                }
-                            );
-                        }
-
-                    });
+                        });
 
                     function populateReplies(que) {
 
@@ -109,7 +160,7 @@ module.exports.dicussionShow = function(req, res){
                                     if (err)
                                         res.send("ERROR1" + err);
                                     else {
-                                        if(que_details.answers_level1){
+                                        if (que_details.answers_level1) {
 
                                             async.eachOf(que_details.answers_level1,
                                                 function (currentAnswer, currentIndex, callback) {
@@ -138,7 +189,7 @@ module.exports.dicussionShow = function(req, res){
                                                     }
                                                 }
                                             );
-                                        }else{
+                                        } else {
                                             console.log("populate else");
                                             return Promise.resolve(que_details.answers_level1);
 
@@ -148,7 +199,6 @@ module.exports.dicussionShow = function(req, res){
 
                                 });
                         });
-
 
 
                     }
@@ -210,9 +260,10 @@ module.exports.dicussionShow = function(req, res){
 
                     }
 
+
                 }
-        }
-    });
+            }
+        });
 
 
 	
@@ -311,16 +362,8 @@ module.exports.postReply = function (req,res) {
     var ans_id = req.param('ans_id');
     var current_template = '';
     console.log("Reply: "+ ans_id);
-    /*var newReply = new Reply({
-        //discussion_id: discussion_id,
-        //que_id: ques_id,
-        ans_id: ans_id,
-        user_id: req.user.id,
-        fullname: req.user.fullname,
-        profile_img: req.user.profile_img,
-        reply_body: req.body.replyBody,
-        timeStamp: new Date()
-    });*/
+    var time = new Date();
+    time = time.toDateString();
     var newReply = new Answer({
         discussion_id: discussion_id,
         que_id: ques_id,
@@ -329,7 +372,7 @@ module.exports.postReply = function (req,res) {
         fullname: req.user.fullname,
         profile_img: req.user.profile_img,
         ans_body: req.body.replyBody,
-        timeStamp: new Date()
+        timeStamp: time
     });
     newReply.save(function (err, replyEntry) {
         if (err)
@@ -366,13 +409,10 @@ module.exports.test = function (req,res) {
                     populateReplies(que)
                         .then(function (finalAnswer) {
                             console.log("Final Answer-------");
-
                             //que.answers_level1 = finalAnswer;
                             que.answers_level1 = finalAnswer;
                             console.log(finalAnswer);
                             console.log("\n---\n"+que);
-
-
                             callback();
                         })
                         .catch(function(err){
@@ -415,7 +455,7 @@ module.exports.test = function (req,res) {
                         if (err)
                             res.send("ERROR1" + err);
                         else {
-                            if(que_details.answers_level1){
+                           // if(que_details.answers_level1){
 
                                 async.eachOf(que_details.answers_level1,
                                     function (currentAnswer, currentIndex, callback) {
@@ -445,11 +485,11 @@ module.exports.test = function (req,res) {
                                         }
                                     }
                                 );
-                            }else{
+                           /* }else{
                                 console.log("--Before resolving in else\n",que_details.answers_level1);
                                 return Promise.resolve(que_details.answers_level1);
 
-                            }
+                            }*/
 
                         }
 
@@ -518,4 +558,5 @@ module.exports.test = function (req,res) {
     }
 
 };
+
 

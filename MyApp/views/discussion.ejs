@@ -112,27 +112,22 @@
 												<h6 class="media-heading"><%=ans.fullname%> &nbsp; <small><i> Posted on <%=ans.timeStamp%></i></small>
 												</h6>
                                                 <%=ans.ans_body%>
-												<%if(template == 'Nested'){%>
+												<!--<%if(template == 'Nested'){%>
 													<button id="replybtn" class="btn btn-default pull-right" ><span class="glyphicon glyphicon-comment">Reply</span></button>
 														<div id="replyForm" class="form-group">
 															<form method="post" action="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=ans.que_id%>/ans/<%=ans._id%>">
 															<h6><label for="que">Your Reply:</label></h6>
 																<textarea class="form-control" rows="2" name="replyBody"></textarea>
-															<!--<a href="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=ans.que_id%>/ans/<%=ans._id%>">-->
+															&lt;!&ndash;<a href="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=ans.que_id%>/ans/<%=ans._id%>">&ndash;&gt;
 																<button type="submit" class="btn btn-success pull-right" ><span class="glyphicon glyphicon-comment ">Reply</span></button>
 															</form>
 														</div>
-
-														<br><%=JSON.stringify(ans.replies)%>
-												<%}%>
-
-
 
 											</div>
 										</div>
 										<hr>
 									</div>
-									<%})%>
+									<%})%>-->
 									<%}%>
 								</div>
 	   							<%})%>
