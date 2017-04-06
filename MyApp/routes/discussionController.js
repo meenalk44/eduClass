@@ -41,9 +41,6 @@ module.exports.dicussionShow = function(req, res){
                             if (err)
                                 console.log(err);
                             else {
-                                console.log("***Flat Posts: " + posts);
-                                //var date = posts[0].answers_level1[0].timeStamp;
-                                // console.log("time ",date.toDateString()+" "+ date.getDate()+"-" + date.getMonth()+"-" + date.getFullYear());
                                 res.render('discussion', {
                                     entries: JSON.stringify(posts),
                                     class_id: class_id,
@@ -65,16 +62,9 @@ module.exports.dicussionShow = function(req, res){
                             else {
                                 async.eachOf(questions,
                                     function (que, index, callback) {
-                                        console.log("\n iteratee function");
-                                        console.log("Que_id : " + que);
                                         populateReplies(que)
                                             .then(function (finalAnswer) {
-                                                console.log("Final Answer-------");
-                                                console.log(finalAnswer);
-                                                //que.answers_level1 = finalAnswer;
                                                 que.answers_level1 = finalAnswer;
-
-
                                                 callback();
                                             })
                                             .catch(function (err) {
@@ -82,56 +72,11 @@ module.exports.dicussionShow = function(req, res){
 
                                             })
 
-                                        //console.log("\n iteratee function after callback");
                                     },
                                     function (err) {
                                         if (err) {
-                                            console.log("End");
-                                            console.log("\n after end");
-
+                                            console.log(err);
                                         } else {
-                                            console.log("else after end");
-                                            // res.send(questions);
-                                            console.log("\n--------\n");
-                                            console.log(questions);
-                                            console.log("\n---------\n");
-
-                                            console.log("______________\n");
-                                            console.log("-------------Preorder traversal-----------\n");
-                                            //console.log(questions[0]);
-                                            questions.forEach(function(que){
-                                                console.log("-------"+que);
-                                                function convertTreeToList(que) {
-                                                    var stack = [], array = [], hashMap = {};
-                                                    stack.push(que);
-
-                                                    while (stack.length !== 0) {
-                                                        var node = stack.pop();
-                                                        if (node.children === null) {
-                                                            visitNode(node, hashMap, array);
-                                                        } else {
-                                                            for (var i = node.children.length - 1; i >= 0; i--) {
-                                                                stack.push(node.children[i]);
-                                                            }
-                                                        }
-                                                    }
-
-                                                    console.log(array.toString());
-                                                }
-
-                                                function visitNode(node, hashMap, array) {
-                                                    if (!hashMap[node.data]) {
-                                                        hashMap[node.data] = true;
-                                                        array.push(node);
-                                                    }
-                                                }
-
-
-                                            })
-
-
-                                            console.log("______________\n");
-                                            //res.send(questions);
                                             res.render('discussion1', {
                                                 entries: questions,
                                                 class_id: class_id,
@@ -146,128 +91,125 @@ module.exports.dicussionShow = function(req, res){
 
                         });
 
-                    function populateReplies(que) {
-
-                        return new Promise(function (resolve, reject) {
-                            Question.findById(que._id)
-                                .populate([
-                                    {
-                                        path: 'answers_level1',
-                                        model: 'Answer'
-                                    }
-                                ])
-                                .exec(function (err, que_details) {
-                                    if (err)
-                                        res.send("ERROR1" + err);
-                                    else {
-                                        if (que_details.answers_level1) {
-
-                                            async.eachOf(que_details.answers_level1,
-                                                function (currentAnswer, currentIndex, callback) {
-                                                    deepPopulateReplies(currentAnswer)
-                                                        .then(function (modifiedCurrentAnswer) {
-                                                            console.log("\n\nCALLEE THEN");
-                                                            console.log("--------- modifiedCurrentAnswer");
-                                                            console.log(modifiedCurrentAnswer);
-                                                            console.log("---------");
-
-                                                            que_details.answers_level1[currentIndex] = modifiedCurrentAnswer;
-                                                            callback();
-                                                        })
-                                                        .catch(function (err) {
-                                                            res.send("ERROR2" + err);
-                                                        })
-                                                },
-                                                function (err) {
-                                                    if (err) {
-                                                        //res.send("ERROR3" + err);
-                                                        resject(err);
-                                                    } else {
-                                                        //res.send(question);
-                                                        //que.answers_level1 = que_details;
-                                                        resolve(que_details.answers_level1);
-                                                    }
-                                                }
-                                            );
-                                        } else {
-                                            console.log("populate else");
-                                            return Promise.resolve(que_details.answers_level1);
-
-                                        }
-
-                                    }
-
-                                });
-                        });
-
-
-                    }
-
-                    function deepPopulateReplies(currentAnswer) {
-                        console.log("\n\nMAIN DEEP POPULATE REPLIES");
-                        console.log("--------- currentAnswer");
-                        console.log(currentAnswer);
-                        console.log("---------");
-
-                        if (currentAnswer.replies) {
-
-                            return new Promise(function (resolve, reject) {
-                                async.eachOf(currentAnswer.replies,
-                                    function (replyId, index, callback) {
-                                        console.log("\n\nASYNC EACH ITERATEE FUNCTION");
-                                        console.log("--------- replyId & index");
-                                        console.log(replyId);
-                                        console.log(index);
-                                        console.log("---------");
-
-                                        Answer.findById(replyId)
-                                            .exec()
-                                            .then(function (reply) {
-
-                                                console.log("\n\nANSWER findById THEN");
-                                                console.log("--------- reply");
-                                                console.log(reply);
-                                                console.log("---------");
-
-                                                deepPopulateReplies(reply)
-                                                    .then(function (modifiedReply) {
-                                                        currentAnswer.replies[index] = modifiedReply;
-                                                        callback();
-                                                    });
-                                            })
-                                            .catch(function (err) {
-                                                callback(err);
-                                            });
-                                    },
-                                    function (err) {
-                                        console.log("\n\nASYNC EACH CALLBACK FUNCTION");
-                                        console.log("--------- err");
-                                        console.log(err);
-                                        console.log("---------");
-
-                                        if (err) {
-                                            reject(err);
-                                        } else {
-                                            resolve(currentAnswer);
-                                        }
-                                    }
-                                );
-                            });
-                        } else {
-                            //console.log("ELSE resolve promise");
-                            return Promise.resolve(currentAnswer);
-                        }
-
-                    }
-
-
                 }
             }
         });
+};
+
+function populateReplies(que) {
+
+    return new Promise(function (resolve, reject) {
+        Question.findById(que._id)
+            .populate([
+                {
+                    path: 'answers_level1',
+                    model: 'Answer'
+                }
+            ])
+            .exec(function (err, que_details) {
+                if (err)
+                    res.send("ERROR1" + err);
+                else {
+                    if (que_details.answers_level1) {
+
+                        async.eachOf(que_details.answers_level1,
+                            function (currentAnswer, currentIndex, callback) {
+                                deepPopulateReplies(currentAnswer)
+                                    .then(function (modifiedCurrentAnswer) {
+                                       /* console.log("\n\nCALLEE THEN");
+                                        console.log("--------- modifiedCurrentAnswer");
+                                        console.log(modifiedCurrentAnswer);
+                                        console.log("---------");*/
+
+                                        que_details.answers_level1[currentIndex] = modifiedCurrentAnswer;
+                                        callback();
+                                    })
+                                    .catch(function (err) {
+                                        res.send("ERROR2" + err);
+                                    })
+                            },
+                            function (err) {
+                                if (err) {
+                                    //res.send("ERROR3" + err);
+                                    resject(err);
+                                } else {
+                                    //res.send(question);
+                                    //que.answers_level1 = que_details;
+                                    resolve(que_details.answers_level1);
+                                }
+                            }
+                        );
+                    } else {
+                        //console.log("populate else");
+                        return Promise.resolve(que_details.answers_level1);
+
+                    }
+
+                }
+
+            });
+    });
 
 
-	
-};		
+}
+
+function deepPopulateReplies(currentAnswer) {
+   /* console.log("\n\nMAIN DEEP POPULATE REPLIES");
+    console.log("--------- currentAnswer");
+    console.log(currentAnswer);
+    console.log("---------");*/
+
+    if (currentAnswer.replies) {
+
+        return new Promise(function (resolve, reject) {
+            async.eachOf(currentAnswer.replies,
+                function (replyId, index, callback) {
+                    /*console.log("\n\nASYNC EACH ITERATEE FUNCTION");
+                    console.log("--------- replyId & index");
+                    console.log(replyId);
+                    console.log(index);
+                    console.log("---------");*/
+
+                    Answer.findById(replyId)
+                        .exec()
+                        .then(function (reply) {
+
+                            /*console.log("\n\nANSWER findById THEN");
+                            console.log("--------- reply");
+                            console.log(reply);
+                            console.log("---------");*/
+
+                            deepPopulateReplies(reply)
+                                .then(function (modifiedReply) {
+                                    currentAnswer.replies[index] = modifiedReply;
+                                    callback();
+                                });
+                        })
+                        .catch(function (err) {
+                            callback(err);
+                        });
+                },
+                function (err) {
+                   /* console.log("\n\nASYNC EACH CALLBACK FUNCTION");
+                    console.log("--------- err");
+                    console.log(err);
+                    console.log("---------");*/
+
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(currentAnswer);
+                    }
+                }
+            );
+        });
+    } else {
+        //console.log("ELSE resolve promise");
+        return Promise.resolve(currentAnswer);
+    }
+
+}
+
 
 module.exports.postQue = function(req,res){
 	var discussion_id = req.param('id');
