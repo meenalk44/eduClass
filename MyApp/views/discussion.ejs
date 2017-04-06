@@ -134,25 +134,9 @@
 												</div>
 												<br/><br/><br/>
 											</div>
-                                            <%if(entry.answers_level1){%>
-                                            <%var ansLevel1 = entry.answers_level1%>
-                                            <!--<%ansLevel1.forEach((ans) =>{%>-->
-											<%- init_flat(entry.answers_level1, class_id, discussion_id, entry); %>
-											<!--<div class="row text-justify">
-												<div class="media">
-													<div class="media-left media-top">
-														<img src="<%=ans.profile_img%>" class="media-object" style="width:45px">
-													</div>
-													<div class="media-body">
-														<h6 class="media-heading"><%=ans.fullname%> &nbsp; <small><i> Posted on <%=ans.timeStamp%></i></small>
-														</h6>
-                                                        <%=ans.ans_body%>
-													</div>
-												</div>
-												<br/>
-											</div>-->
-                                            <!--<%})%>-->
-                                            <%}%>
+                                            <% if (entry.answers_level1) { %>
+                                            	<%- init_flat(entry.answers_level1, class_id, discussion_id, entry);%>
+                                            <% } %>
 										</div>
 
 									</div>
