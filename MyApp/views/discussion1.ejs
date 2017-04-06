@@ -45,7 +45,17 @@
         <style>
             body { padding-top: 60px; padding-bottom: 30px; }
             .pad-5 { padding: 5px}
-
+            hr {
+                -moz-border-bottom-colors: none;
+                -moz-border-image: none;
+                -moz-border-left-colors: none;
+                -moz-border-right-colors: none;
+                -moz-border-top-colors: none;
+                border-color: #EEEEEE -moz-use-text-color #FFFFFF;
+                border-style: solid none;
+                border-width: 1px 0;
+                margin: 18px 0;
+            }
             #accordion{font-size: 16px;}
             #accordion.ui-accordion .ui-accordion-header.ui-state-active { background: #007acc; }
         </style>
@@ -129,10 +139,9 @@
                                                    <!-- <div class="row text-justify">-->
 
 
-                                                    <%if(entry.answers_level1){%>
-                                                        <%- init(entry.answers_level1);%>
-
-                                                    <%}%>
+                                                <% if (entry.answers_level1) { %>
+                                                    <%- init(entry.answers_level1, class_id, discussion_id, entry);%>
+                                                <% } %>
 
 
 

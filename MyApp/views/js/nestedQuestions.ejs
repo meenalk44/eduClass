@@ -1,0 +1,71 @@
+<%
+init = function(ansLevel1, class_id, discussion_id, entry) {
+
+    var mainHtml = "";
+    ansLevel1.forEach(function (ans) {
+        mainHtml += "<div class='row text-justify'>";
+        mainHtml += preOrder(ans, "", class_id, discussion_id, entry);
+        mainHtml += "</div>";
+    });
+
+    return mainHtml;
+}
+
+preOrder = function(ans, ansLevel1Html, class_id, discussion_id, entry) {
+    // 11111 Main Media Div starts
+    ansLevel1Html += "<div class='media'>";
+    ansLevel1Html +=
+            "<div class='media-left media-top'>" +
+            "<img src='" + ans.profile_img + "' class='media-object' style='width:45px'>" +
+            "</div>";
+
+    // 22222 Media Body Div Starts
+    ansLevel1Html += "<div class='media-body'>";
+    ansLevel1Html += getHTMLForAnswer(ans, class_id, discussion_id, entry);
+
+
+    ans.replies.forEach(function (reply) {
+        ansLevel1Html = preOrder(reply, ansLevel1Html, class_id, discussion_id, entry);
+    });
+
+    // 22222 Media Body Div Ends
+    ansLevel1Html += "</div>";
+
+    // 11111 Main Media Div Ends
+    ansLevel1Html += "</div>";
+
+    return ansLevel1Html;
+}
+
+getHTMLForAnswer = function(ans, class_id, discussion_id, entry) {
+    var formAction = "/classes/" + class_id + "/discussion/" + discussion_id +
+            "/que/" + entry._id + "/ans/" + ans._id;
+    var html =
+            "<h6 class='media-heading'>" +
+            ans.fullname + "&nbsp;" +
+            "<small>" +
+            "<i> Posted on " + ans.timeStamp + "</i>" +
+            "</small>" +
+            "</h6>" +
+            ans.ans_body +
+            "<button class='replybtn btn btn-default btn-sm pull-right'>" +
+            "<span class='glyphicon glyphicon-comment'></span>" +
+            "</button>" +
+            "<div class='replyForm collapse in'>" +
+            "<form method='post' action='" + formAction + "' >" +
+            "<h6>" +
+            "<label for='que'>Your Reply:</label>" +
+            "</h6>" +
+            "<textarea class='form-control' rows='2' name='replyBody'>" +
+            "</textarea>" +
+            "<br />" +
+            "<button type='submit' class='btn btn-success btn-xs pull-right'>" +
+            "Post Reply" +
+            "</button>" +
+            "</form>" +
+            "</div>" +
+            "<hr>";
+
+    return html;
+}
+%>

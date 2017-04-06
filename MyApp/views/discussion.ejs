@@ -1,43 +1,61 @@
 <html>
 	<head>
     <% include partials/head.ejs %>
+	<% include js/flatQuestions.ejs %>
 
 		<script>
-			$( function() {
-				$( "#accordion" ).accordion({
-					heightStyle: "content"
-				});
-			} );
+            $( function() {
+                $( "#accordion" ).accordion({
+                    heightStyle: "content"
+                });
+            } );
 
-			$( ".selector" ).accordion({
-				collapsible: true,
-				active: 1
-			});
+            $( ".selector" ).accordion({
+                collapsible: true,
+                active: 1
+            });
 
 
-			$(document).ready(function(){
-				$("#askWell").hide();
-			});
-			$(document).ready(function(){
-				$("#ask").click(function(){
-					$("#askWell").toggle();
-				});
-			});
-			$(document).ready(function(){
-				$(".ansForm").hide();
-			});
-			$(document).ready(function(){
-				$(".ansbtn").click(function(e){
+            $(document).ready(function(){
+                $("#askWell").hide();
+            });
+            $(document).ready(function(){
+                $("#ask").click(function(){
+                    $("#askWell").toggle();
+                });
+            });
+            $(document).ready(function(){
+                $(".ansForm").hide();
+            });
+            $(document).ready(function(){
+                $(".ansbtn").click(function(e){
 					/*$("#ansForm").toggle();*/
-					$(e.currentTarget).next().toggle();
-				});
-			});
-
+                    $(e.currentTarget).next().toggle();
+                });
+            });
+            $(document).ready(function(){
+                $(".replyForm").hide();
+            });
+            $(document).ready(function(){
+                $(".replybtn").click(function(e){
+                    $(e.currentTarget).next().toggle();
+                });
+            });
 		</script>
 		<style>
 			body { padding-top: 60px; padding-bottom: 30px; }
 			.pad-5 { padding: 5px}
-
+			hr {
+				-moz-border-bottom-colors: none;
+				-moz-border-image: none;
+				-moz-border-left-colors: none;
+				-moz-border-right-colors: none;
+				-moz-border-top-colors: none;
+				border-color: #EEEEEE -moz-use-text-color #FFFFFF;
+				border-style: solid none;
+				border-width: 1px 0;
+				margin: 18px 0;
+			}
 			#accordion{font-size: 16px;}
 			#accordion.ui-accordion .ui-accordion-header.ui-state-active { background: #007acc; }
 		</style>
@@ -72,7 +90,7 @@
 							<div class="panel-body">
   					 			<div id="accordion">
   								<%if(entries){%>
-	   							<%var entries = JSON.parse(entries)%>
+
 	   							<%entries.forEach((entry, index) =>{%>
 									<div class="title">
 										<span class="label label-default pull-right"> <%=entry.topic%> </span>
@@ -95,15 +113,7 @@
 
 										</div>
 									</div>
-										<!-- <button class="ansbtn btn btn-default btn-sm pull-right" ><span class="glyphicon glyphicon-pencil">Answer</span></button>
 
-											<div class="ansForm form-group">
-  												<form method="post" action="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=entry._id%>">
-  												<h6><label for="que">Your Answer:</label></h6>
-  												<textarea class="form-control" rows="2" name="ansBody"></textarea><br>
-        										<button type="submit" class="btn btn-success btn-xs pull-right" >Post Answer</button></form>
-
-											</div>-->
 										<div class="well well-lg">
 											<div class="row">
 												<div class="col-sm-12">
@@ -126,8 +136,9 @@
 											</div>
                                             <%if(entry.answers_level1){%>
                                             <%var ansLevel1 = entry.answers_level1%>
-                                            <%ansLevel1.forEach((ans) =>{%>
-											<div class="row text-justify">
+                                            <!--<%ansLevel1.forEach((ans) =>{%>-->
+											<%- init_flat(entry.answers_level1, class_id, discussion_id, entry); %>
+											<!--<div class="row text-justify">
 												<div class="media">
 													<div class="media-left media-top">
 														<img src="<%=ans.profile_img%>" class="media-object" style="width:45px">
@@ -138,8 +149,9 @@
                                                         <%=ans.ans_body%>
 													</div>
 												</div>
-											</div>
-                                            <%})%>
+												<br/>
+											</div>-->
+                                            <!--<%})%>-->
                                             <%}%>
 										</div>
 
