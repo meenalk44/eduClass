@@ -51,7 +51,7 @@ module.exports.dicussionShow = function(req, res){
                                         if (err) {
                                             console.log(err);
                                         } else {
-                                            res.render('discussion', {
+                                            res.render('flatDiscussion', {
                                                 entries: questions,
                                                 class_id: class_id,
                                                 discussion_id: discussion_id,
@@ -67,109 +67,6 @@ module.exports.dicussionShow = function(req, res){
 
 
 
-
-
-                    //var arr = [];
-                    /*Question.find({'discussion_id': discussion_id}).sort({'_id': -1})
-                        .populate([
-                            {
-                                path: 'answers_level1',
-                                model: 'Answer'
-                            }
-                        ])
-                        // .sort({'answers_level1._id':-1})
-                        .exec(function (err, questions) {
-                            if (err)
-                                console.log(err);
-                            else {
-                                var all_ans = [];
-
-                                //console.log("\n-----Flat Posts-----" +posts);
-                                async.eachOf(questions,
-                                    function (que, index, callback) {
-                                        Answer.find({'que_id': que.id})
-                                            .exec(function (err, flat) {
-                                                if (err)
-                                                    console.log(err);
-                                                else {
-                                                    //flat_ans.push(flat);
-                                                    //post.flat_answers.push(flat);
-                                                    //all_ans[index] = flat.id;
-                                                    flat.forEach(function (id) {
-                                                       // console.log("____----" + id._id);
-                                                        all_ans.push(id._id);
-                                                    });
-                                                    Question.update({'_id': que._id},
-                                                        {$push: {'flat_answers':{$each: all_ans}}}, function (err, doc) {
-                                                            if (err)
-                                                                console.log(err);
-                                                            else {
-                                                                console.log("\n-----Flat Ans---- " + doc);
-
-                                                            }
-                                                        });
-
-                                                    /!**!/
-                                                    // flat_ans.flat_posts.push(flat);
-                                                    // console.log("\n-----Flat Push:----" + JSON.stringify(flat_ans));
-
-                                                    // }
-
-
-                                                }
-                                            })
-                                        callback();
-                                        /!*)
-                                         .catch(function(err){
-                                         res.send(err);
-                                         });*!/
-
-                                    },
-                                    function (err) {
-                                        if (err)
-                                            console.log(err);
-                                        else {
-                                            console.log("Last response" + questions);
-                                            // res.send(all_ans);
-                                            /!*Question.update({'_id': que._id},
-                                             {$push: {'flat_answers':all_ans}}, function (err, doc) {
-                                             if (err)
-                                             console.log(err);
-                                             else {
-                                             console.log("\n-----Flat Ans---- " + doc);
-
-                                             }
-                                             });*!/
-                                            Question.find({'discussion_id': discussion_id}).sort({'_id': -1})
-                                                .populate([
-                                                    {
-                                                        path: 'flat_answers',
-                                                        model: 'Answer'
-                                                    }
-                                                ])
-                                                // .sort({'answers_level1._id':-1})
-                                                .exec(function (err, questions) {
-                                                    if (err)
-                                                        console.log(err);
-                                                    else {
-                                                        console.log("------+++ "+ questions);
-                                                        res.render('discussion', {
-                                                            entries: JSON.stringify(questions),
-                                                            class_id: class_id,
-                                                            discussion_id: discussion_id,
-                                                            template: current_template
-                                                        });
-                                                    }
-                                                });
-                                        }
-
-
-                                    }
-                                );
-
-
-                            }
-                        });*/
 
 
                 } else {
@@ -197,7 +94,7 @@ module.exports.dicussionShow = function(req, res){
                                         if (err) {
                                             console.log(err);
                                         } else {
-                                            res.render('discussion1', {
+                                            res.render('nestedDiscussion', {
                                                 entries: questions,
                                                 class_id: class_id,
                                                 discussion_id: discussion_id,
