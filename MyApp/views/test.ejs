@@ -1,0 +1,80 @@
+<%var ansLevel1 = entry.answers_level1%>
+<%ansLevel1.forEach((ans) =>{%>
+
+<div class="row text-justify">
+    <div class="media">
+        <div class="media-left media-top">
+            <img src="<%=ans.profile_img%>" class="media-object" style="width:45px">
+        </div>
+        <div class="media-body">
+            <h6 class="media-heading">
+                <%=ans.fullname%> &nbsp; <small><i> Posted on <%=ans.timeStamp%></i></small>
+            </h6>
+            <%=ans.ans_body%>
+            <button class="replybtn btn btn-default btn-sm"  >
+                <span class="glyphicon glyphicon-comment"></span>
+            </button>
+            <div class="replyForm form-group">
+                <form method="post" action="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=entry._id%>/ans/<%=ans._id%>">
+                    <h6>
+                        <label for="que">Your Reply:</label>
+                    </h6>
+                    <textarea class="form-control" rows="2" name="replyBody"></textarea>
+                    <br><button type="submit" class="btn btn-success btn-xs pull-right" >Post Reply</button>
+                </form>
+            </div>
+            <hr>
+
+            <%if(ans.replies){%>
+            <%ans.replies.forEach((reply)=>{%>
+            <%while(reply.replies){%>
+            <div class="media">
+                <div class="media-left media-top">
+                    <img src="<%=reply.profile_img%>" class="media-object" style="width:45px">
+                </div>
+                <div class="media-body">
+                    <h5 class="media-heading"><%=reply.fullname%> &nbsp; <small><i> Posted on <%=reply.timeStamp%></i></small>
+                    </h5>
+                    <%=reply.ans_body%>
+                    <button class="replybtn btn btn-default btn-xs"  ><span class="glyphicon glyphicon-comment"></span></button>
+                    <div class="replyForm form-group">
+                        <form method="post" action="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=entry._id%>/ans/<%=reply._id%>">
+                            <h6><label for="que">Your Reply:</label></h6>
+                            <textarea class="form-control" rows="2" name="replyBody"></textarea>
+                            <br><button type="submit" class="btn btn-success btn-xs pull-right" >Post Reply</button>
+                        </form>
+                    </div>
+                    <%reply.replies.forEach((rep)=>{%>
+
+                    <div class="media">
+                        <div class="media-left media-top">
+                            <img src="<%=rep.profile_img%>" class="media-object" style="width:45px">
+                        </div>
+                        <div class="media-body">
+                            <h5 class="media-heading"><%=rep.fullname%> &nbsp; <small><i> Posted on <%=rep.timeStamp%></i></small>
+                            </h5>
+                            <%=rep.ans_body%><br>
+                            <button class="replybtn btn btn-default btn-xs pull-right" data-toggle="collapse" data-target="replyForm1" >
+                                <span class="glyphicon glyphicon-comment"></span>
+                            </button>
+                            <div class="replyForm collapse in">
+                                <form method="post" action="/classes/<%=class_id%>/discussion/<%=discussion_id%>/que/<%=entry._id%>/ans/<%=rep._id%>">
+                                    <h6><label for="que">Your Reply:</label></h6>
+                                    <textarea class="form-control" rows="2" name="replyBody"></textarea>
+                                    <br><button type="submit" class="btn btn-success btn-xs pull-right" >Post Reply</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <%})%>
+                </div>
+                <hr>
+            </div>
+            <%reply = reply.ans_body%>
+            <%}%>
+            <%})%>
+            <%}%>
+        </div>
+    </div>
+</div>
+<%})%>
