@@ -58,27 +58,40 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(flash());
 
 function isLoggedIn(req, res, next) {
-	console.log(req.url);
+	/*console.log(req.url);
 	if (req.url === "/" || req.url.startsWith("/auth/google") || req.url.startsWith("/auth/google/callback") || req.url.startsWith("/signUp")) {
          return next();
 	} else {
         res.redirect('/');
-	}
+	}*/
 }
 
 
 app.get('*', function(req, res, next) {
-	/*User.find({}).exec()
+	User.find({}).exec()
 		.then(function (users) {
 			console.log(users);
 			req.user = users[0];
             res.locals.currentUser = users[0];
+            console.log("USER_______ : "+req.user.id);
             next();
-        });*/
-    res.locals.currentUser = req.user;
-    next();
+        });
+    /*res.locals.currentUser = req.user;
+    next();*/
 
 });
+
+app.post('*',function (req,res,next) {
+    User.find({}).exec()
+        .then(function (users) {
+            console.log(users);
+            req.user = users[0];
+            res.locals.currentUser = users[0];
+            console.log("USER____POST___ : "+req.user.id);
+            next();
+        });
+
+})
 
 
 
@@ -182,8 +195,8 @@ app.get('/test', discussionController.test);
 app.get('/classes/drive/:id',driveController.dController);
 app.get('/driveController', driveController.dController);
 
-app.get('/quiz',quizController.quizShow);
-app.post('/quizCreate', quizController.quizCreate);
+app.get('/classes/:class_id/quizSettings',quizController.quizSettings);
+app.post('/createQuiz/class_id/:class_id', quizController.createQuiz);
 app.post('/quizAns',quizController.storeAns);
 
 app.get('/logout', function(req, res) {
