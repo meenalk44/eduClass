@@ -47,6 +47,7 @@
         				<th>#Students</th>
         				<th>Manage Students</th>
 						<th>Template Settings</th>
+						<th>Quiz Settings</th>
         				<%}%>
         				<th>Discussion Forum</th>
         				<th>Google Drive</th>
@@ -67,7 +68,9 @@
         				<td><button type="submit" class="glyphicon glyphicon-cog" ></button></td></form>
 						<td><form method="get" action="/classes/<%=entry._id%>/template">
 						<button type="submit" class="glyphicon glyphicon-text-size" ></button></form></td>
-						<%}%>
+						<td><form method="get" action="/classes/<%=entry._id%>/quizSettings">
+						<button type="submit" class="glyphicon glyphicon-wrench" ></button></form></td>
+                        <%}%>
 						<td><a href="/classes/<%=entry._id%>/discussion/<%=entry.discussion_id%>"><span class="glyphicon glyphicon-copy"></a></td>
         				<form method="get" action="/classes/drive/<%=entry._id%>">
         				<td><button type="submit" class="glyphicon glyphicon-folder-open" ></button></td></form>

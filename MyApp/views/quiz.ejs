@@ -1,38 +1,114 @@
 <html>
-	<head>
-		<% include partials/head.ejs %>
-		
-		
-	</head>
+<head>
+    <% include partials/head.ejs %>
+
+	<script>
+        $(document).ready(function(){
+
+            var counter = 2;
+
+            $("#addBtn").click(function () {
+
+                if(counter>10){
+                    alert("Only 10 textboxes allow");
+                    return false;
+                }
+
+                var newTextBoxDiv = $(document.createElement('div'))
+                    .attr("id", 'TextBoxDiv' + counter);
+
+                newTextBoxDiv.after().html('<label>Question #'+ counter + ' : </label>' +'&nbsp;'+
+                    '<input type="text" name="textbox' + counter +
+                    '" id="textbox' + counter + '" value="" >');
+
+                //newTextBoxDiv.appendTo("#TextBoxDiv1");
+
+                newTextBoxDiv.appendTo(".TextBoxesGroup");
+
+
+                counter++;
+            });
+
+            $("#removeBtn").click(function () {
+                if(counter==1){
+                    alert("No more textbox to remove");
+                    return false;
+                }
+
+                counter--;
+
+                $("#TextBoxDiv" + counter).remove();
+
+            });
+
+            $("#getAllQues").submit(function () {
+
+                var msg = '';
+                for(i=1; i<counter; i++){
+                    msg +=  $('#textbox' + i).val();
+                }
+                alert(msg);
+				//$('#quizForm').append($(msg));
+                //return msg;
+
+            });
+        });
+	</script>
 	<style>
 		body { padding-top: 60px; padding-bottom: 30px; }
 	</style>
-	<body>
-	
-		<div class="row">
-		<div class="col-sm-2">
-   
-		</div>
-		<form action="/quizCreate" method="post">
-		<div class="col-sm-5">
-			<input type="text" placeholder="Add a Question" id="que1" name="que1">
-		</div>
-		
-		<div class="col-sm-1">
-  			<button type="button" class="btn addbtn  btn-default" ><span class="glyphicon glyphicon-plus"></span></button>
-		</div>
-		</div>
-		<div class="row"></div>
-		<div class="row">	
-		<div class="col-sm-7">
-		</div>
-		
-		<div class="col-sm-3">
-			<input type="submit" class="btn btn-success"  name="create" value="Create Quiz">
-		</div>	
-					
-		</div>		
+
+</head>
+
+<body>
+
+	<div class="row">
+		<div class="col-sm-2"></div>
+		<div class="col-sm-8">
+
+				<div class="form-group">
+					<form id="quizForm" action="/createQuiz/class_id/<%=class_id%>" method="post">
+
+				<div class='TextBoxesGroup'>
+					<div id="TextBoxDiv1">
+						<label>Enter Questions : </label>&nbsp;&nbsp;<input type="textarea" rows="2" name="textbox1" ></input>
+					</div>
+				</div>
+				<input type='button' value='Add a Question' id='addBtn'>
+				<input type='button' value='Remove Last Question' id='removeBtn'>
+				<input type='submit' value='Create Quiz' id='getAllQues'>
 			</form>
-		
-	</body>
+				</div>
+		</div>
+		<div class="col-sm-2"></div>
+	</div>
+
+
+
+<!--<div class="row">
+        <div class="col-sm-2">
+
+        </div>
+        <form action="/quizCreate" method="post">
+        <div class="col-sm-5">
+            <input type="text" placeholder="Add a Question" id="que1" name="que1">
+        </div>
+
+        <div class="col-sm-1">
+            <button type="button" class="btn addbtn  btn-default" ><span class="glyphicon glyphicon-plus"></span></button>
+        </div>
+    </div>
+    <div class="row"></div>
+    <div class="row">
+            <div class="col-sm-7">
+            </div>
+
+            <div class="col-sm-3">
+                <input type="submit" class="btn btn-success"  name="create" value="Create Quiz">
+            </div>
+
+            </div>
+        </form>-->
+
+</body>
 </html>
