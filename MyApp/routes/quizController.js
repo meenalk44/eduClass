@@ -136,10 +136,10 @@ module.exports.createQuiz = function (req,res) {
     async.forEach(Object.keys(req.body), function (prop,callback) {
         if (req.body.hasOwnProperty(prop)) {
 
-            newQue ={
-                que_num : cnt,
+            newQue =[{
+                que_num: cnt,
                 que_body: req.body[prop]
-            };
+            }];
             ques_arr[cnt] = newQue;
             cnt = cnt + 1;
         }
