@@ -9,6 +9,7 @@ var quizSchema = new mongoose.Schema({
             type:String
         }
     }],
+    quizTakenBy :   [{type: mongoose.Schema.Types.ObjectId, ref : 'User'}],
 	timestamp	: String,
 	user_id 	: {type: mongoose.Schema.Types.ObjectId, ref : 'User'},
     fullname 	: {type: mongoose.Schema.Types.String, ref : 'User'},
