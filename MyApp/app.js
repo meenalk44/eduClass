@@ -68,28 +68,30 @@ function isLoggedIn(req, res, next) {
 
 
 app.get('*', function(req, res, next) {
-	User.find({}).exec()
+	/*User.find({}).exec()
 		.then(function (users) {
 			console.log(users);
 			req.user = users[0];
-            res.locals.currentUser = users[0];
+            res.locals.currentUser = users[1];
             console.log("USER_______ : "+req.user.id);
             next();
-        });
-    /*res.locals.currentUser = req.user;
-    next();*/
+        });*/
+    res.locals.currentUser = req.user;
+    next();
 
 });
 
 app.post('*',function (req,res,next) {
-    User.find({}).exec()
+    /*User.find({}).exec()
         .then(function (users) {
             console.log(users);
             req.user = users[0];
-            res.locals.currentUser = users[0];
+            res.locals.currentUser = users[1];
             console.log("USER____POST___ : "+req.user.id);
             next();
-        });
+        });*/
+    res.locals.currentUser = req.user;
+    next();
 
 })
 
@@ -182,9 +184,10 @@ app.get('/error',function(req,res){
 });
 
 app.get('/success',function(req,res){
-    res.render('success',{msg:'New Class Created!', redirect:'classes'});
+    res.render('success',{msg:'New Class Created!', redirect:'./classes'});
 });
 
+app.get('/test',quizController.test);
 
 app.get('/classes/:class_id/discussion/:id', discussionController.dicussionShow);
 app.post('/classes/:class_id/discussion/:id', discussionController.postQue);
@@ -197,6 +200,9 @@ app.get('/driveController', driveController.dController);
 
 app.get('/classes/:class_id/quizSettings',quizController.quizSettings);
 app.post('/createQuiz/class_id/:class_id', quizController.createQuiz);
+app.get('/classes/:class_id/availableQuizzes',quizController.availableQuizzes);
+app.get('/takeQuiz/:quiz_id/student_id/:user_id',quizController.takeQuiz);
+app.post('/storeQuizResponse/:quiz_id/class_id/:class_id',quizController.storeQuizResponse);
 app.post('/quizAns',quizController.storeAns);
 
 app.get('/logout', function(req, res) {
