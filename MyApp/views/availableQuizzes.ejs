@@ -1,0 +1,49 @@
+<html>
+    <head>
+        <% include partials/head.ejs %>
+
+        <style>
+            body { padding-top: 60px; padding-bottom: 30px; }
+        </style>
+    </head>
+    <body>
+        <div class="row">
+            <div class="col-sm-1"></div>
+                <div class="col-sm-10">
+                    <div class="panel panel-default">
+                        <div class="container-fluid">
+                            <table class="table table-striped">
+
+                                <thead>
+                                <tr>
+                                    <th>Quiz ID</th>
+                                    <th>Status</th>
+                                    <th>Link to take Quiz</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <%var entries = JSON.parse(quizzes)%>
+                                <% entries.forEach((entry)=> {%>
+                                <tr>
+
+                                    <td><%= entry._id%></td>
+                                    <%if(status =='taken'){%>
+                                        <td><span class="bg-success">Quiz Completed</span></td>
+                                    <%}else{%>
+                                        <td><span class="bg-primary">Quiz Not Taken</span></td>
+                                            <td><a href="/takeQuiz/<%=entry._id%>/student_id/<%=currentUser.id%>">Take Quiz</a></td>
+                                    <%}%>
+
+                                </tr>
+                                <%})%>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            <div class="col-sm-1"></div>
+        </div>
+    </body>
+</html>
