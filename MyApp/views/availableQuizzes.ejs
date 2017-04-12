@@ -28,12 +28,10 @@
                                 <tr>
 
                                     <td><%= entry._id%></td>
-                                    <%if(status =='taken'){%>
-                                        <td><span class="bg-success">Quiz Completed</span></td>
-                                    <%}else{%>
+
                                         <td><span class="bg-primary">Quiz Not Taken</span></td>
                                             <td><a href="/takeQuiz/<%=entry._id%>/student_id/<%=currentUser.id%>">Take Quiz</a></td>
-                                    <%}%>
+
 
                                 </tr>
                                 <%})%>
