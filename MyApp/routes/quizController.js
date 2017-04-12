@@ -9,7 +9,13 @@ var QuizResponse = require('../models/quizResponseSchema');
 
 module.exports.quizSettings = function(req, res){
 	var class_id = req.param('class_id');
-  	res.render('quiz',{'class_id':class_id});
+    Quiz.find({'class_id':class_id}).exec(function (err,quizzes) {
+        if (err)
+            console.log(err);
+        else {
+            res.render('quizSettings', {quizzes:JSON.stringify(quizzes),'class_id': class_id});
+        }
+    });
 };
 
 module.exports.createQuiz = function (req,res) {
@@ -68,11 +74,70 @@ module.exports.createQuiz = function (req,res) {
 
 module.exports.availableQuizzes = function (req,res) {
     var class_id = req.param('class_id');
+    var doNotShow_arr = [];
+    var showQuiz = [{}];
+    var currUserID = req.user.id;
     Quiz.find({'class_id':class_id}).exec(function (err,quizzes) {
         if(err)
             console.log(err);
         else{
-            res.render('availableQuizzes',{quizzes:JSON.stringify(quizzes)});
+            console.log("Available:\n"+JSON.stringify(quizzes));
+            async.each(quizzes,function (quiz,callback) {
+                var quiztaken = quiz.quizTakenBy.indexOf(currUserID);
+                if(quiztaken >= 0){
+                    console.log("don't show" + quiztaken);
+                    doNotShow_arr.push(quiz._id);
+                }else{
+                    console.log("show" + quiztaken);
+
+
+                }
+                callback();
+
+            },function (err) {
+                if(err)
+                    console.log(err);
+                else{
+                    console.log(doNotShow_arr.toString());
+                    async.eachOf(doNotShow_arr,function (deleteQuizID,index,callback) {
+                        Quiz.findById(deleteQuizID).exec(function (err,quizDetails) {
+                            if(err)
+                                console.log(err);
+                            else{
+                                delete quizDetails._id;
+                                console.log("Show Quiz: "+quizDetails);
+
+                               // showQuiz[index] = quizDetails;
+                                //showQuiz.push(quizDetails);
+
+                            }
+
+
+                        });
+                        callback();
+                    },function (err) {
+                        if(err)
+                            console.log(err);
+                        else{
+                            console.log("---------------");
+                            console.log("+ "+JSON.stringify(showQuiz[0]));
+                            console.log(showQuiz[0].toString());
+                            console.log("---------------");
+                            res.send(showQuiz);
+
+                        }
+
+
+
+                    }
+                    );
+
+
+                }
+
+
+            });
+
         }
 
     });
@@ -137,7 +202,17 @@ module.exports.storeQuizResponse = function (req,res) {
                 console.log(err);
             else{
                 console.log("Saved Ans:-----\n"+quizResp);
-                res.render('success',{msg:'Quiz has been submitted successfully!',redirect:'/classes'});
+                Quiz.update({'_id':quizResp.quiz_id},{$push:{'quizTakenBy':req.user.id}},
+                    function(err,updatedEntry){
+                    if(err)
+                        console.log(err);
+                    else{
+                        console.log("Studs:===\n"+ JSON.stringify(updatedEntry));
+                        res.render('success',{msg:'Quiz has been submitted successfully!',redirect:'/classes'});
+                    }
+
+                });
+
             }
 
         });
@@ -149,7 +224,7 @@ module.exports.storeQuizResponse = function (req,res) {
 };
 
 
-module.exports.test = function(req,res){
+/*module.exports.test = function(req,res){
     var time = new Date();
     time = time.toDateString();
     var newQue = {
@@ -185,5 +260,5 @@ module.exports.test = function(req,res){
     });
 
 
-};
+};*/
 

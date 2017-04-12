@@ -93,7 +93,7 @@ app.post('*',function (req,res,next) {
     res.locals.currentUser = req.user;
     next();
 
-})
+});
 
 
 
@@ -187,7 +187,7 @@ app.get('/success',function(req,res){
     res.render('success',{msg:'New Class Created!', redirect:'./classes'});
 });
 
-app.get('/test',quizController.test);
+
 
 app.get('/classes/:class_id/discussion/:id', discussionController.dicussionShow);
 app.post('/classes/:class_id/discussion/:id', discussionController.postQue);
@@ -203,7 +203,7 @@ app.post('/createQuiz/class_id/:class_id', quizController.createQuiz);
 app.get('/classes/:class_id/availableQuizzes',quizController.availableQuizzes);
 app.get('/takeQuiz/:quiz_id/student_id/:user_id',quizController.takeQuiz);
 app.post('/storeQuizResponse/:quiz_id/class_id/:class_id',quizController.storeQuizResponse);
-app.post('/quizAns',quizController.storeAns);
+
 
 app.get('/logout', function(req, res) {
     req.logout();
