@@ -1,0 +1,89 @@
+<html>
+    <head>
+        <% include partials/head.ejs %>
+        <!--<script>
+            $(document).ready(function () {
+                $("submitBtn").click(function () {
+
+                    var total = 0;
+                    total = total + $("#marks");
+                    alert(total);
+                });
+
+            });
+        </script>-->
+
+        <style>
+            body { padding-top: 60px; padding-bottom: 30px; }
+        </style>
+    </head>
+    <body>
+        <div class="row">
+            <div class="col-sm-1"></div>
+                <div class="col-sm-4">
+                    <% var entries = JSON.parse(solvedQuizzes)%>
+                    <% entries.forEach((entry)=>{%>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h4>Questions</h4>
+                        </div>
+                        <div class="panel-body">
+                            <%entry.quiz_id.questions.forEach((que,index)=>{%>
+                                <h5>
+                                    <label>
+                                        <span class="label label-default">Question # <%=index+1%>:
+                                        </span>
+                                    </label>
+                                    <%= que.que_body%>
+                                </h5>
+                            <%})%>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h4>Answers by <%=entry.fullname%></h4>
+
+                        </div>
+                        <div class="panel-body">
+                            <%entry.answers.forEach((ans,index)=>{%>
+                            <h5>
+                                <label>
+                                        <span class="label label-default">Question # <%=index+1%>:
+                                        </span>
+                                </label>
+                                <div class="col-xs-2 pull-right">
+                                    <form method="post" action="/storeScores/quizResp/<%=entry._id%>/quiz_id/<%=entry.quiz_id._id%>/student_id/<%=entry.user_id%>">
+                                    <label>Marks Obtained: </label><input type="text" class="form-control" name="marks">
+                                    <label>Out Of: </label><input type="text" class="form-control" name="total">
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="container-fluid">
+                                        <%= ans.ans_body%>
+                                    </div>
+                                </div>
+                            </h5>
+
+                            <%})%>
+                            <hr>
+
+                           <!-- <div class="col-xs-2">
+                            <label>Final Score:</label>
+                            <input type="text" class="form-control" id="totalMarksObtd"><hr><input type="text" class="form-control" id="totalarks">
+                            </div>-->
+                            <input type="submit" class="btn btn-success pull-right" id="submitBtn" value="Submit Scores">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <%})%>
+            <div class="col-sm-1"></div>
+        </div>
+
+
+
+    </body>
+</html>

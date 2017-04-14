@@ -68,30 +68,30 @@ function isLoggedIn(req, res, next) {
 
 
 app.get('*', function(req, res, next) {
-	/*User.find({}).exec()
+	User.find({}).exec()
 		.then(function (users) {
 			console.log(users);
 			req.user = users[0];
-            res.locals.currentUser = users[1];
+            res.locals.currentUser = users[0];
             console.log("USER_______ : "+req.user.id);
             next();
-        });*/
-    res.locals.currentUser = req.user;
-    next();
+        });
+    /*res.locals.currentUser = req.user;
+    next();*/
 
 });
 
 app.post('*',function (req,res,next) {
-    /*User.find({}).exec()
+    User.find({}).exec()
         .then(function (users) {
             console.log(users);
             req.user = users[0];
-            res.locals.currentUser = users[1];
+            res.locals.currentUser = users[0];
             console.log("USER____POST___ : "+req.user.id);
             next();
-        });*/
-    res.locals.currentUser = req.user;
-    next();
+        });
+    /*res.locals.currentUser = req.user;
+    next();*/
 
 });
 
@@ -203,6 +203,9 @@ app.post('/createQuiz/class_id/:class_id', quizController.createQuiz);
 app.get('/classes/:class_id/availableQuizzes',quizController.availableQuizzes);
 app.get('/takeQuiz/:quiz_id/student_id/:user_id',quizController.takeQuiz);
 app.post('/storeQuizResponse/:quiz_id/class_id/:class_id',quizController.storeQuizResponse);
+app.get('/evaluate/:quiz_id',quizController.renderEvaluate);
+app.get('/evaluateQuizResp/:quiz_id/student_id/:student_id',quizController.evalStudentResp);
+app.post('/storeScores/quizResp/:quizResp_id/quiz_id/:quiz_id/student_id/:student_id',quizController.storeScores);
 
 
 app.get('/logout', function(req, res) {
