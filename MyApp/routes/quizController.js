@@ -74,72 +74,22 @@ module.exports.createQuiz = function (req,res) {
 
 module.exports.availableQuizzes = function (req,res) {
     var class_id = req.param('class_id');
-    var doNotShow_arr = [];
-    var showQuiz = [{}];
+    var show_arr = [];
+    var dont_show_arr = [];
     var currUserID = req.user.id;
     Quiz.find({'class_id':class_id}).exec(function (err,quizzes) {
         if(err)
             console.log(err);
         else{
-            console.log("Available:\n"+JSON.stringify(quizzes));
-            async.each(quizzes,function (quiz,callback) {
-                var quiztaken = quiz.quizTakenBy.indexOf(currUserID);
-                if(quiztaken >= 0){
-                    console.log("don't show" + quiztaken);
-                    doNotShow_arr.push(quiz._id);
-                }else{
-                    console.log("show" + quiztaken);
-
-
-                }
-                callback();
-
-            },function (err) {
-                if(err)
-                    console.log(err);
-                else{
-                    console.log(doNotShow_arr.toString());
-                    async.eachOf(doNotShow_arr,function (deleteQuizID,index,callback) {
-                        Quiz.findById(deleteQuizID).exec(function (err,quizDetails) {
-                            if(err)
-                                console.log(err);
-                            else{
-                                delete quizDetails._id;
-                                console.log("Show Quiz: "+quizDetails);
-
-                               // showQuiz[index] = quizDetails;
-                                //showQuiz.push(quizDetails);
-
-                            }
-
-
-                        });
-                        callback();
-                    },function (err) {
-                        if(err)
-                            console.log(err);
-                        else{
-                            console.log("---------------");
-                            console.log("+ "+JSON.stringify(showQuiz[0]));
-                            console.log(showQuiz[0].toString());
-                            console.log("---------------");
-                            res.send(showQuiz);
-
-                        }
-
-
-
-                    }
-                    );
-
-
-                }
-
-
+            show_arr = quizzes.filter(function (quiz) {
+               return quiz.quizTakenBy.indexOf(currUserID) < 0;
             });
-
+            dont_show_arr = quizzes.filter(function (quiz) {
+                return quiz.quizTakenBy.indexOf(currUserID) >= 0;
+            });
+            console.log("---------------\n"+show_arr);
+            res.render('availableQuizzes',{quizzesNotTaken:JSON.stringify(show_arr),quizzesTaken : JSON.stringify(dont_show_arr)});
         }
-
     });
 
 };
@@ -190,7 +140,7 @@ module.exports.storeQuizResponse = function (req,res) {
         var newQuizResp = new QuizResponse({
             class_id: class_id,
             quiz_id: quiz_id,
-            status: 'taken',
+            status: 'Completed',
             timestamp: time,
             user_id: req.user.id,
             fullname: req.user.fullname,
@@ -218,6 +168,102 @@ module.exports.storeQuizResponse = function (req,res) {
         });
 
     });
+
+
+
+};
+
+module.exports.renderEvaluate = function (req,res) {
+    var quiz_id = req.param('quiz_id');
+
+    Quiz.find({'_id':quiz_id})
+        .populate('quizTakenBy')
+        .exec(function (err,completedQuizzes) {
+        if(err)
+            console.log(err);
+        else{
+            console.log("Completed**** \n"+completedQuizzes);
+            res.render('evalAllTable',{completed:JSON.stringify(completedQuizzes)});
+        }
+
+    });
+
+};
+
+module.exports.evalStudentResp = function (req,res) {
+    var quiz_id = req.param('quiz_id');
+    var student_id = req.param('student_id');
+    QuizResponse.find({'quiz_id':quiz_id, 'user_id':student_id})
+        .populate([
+            {
+                path:'quiz_id',
+                model:'Quiz'
+            }
+        ])
+        .exec(function (err,solvedQuizzes) {
+            if(err)
+                console.log(err)
+            else{
+                console.log("Solved------\n"+solvedQuizzes);
+                res.render('evalIndividualResp',{solvedQuizzes:JSON.stringify(solvedQuizzes)});
+            }
+
+        })
+
+
+};
+
+module.exports.storeScores = function (req,res) {
+    var quiz_id = req.param('quiz_id');
+    var quizResp_id = req.param('quizResp_id');
+    var student_id = req.param('student_id');
+    //console.log("**  :"+req.body.marks);
+    var totalObtd =0, total  =0;
+    var marksObtd = req.body.marks;
+    var totalMarks = req.body.total;
+    marksObtd.forEach(function(marks){
+        totalObtd += parseInt(marks);
+
+    });
+    totalMarks.forEach(function (tot) {
+        total += parseInt(tot);
+
+    })
+    console.log("***"+totalObtd+" / "+total);
+   /* async.eachOf(marksObtd, function (scoredMarks,index,callback) {
+*/
+       // console.log("----O: "+scoredMarks+"---- "+ totalMarks[index]);
+        QuizResponse.update({'_id':quizResp_id},{$push:{
+            'answers':{$each: {
+                'marks_scored': marksObtd,
+                'max_marks': totalMarks
+            }
+            }}
+        },function(err,updatedEntry){
+                if(err)
+                    console.log(err);
+                else{
+                    console.log("Studs:===\n"+ JSON.stringify(updatedEntry));
+                    //res.render('success',{msg:'Quiz has been submitted successfully!',redirect:'/classes'});
+                }
+
+            });
+        /*callback();
+    },function (err) {
+        console.log("end");*/
+        /*QuizResponse.update({'_id':quizResp_id},{$push:{'marks_obtd':totalObtd, 'total_marks':totalObtd}},
+            function(err,updatedEntry){
+                if(err)
+                    console.log(err);
+                else{
+                    console.log("Studs:===\n"+ JSON.stringify(updatedEntry));
+                    res.render('success',{msg:'Quiz has been submitted successfully!',redirect:'/classes'});
+                }
+
+            });*/
+   // });
+
+
 
 
 

@@ -47,7 +47,7 @@
                 for(i=1; i<counter; i++){
                     msg +=  $('#textbox' + i).val();
                 }
-                alert(msg);
+                //alert(msg);
                 //$('#quizForm').append($(msg));
                 //return msg;
 
@@ -101,6 +101,7 @@
                         <tr>
                             <th>Quiz ID</th>
                             <th>Created On</th>
+                            <th>Evaluate</th>
 
                             <!--<th>Edit Quiz</th>-->
                             <th>Delete Quiz</th>
@@ -114,10 +115,11 @@
 
                             <td><%= entry._id%></td>
                             <td><%=entry.timestamp%></td>
+                            <td><a href="/evaluate/<%=entry._id%>"><span class="btn btn-primary btn-xs glyphicon glyphicon-check"></span></a></td>
 
                             <!--<td><span class="bg-primary">Quiz Not Taken</span></td>
                             <td><a href="/takeQuiz/<%=entry._id%>/student_id/<%=currentUser.id%>">Take Quiz</a></td>-->
-                            <!--<td><button class="btn btn-primary btn-xs glyphicon glyphicon-pencil"></button></td>-->
+                            <!--<td><button class="btn btn-primary btn-xs glyphicon glyphicon-edit"></button></td>-->
                             <td><button class="btn btn-danger btn-xs glyphicon glyphicon-trash"></button></td>
 
                         </tr>
