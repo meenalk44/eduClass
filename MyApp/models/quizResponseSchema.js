@@ -10,12 +10,14 @@ var quizResponseSchema = new mongoose.Schema({
                         ans_body:{
                             type:String
                         },
-                        marks_scored:{
-                            type:Number
-                        },
-                        max_marks:{
-                            type:Number
-                        }
+        marks: {
+            marks_scored: {
+                type: Number
+            },
+            max_marks: {
+                type: Number
+            }
+        }
                     }],
     timestamp	:   String,
     user_id 	:   {type: mongoose.Schema.Types.ObjectId, ref : 'User'},

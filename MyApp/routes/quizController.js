@@ -217,7 +217,7 @@ module.exports.storeScores = function (req,res) {
     var quiz_id = req.param('quiz_id');
     var quizResp_id = req.param('quizResp_id');
     var student_id = req.param('student_id');
-    //console.log("**  :"+req.body.marks);
+
     var totalObtd =0, total  =0;
     var marksObtd = req.body.marks;
     var totalMarks = req.body.total;
@@ -228,83 +228,34 @@ module.exports.storeScores = function (req,res) {
     totalMarks.forEach(function (tot) {
         total += parseInt(tot);
 
-    })
-    console.log("***"+totalObtd+" / "+total);
-   /* async.eachOf(marksObtd, function (scoredMarks,index,callback) {
-*/
-       // console.log("----O: "+scoredMarks+"---- "+ totalMarks[index]);
-        QuizResponse.update({'_id':quizResp_id},{$push:{
-            'answers':{$each: {
-                'marks_scored': marksObtd,
-                'max_marks': totalMarks
-            }
-            }}
-        },function(err,updatedEntry){
-                if(err)
-                    console.log(err);
-                else{
-                    console.log("Studs:===\n"+ JSON.stringify(updatedEntry));
-                    //res.render('success',{msg:'Quiz has been submitted successfully!',redirect:'/classes'});
-                }
+    });
 
-            });
-        /*callback();
-    },function (err) {
-        console.log("end");*/
-        /*QuizResponse.update({'_id':quizResp_id},{$push:{'marks_obtd':totalObtd, 'total_marks':totalObtd}},
-            function(err,updatedEntry){
-                if(err)
-                    console.log(err);
-                else{
-                    console.log("Studs:===\n"+ JSON.stringify(updatedEntry));
-                    res.render('success',{msg:'Quiz has been submitted successfully!',redirect:'/classes'});
-                }
+    console.log("Question-------------\n");
+    QuizResponse.findOne({'_id':quizResp_id}).exec(function (err,doc) {
+        console.log(doc.answers[0]);
+        async.eachOf(doc.answers, function (ans, index, callback) {
+            var updResp = {
+                marks_scored: marksObtd[index],
+                max_marks: totalMarks[index]
+            };
+            ans.marks = updResp;
+            doc.save();
+            callback();
 
-            });*/
-   // });
+        }, function (err) {
+            console.log(doc);
+            doc.marks_obtd = totalObtd;
+            doc.total_marks = total;
+            doc.save();
+            res.render('success', {msg: 'Quiz has been evaluated!', redirect: '/classes'});
 
+        });
 
-
-
+        console.log("Question-------------\n");
+    });
 
 };
 
 
-/*module.exports.test = function(req,res){
-    var time = new Date();
-    time = time.toDateString();
-    var newQue = {
-        que_num:1,
-        ans_body:'Q1'
-    };
-    var queObj ={
-        que_num:2,
-        ans_body:'Q2'
-    };
-    var queObj1 ={
-        que_num:3,
-        ans_body:'Q3'
-    };
-    var newQuizResponse = new QuizResponse({
-        class_id: '58ce07d7dd449a20b4f02d21',
-        quiz_id:'',
-        timestamp: time,
-        user_id: req.user.id,
-        fullname: req.user.fullname,
-        profile_img : req.user.profile_img,
-        answers : [newQue,queObj]
 
-    });
-    console.log("**** "+ newQuizResponse);
-    newQuizResponse.save(function(err, quizResp){
-        if(err)
-            console.log(err);
-        else{
-            console.log("QuizResp: "+ quizResp);
-            res.send(quizResp);
-        }
-    });
-
-
-};*/
 
