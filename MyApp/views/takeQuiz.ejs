@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <%include partials/head.ejs%>
+        <style>
+            body { padding-top: 60px; padding-bottom: 30px; }
+        </style>
+    </head>
+    <body>
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <% var entry = JSON.parse(quiz)%>
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4>Quiz</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <form method="post" action="/storeQuizResponse/<%=entry._id%>/quiz_name/<%=entry.quiz_name%>/class_id/<%=entry.class_id%>">
+
+                            <%entry.questions.forEach((que,index)=>{%>
+                            <h5><label><span class="label label-default">Question # <%=index+1%>:</span></label>
+                                <label class="pull-right"> Total Points:<%=entry.marks[index].max_marks%></label>
+                                <br/>
+                                <%=JSON.stringify(que.que_body)%></h5>
+
+                            <label>Answer: </label>
+                            <textarea class="form-control" rows="3" id="ans" name="ans"></textarea>
+                            <hr>
+                            <%})%>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-10"></div>
+            <div class="col-sm-1">
+                <input type="submit" class="btn btn-success" name="submitQuiz" value="Submit Quiz">
+                </form>
+            </div>
+            <div class="col-sm-1"></div>
+
+        </div>
+
+    </body>
+</html>

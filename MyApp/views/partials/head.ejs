@@ -22,20 +22,21 @@
       <a class="navbar-brand" href="#"><span class="glyphicon glyphicon-education" class="text-left"></span>eduClass</a>
     </div>
     <ul class="nav navbar-nav navbar-right">
-    <% if(currentUser != null ){%> 
-    
+
+    <% if(currentUser != null ){%>
+
       <li><a href="/profile">Profile</a></li>
-      <li class="dropdown">
+      <!--<li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">Settings
         <span class="caret"></span></a>
         <ul class="dropdown-menu">
-          <li><a href="/quiz">Create a Quiz</a></li>
+          <li><a href="/">Create a Quiz</a></li>
           
         </ul>
       </li>
-      <li><a href="#">Dashboard</a></li>
+      <li><a href="#">Dashboard</a></li>-->
       
-      <li><a href="/logout"><span class="glyphicon glyphicon-log-out">&nbsp;Logout</span></a></li>
+      <li><a href="/logout">Logout <span class="glyphicon glyphicon-log-out"></span></a></li>
     <%}%>
     </ul>
   </div>

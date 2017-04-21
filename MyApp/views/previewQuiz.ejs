@@ -1,0 +1,51 @@
+<html>
+	<head>
+    <% include partials/head.ejs %>
+
+		<style>
+			body { padding-top: 60px; padding-bottom: 30px; }
+		</style>
+	</head>
+	<body>
+	<!--<center><h3>Quiz Preview</h3></center>-->
+		<div class="row">
+			<div class="col-sm-1"></div>
+				<div class="col-sm-10">
+
+					<% var entries = JSON.parse(entries)%>
+
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+							<h4>Quiz Preview</h4>
+						</div>
+						<div class="panel-body">
+							<div class="form-group">
+
+								<%entries.questions.forEach((que,index)=>{%>
+								<h5><label><span class="label label-default">Question # <%=index+1%>:</span></label>
+									<label class="pull-right"> Total Points:<%=entries.marks[index].max_marks%></label>
+									<br/><%=que.que_body%></h5>
+
+								<label>Answer: </label>
+								<textarea class="form-control" rows="3" id="ans" name="ans"></textarea>
+								<hr>
+							<%})%>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-1">
+					<a href="/classes%>">Back</a>
+				</div>
+		</div>
+	<!--<div class="row">
+		<div class="col-sm-10"></div>
+		<div class="col-sm-1">
+				<input type="submit" class="btn btn-success" name="submitQuiz" value="Submit Quiz">
+
+		</div>-->
+
+	</div>
+	</body>
+</html>
