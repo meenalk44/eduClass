@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var quizSchema = new mongoose.Schema({
+    quiz_name   :   String,
 	class_id 	: {type: mongoose.Schema.Types.ObjectId, ref : 'Class'},
 	questions	: [{
                     que_num: {
@@ -9,6 +10,15 @@ var quizSchema = new mongoose.Schema({
                         type:String
                     }
                 }],
+    marks       :  [{
+                    que_num: {
+                        type:Number
+                    },
+                    max_marks: {
+                        type: Number
+                    }
+                 }],
+
     quizTakenBy :   [{type: mongoose.Schema.Types.ObjectId, ref : 'User'}],
 	timestamp	: String,
 	user_id 	: {type: mongoose.Schema.Types.ObjectId, ref : 'User'},

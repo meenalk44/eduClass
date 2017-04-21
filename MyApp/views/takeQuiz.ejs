@@ -17,11 +17,12 @@
                     </div>
                     <div class="panel-body">
                         <div class="form-group">
-                            <form method="post" action="/storeQuizResponse/<%=entry._id%>/class_id/<%=entry.class_id%>">
+                            <form method="post" action="/storeQuizResponse/<%=entry._id%>/quiz_name/<%=entry.quiz_name%>/class_id/<%=entry.class_id%>">
 
                             <%entry.questions.forEach((que,index)=>{%>
                             <h5><label><span class="label label-default">Question # <%=index+1%>:</span></label>
-                                <!--<%=JSON.stringify(que.que_num)%>-->
+                                <label class="pull-right"> Total Points:<%=entry.marks[index].max_marks%></label>
+                                <br/>
                                 <%=JSON.stringify(que.que_body)%></h5>
 
                             <label>Answer: </label>

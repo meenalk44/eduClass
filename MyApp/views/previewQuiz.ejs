@@ -23,8 +23,8 @@
 
 								<%entries.questions.forEach((que,index)=>{%>
 								<h5><label><span class="label label-default">Question # <%=index+1%>:</span></label>
-									<!--<%=JSON.stringify(que.que_num)%>-->
-									<%=JSON.stringify(que.que_body)%></h5>
+									<label class="pull-right"> Total Points:<%=entries.marks[index].max_marks%></label>
+									<br/><%=que.que_body%></h5>
 
 								<label>Answer: </label>
 								<textarea class="form-control" rows="3" id="ans" name="ans"></textarea>
@@ -36,7 +36,7 @@
 				</div>
 
 				<div class="col-sm-1">
-					<a href="/classes">Back</a>
+					<a href="/classes%>">Back</a>
 				</div>
 		</div>
 	<!--<div class="row">

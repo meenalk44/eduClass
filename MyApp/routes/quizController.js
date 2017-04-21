@@ -22,36 +22,59 @@ module.exports.createQuiz = function (req,res) {
 
     var class_id = req.param('class_id');
     var ques_arr = [];
+    var marks_arr = [];
     var numOfQues = Object.keys(req.body).length;
     var time = new Date();
     time = time.toDateString();
     var newQue ={};
+    var marks = {};
     //var pro = new Promise(function(resolve,reject{
     var cnt = 0;
-    async.forEach(Object.keys(req.body), function (prop,callback) {
-        if (req.body.hasOwnProperty(prop)) {
+    var quiz_name = "";
+    console.log("req body "+JSON.stringify(req.body));
+    async.each(Object.keys(req.body), function (prop,callback) {
+        //console.log(prop);
+        if(prop == "quiz_name"){
+            quiz_name = req.body[prop];
+        }else{
+            if (req.body.hasOwnProperty(prop)) {
+                if(prop.search("textbox")>=0){
+                    newQue ={
+                        que_num: cnt,
+                        que_body: req.body[prop]
+                    };
+                    ques_arr[cnt] = newQue;
 
-            newQue ={
-                que_num: cnt,
-                que_body: req.body[prop]
-            };
-            ques_arr[cnt] = newQue;
-            cnt = cnt + 1;
+                }else{
+                    marks = {
+                        que_num: cnt,
+                        max_marks:req.body[prop]
+                    };
+                    marks_arr[cnt] = marks;
+                    cnt = cnt + 1;
+                }
+
+            }
         }
-        console.log("--- "+ JSON.stringify(newQue));
+
+
         callback();
     },function (err) {
         if(err)
             res.send("ERR in ASYNC"+err);
         else{
-            console.log("--ASYNC-- "+ JSON.stringify(ques_arr));
+            /*console.log("--- "+ JSON.stringify(ques_arr));
+            console.log("-*-*- "+ JSON.stringify(marks_arr));
+            console.log("--ASYNC-- "+ JSON.stringify(ques_arr));*/
             var newQuiz = new Quiz({
-                 class_id: class_id,
-                 timestamp: time,
-                 user_id: req.user.id,
-                 fullname: req.user.fullname,
-                 profile_img : req.user.profile_img,
-                 questions : ques_arr
+                quiz_name : quiz_name,
+                class_id: class_id,
+                timestamp: time,
+                user_id: req.user.id,
+                fullname: req.user.fullname,
+                profile_img : req.user.profile_img,
+                questions : ques_arr,
+                marks   :   marks_arr
 
              });
             console.log("**** "+ newQuiz);
@@ -76,6 +99,7 @@ module.exports.availableQuizzes = function (req,res) {
     var class_id = req.param('class_id');
     var show_arr = [];
     var dont_show_arr = [];
+
     var currUserID = req.user.id;
     Quiz.find({'class_id':class_id}).exec(function (err,quizzes) {
         if(err)
@@ -87,9 +111,8 @@ module.exports.availableQuizzes = function (req,res) {
             dont_show_arr = quizzes.filter(function (quiz) {
                 return quiz.quizTakenBy.indexOf(currUserID) >= 0;
             });
-            console.log("---------------\n"+show_arr);
             res.render('availableQuizzes',{quizzesNotTaken:JSON.stringify(show_arr),quizzesTaken : JSON.stringify(dont_show_arr)});
-        }
+            }
     });
 
 };
@@ -115,7 +138,8 @@ module.exports.takeQuiz = function (req,res) {
 
 module.exports.storeQuizResponse = function (req,res) {
     var quiz_id = req.param('quiz_id');
-    //var student_id = req.param('user_id');
+    var quiz_name = req.param('quiz_name');
+    console.log(quiz_name);
     var class_id = req.param('class_id');
     var time = new Date();
     time = time.toDateString();
@@ -138,9 +162,10 @@ module.exports.storeQuizResponse = function (req,res) {
     },function (err) {
         //console.log("End of for loop");
         var newQuizResp = new QuizResponse({
+            quiz_name:quiz_name,
             class_id: class_id,
             quiz_id: quiz_id,
-            status: 'Completed',
+            status: 'COMPLETED',
             timestamp: time,
             user_id: req.user.id,
             fullname: req.user.fullname,
@@ -175,17 +200,39 @@ module.exports.storeQuizResponse = function (req,res) {
 
 module.exports.renderEvaluate = function (req,res) {
     var quiz_id = req.param('quiz_id');
-
-    Quiz.find({'_id':quiz_id})
+    var toEvaluate = [];
+    Quiz.findById(quiz_id)
         .populate('quizTakenBy')
-        .exec(function (err,completedQuizzes) {
+        .exec(function (err, quiz) {
         if(err)
             console.log(err);
         else{
-            console.log("Completed**** \n"+completedQuizzes);
-            res.render('evalAllTable',{completed:JSON.stringify(completedQuizzes)});
-        }
+            console.log("Quiz**** \n"+quiz);
+            var arrayOfResponses = [];
+            async.each(quiz.quizTakenBy, function (takenBy, callback) {
+                console.log("===");
+                console.log(takenBy);
+                console.log("===");
 
+                QuizResponse.findOne({'quiz_id':quiz_id, 'user_id': takenBy._id})
+                    .exec(function (err, response) {
+                        if(err) {
+                            console.log(err);
+                        } else {
+                            if(response.status === "COMPLETED") {
+                                arrayOfResponses.push(takenBy);
+                            }
+                        }
+                        callback();
+                    });
+            }, function (err) {
+                 res.render('evalAllTable',{
+                     completed: JSON.stringify(arrayOfResponses),
+                     quiz_id:quiz_id
+                 });
+
+            });
+        }
     });
 
 };
@@ -193,6 +240,7 @@ module.exports.renderEvaluate = function (req,res) {
 module.exports.evalStudentResp = function (req,res) {
     var quiz_id = req.param('quiz_id');
     var student_id = req.param('student_id');
+
     QuizResponse.find({'quiz_id':quiz_id, 'user_id':student_id})
         .populate([
             {
@@ -220,7 +268,7 @@ module.exports.storeScores = function (req,res) {
 
     var totalObtd =0, total  =0;
     var marksObtd = req.body.marks;
-    var totalMarks = req.body.total;
+    var totalMarks = req.body.max_marks;
     marksObtd.forEach(function(marks){
         totalObtd += parseInt(marks);
 
@@ -233,25 +281,59 @@ module.exports.storeScores = function (req,res) {
     console.log("Question-------------\n");
     QuizResponse.findOne({'_id':quizResp_id}).exec(function (err,doc) {
         console.log(doc.answers[0]);
-        async.eachOf(doc.answers, function (ans, index, callback) {
-            var updResp = {
-                marks_scored: marksObtd[index],
-                max_marks: totalMarks[index]
+        console.log("Req body-------\n"+ JSON.stringify(req.body));
+        var marks = {};
+        var marks_arr = [];
+        async.eachOf(req.body.marks, function (score,index,callback) {
+            console.log("score-----: "+ score);
+            marks = {
+                que_num: index,
+                marks_scored: score
             };
-            ans.marks = updResp;
-            doc.save();
+            marks_arr[index] = marks;
             callback();
-
-        }, function (err) {
-            console.log(doc);
-            doc.marks_obtd = totalObtd;
-            doc.total_marks = total;
-            doc.save();
-            res.render('success', {msg: 'Quiz has been evaluated!', redirect: '/classes'});
-
+        },function (err) {
+            if(err)
+                res.send("ERR in ASYNC"+err);
+            else {
+                console.log("marks_arr====== "+JSON.stringify(marks_arr));
+                doc.marks = marks_arr;
+                doc.status = "GRADED";
+                doc.marks_obtd = totalObtd;
+                doc.total_marks = total;
+                doc.save();
+                res.render('success', {msg: 'Quiz has been evaluated!', redirect: '/classes'});
+            }
         });
+    });
 
-        console.log("Question-------------\n");
+};
+
+module.exports.viewResults = function (req,res) {
+    var quiz_id = req.param('quiz_id');
+    QuizResponse.find({'quiz_id':quiz_id}).exec(function (err,responses) {
+        if(err)
+            console.log(err);
+        else{
+            console.log(responses);
+            res.render('viewResults',{responses:JSON.stringify(responses)});
+        }
+
+    })
+
+};
+
+module.exports.showScore = function (req,res) {
+    var class_id = req.param('class_id');
+    QuizResponse.find({'class_id':class_id,'user_id':req.user.id}).exec(function (err,solvedQuizzes) {
+        if(err)
+            console.log(err);
+        else{
+            console.log("-------showScore\n"+solvedQuizzes);
+            //res.send(solvedQuizzes);
+            res.render('studentScores',{solvedQuizzes:JSON.stringify(solvedQuizzes)});
+        }
+
     });
 
 };

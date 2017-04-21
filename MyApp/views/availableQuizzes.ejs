@@ -16,7 +16,7 @@
 
                                 <thead>
                                 <tr>
-                                    <th>Quiz ID</th>
+                                    <th>Quiz</th>
                                     <th>Status</th>
                                     <th>Link to take Quiz</th>
                                 </tr>
@@ -27,7 +27,7 @@
                                 <% entries.forEach((entry)=> {%>
                                 <tr>
 
-                                    <td><%= entry._id%></td>
+                                    <td><%= entry.quiz_name%></td>
                                     <td><span class="bg-info">Quiz Not Taken</span></td>
                                     <td><a href="/takeQuiz/<%=entry._id%>/student_id/<%=currentUser.id%>">Take Quiz</a></td>
                                 </tr>
@@ -45,24 +45,25 @@
 
                                 <thead>
                                 <tr>
-                                    <th>Quiz ID</th>
+                                    <th>Quiz</th>
                                     <th>Quiz Taken On</th>
                                     <th>Status</th>
-                                    <th>Score</th>
+
                                 </tr>
                                 </thead>
 
                                 <tbody>
                                 <%var entries = JSON.parse(quizzesTaken)%>
-                                <% entries.forEach((entry)=> {%>
+                                <%entries.forEach((entry)=>{%>
                                 <tr>
 
-                                    <td><%= entry._id%></td>
+                                    <td><%= entry.quiz_name%></td>
                                     <td><%=entry.timestamp%></td>
                                     <td><span class="bg-success">Quiz Completed</span></td>
-                                    <td>10</td>
+
                                 </tr>
                                 <%})%>
+
                                 </tbody>
 
                             </table>
