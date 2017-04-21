@@ -1,18 +1,16 @@
 <html>
 	<head>
-		<% include partials/head.ejs %>
-	
-	<style>
-		body { padding-top: 60px; padding-bottom: 30px; }
-	</style>
+		<% include partials/head.ejs%>
+		<style>
+			body { padding-top: 60px; padding-bottom: 30px; }
+		</style>
 	</head>
 	<body>
 		<div class="row">
 			<div class="col-sm-4"></div>
 			<div class="col-sm-4">
 			<div class="alert alert-success alert-dismissable">
-<!--   				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> -->
-  				<strong><%= msg %></strong> <a href="./<%= redirect%>">View Classes</a>
+  				<strong><%= msg %></strong> <a href="<%= redirect%>">View Classes</a>
 			</div>
 			</div>
 			<div class="col-sm-4"></div>

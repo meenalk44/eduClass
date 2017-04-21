@@ -58,25 +58,40 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(flash());
 
 function isLoggedIn(req, res, next) {
-	console.log(req.url);
+	/*console.log(req.url);
 	if (req.url === "/" || req.url.startsWith("/auth/google") || req.url.startsWith("/auth/google/callback") || req.url.startsWith("/signUp")) {
          return next();
 	} else {
         res.redirect('/');
-	}
+	}*/
 }
 
 
 app.get('*', function(req, res, next) {
-	/*User.find({}).exec()
+	User.find({}).exec()
 		.then(function (users) {
 			console.log(users);
 			req.user = users[0];
             res.locals.currentUser = users[0];
+            console.log("USER_______ : "+req.user.id);
             next();
-        });*/
-    res.locals.currentUser = req.user;
-    next();
+        });
+    /*res.locals.currentUser = req.user;
+    next();*/
+
+});
+
+app.post('*',function (req,res,next) {
+    User.find({}).exec()
+        .then(function (users) {
+            console.log(users);
+            req.user = users[0];
+            res.locals.currentUser = users[0];
+            console.log("USER____POST___ : "+req.user.id);
+            next();
+        });
+    /*res.locals.currentUser = req.user;
+    next();*/
 
 });
 
@@ -169,8 +184,9 @@ app.get('/error',function(req,res){
 });
 
 app.get('/success',function(req,res){
-    res.render('success',{msg:'New Class Created!', redirect:'classes'});
+    res.render('success',{msg:'New Class Created!', redirect:'./classes'});
 });
+
 
 
 app.get('/classes/:class_id/discussion/:id', discussionController.dicussionShow);
@@ -182,9 +198,16 @@ app.get('/test', discussionController.test);
 app.get('/classes/drive/:id',driveController.dController);
 app.get('/driveController', driveController.dController);
 
-app.get('/quiz',quizController.quizShow);
-app.post('/quizCreate', quizController.quizCreate);
-app.post('/quizAns',quizController.storeAns);
+app.get('/classes/:class_id/quizSettings',quizController.quizSettings);
+app.post('/createQuiz/class_id/:class_id', quizController.createQuiz);
+app.get('/classes/:class_id/availableQuizzes',quizController.availableQuizzes);
+app.get('/takeQuiz/:quiz_id/student_id/:user_id',quizController.takeQuiz);
+app.post('/storeQuizResponse/:quiz_id/quiz_name/:quiz_name/class_id/:class_id',quizController.storeQuizResponse);
+app.get('/evaluate/:quiz_id',quizController.renderEvaluate);
+app.get('/evaluateQuizResp/:quiz_id/student_id/:student_id',quizController.evalStudentResp);
+app.post('/storeScores/quizResp/:quizResp_id/quiz_id/:quiz_id/student_id/:student_id',quizController.storeScores);
+app.get('/viewResults/quiz_id/:quiz_id/',quizController.viewResults);
+app.get('/classes/:class_id/quizScores',quizController.showScore);
 
 app.get('/logout', function(req, res) {
     req.logout();

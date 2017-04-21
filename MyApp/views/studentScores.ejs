@@ -1,0 +1,45 @@
+<html>
+    <head>
+        <% include partials/head.ejs %>
+        <style>
+            body { padding-top: 60px; padding-bottom: 30px; }
+        </style>
+    </head>
+    <body>
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <div class="panel panel-default">
+                    <div class="container-fluid">
+                        <table class="table table-striped">
+
+                            <thead>
+                            <tr>
+                                <th>Quiz</th>
+                                <th>Marks Obtained</th>
+                                <th>Total Marks</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            <%var solved = JSON.parse(solvedQuizzes)%>
+                            <% solved.forEach((quiz)=>{%>
+                            <tr>
+                                <td><%=quiz.quiz_name%></td>
+                                <%if(quiz.total_marks!=null){%>
+                                <td><%=quiz.marks_obtd%></td>
+                                <td><%=quiz.total_marks%></td>
+                                <%}else{%>
+                                <td>Quiz not graded</td><td></td>
+                                <%}%>
+                            </tr>
+                            <%})%>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+    </body>
+</html>
