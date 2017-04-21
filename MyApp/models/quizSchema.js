@@ -1,15 +1,30 @@
 var mongoose = require('mongoose');
 var quizSchema = new mongoose.Schema({
-	subject : String,
-	question: [String],
-	timestamp: Date,
-	user_id : String,
-	username : String,
-	answers : [{ans : String,
-		user_id : String,
-		username : String,
-		anstimestamp: Date
-	}]
+    quiz_name   :   String,
+	class_id 	: {type: mongoose.Schema.Types.ObjectId, ref : 'Class'},
+	questions	: [{
+                    que_num: {
+                        type:Number
+                    },
+                    que_body:{
+                        type:String
+                    }
+                }],
+    marks       :  [{
+                    que_num: {
+                        type:Number
+                    },
+                    max_marks: {
+                        type: Number
+                    }
+                 }],
+
+    quizTakenBy :   [{type: mongoose.Schema.Types.ObjectId, ref : 'User'}],
+	timestamp	: String,
+	user_id 	: {type: mongoose.Schema.Types.ObjectId, ref : 'User'},
+    fullname 	: {type: mongoose.Schema.Types.String, ref : 'User'},
+    profile_img	: {type: mongoose.Schema.Types.String, ref : 'User'}
+
 	
 });
 

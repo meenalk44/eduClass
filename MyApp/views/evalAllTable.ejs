@@ -1,0 +1,41 @@
+<html>
+    <head>
+        <% include partials/head.ejs %>
+
+        <style>
+            body { padding-top: 60px; padding-bottom: 30px; }
+        </style>
+    </head>
+    <body>
+        <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8">
+                <div class="panel panel-default">
+                    <div class="container-fluid">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Evaluate</th>
+
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            <%var entries = JSON.parse(completed)%>
+                            <%entries.forEach((entry)=>{%>
+                            <tr>
+                                <td><%=entry.fullname%></td>
+                                <td><a href="/evaluateQuizResp/<%=quiz_id%>/student_id/<%=entry._id%>"><span class="btn btn-primary btn-xs glyphicon glyphicon-check"></span></a></td>
+
+                            </tr>
+                            <%})%>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
