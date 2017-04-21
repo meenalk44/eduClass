@@ -202,11 +202,12 @@ app.get('/classes/:class_id/quizSettings',quizController.quizSettings);
 app.post('/createQuiz/class_id/:class_id', quizController.createQuiz);
 app.get('/classes/:class_id/availableQuizzes',quizController.availableQuizzes);
 app.get('/takeQuiz/:quiz_id/student_id/:user_id',quizController.takeQuiz);
-app.post('/storeQuizResponse/:quiz_id/class_id/:class_id',quizController.storeQuizResponse);
+app.post('/storeQuizResponse/:quiz_id/quiz_name/:quiz_name/class_id/:class_id',quizController.storeQuizResponse);
 app.get('/evaluate/:quiz_id',quizController.renderEvaluate);
 app.get('/evaluateQuizResp/:quiz_id/student_id/:student_id',quizController.evalStudentResp);
 app.post('/storeScores/quizResp/:quizResp_id/quiz_id/:quiz_id/student_id/:student_id',quizController.storeScores);
-
+app.get('/viewResults/quiz_id/:quiz_id/',quizController.viewResults);
+app.get('/classes/:class_id/quizScores',quizController.showScore);
 
 app.get('/logout', function(req, res) {
     req.logout();

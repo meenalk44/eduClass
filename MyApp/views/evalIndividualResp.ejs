@@ -1,17 +1,26 @@
 <html>
     <head>
         <% include partials/head.ejs %>
-        <!--<script>
+        <script>
             $(document).ready(function () {
-                $("submitBtn").click(function () {
+                var total = 0, max_total=0;
+                $("#btnTot").click(function () {
+                    $(".marks").each(function () {
+                        total += Number($(this).val());
+                        });
+                    $(".totalMarks").each(function () {
+                       // alert(max_total);
+                        max_total += Number($(this).val());
+                    });
 
-                    var total = 0;
-                    total = total + $("#marks");
-                    alert(total);
+                    $("#totalMarksObtd").val(total);
+                    $("#totalMarks").val(max_total);
                 });
 
+
+
             });
-        </script>-->
+        </script>
 
         <style>
             body { padding-top: 60px; padding-bottom: 30px; }
@@ -20,49 +29,33 @@
     <body>
         <div class="row">
             <div class="col-sm-1"></div>
-                <div class="col-sm-4">
-                    <% var entries = JSON.parse(solvedQuizzes)%>
-                    <% entries.forEach((entry)=>{%>
+
+                <div class="col-sm-10">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
-                            <h4>Questions</h4>
-                        </div>
-                        <div class="panel-body">
-                            <%entry.quiz_id.questions.forEach((que,index)=>{%>
-                                <h5>
-                                    <label>
-                                        <span class="label label-default">Question # <%=index+1%>:
-                                        </span>
-                                    </label>
-                                    <%= que.que_body%>
-                                </h5>
-                            <%})%>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            <h4>Answers by <%=entry.fullname%></h4>
+                            <% var entries = JSON.parse(solvedQuizzes)%>
+                            <% entries.forEach((entry)=>{%>
+                            <h4>Quiz Response by <%=entry.fullname%></h4>
 
                         </div>
                         <div class="panel-body">
-                            <%entry.answers.forEach((ans,index)=>{%>
+                            <%entry.quiz_id.questions.forEach((que,index)=>{%>
                             <h5>
                                 <label>
                                         <span class="label label-default">Question # <%=index+1%>:
                                         </span>
                                 </label>
+                                <%= que.que_body%>
                                 <div class="col-xs-2 pull-right">
                                     <form method="post" action="/storeScores/quizResp/<%=entry._id%>/quiz_id/<%=entry.quiz_id._id%>/student_id/<%=entry.user_id%>">
-                                    <label>Marks Obtained: </label><input type="text" class="form-control" name="marks">
-                                    <label>Out Of: </label><input type="text" class="form-control" name="total">
+                                    <label>Marks Obtained: </label><input type="text" class="marks form-control" name="marks" >
+                                    <label>Out Of: </label><input type="text" class="totalMarks form-control" name="max_marks" value="<%=entry.quiz_id.marks[index].max_marks%>" readonly>
 
                                 </div>
 
                                 <div class="row">
                                     <div class="container-fluid">
-                                        <%= ans.ans_body%>
+                                        <%=entry.answers[index].ans_body%>
                                     </div>
                                 </div>
                             </h5>
@@ -70,10 +63,12 @@
                             <%})%>
                             <hr>
 
-                           <!-- <div class="col-xs-2">
+
+                            <div class="col-xs-5">
                             <label>Final Score:</label>
-                            <input type="text" class="form-control" id="totalMarksObtd"><hr><input type="text" class="form-control" id="totalarks">
-                            </div>-->
+                                <input type="button" id="btnTot" value="Calculate Total">
+                            <br/><input type="text" placeholder="Marks Obtained" id="totalMarksObtd">&nbsp;/&nbsp;<input type="text" placeholder="Total" id="totalMarks">
+                            </div>
                             <input type="submit" class="btn btn-success pull-right" id="submitBtn" value="Submit Scores">
                             </form>
                         </div>
