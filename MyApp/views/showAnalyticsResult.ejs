@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <% include partials/head.ejs%>
+        <style>
+            body { padding-top: 60px; padding-bottom: 30px; }
+        </style>
+    </head>
+    <body>
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <div class="panel panel-warning">
+                    <div class="panel-heading">
+                        <h4>Analytics for <%= quiz_name%></h4>
+                    </div>
+                    <div class="panel-body">
+                        <label>Mean : </label>&nbsp;<%=mean%>
+                        <br/><label>Standard Deviation : </label>&nbsp;<%=std_dev%>
+                        <br/><label>Variance : </label>&nbsp;<%=variance%>
+                        <br/><label>Confidence Interval : </label>&nbsp;<%=ci1%> to <%=ci2%>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+
+    </body>
+</html>

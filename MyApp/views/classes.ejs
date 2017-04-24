@@ -78,9 +78,10 @@
                         <%}%>
                         <%if(currentUser.role == "Student"){%>
 						<td>
-							<form method="get" action="/classes/<%=entry._id%>/availableQuizzes">
+							<a href="/classes/<%=entry._id%>/availableQuizzes"><span class="glyphicon glyphicon-time"></a>
+							<!--<form method="get" action="/classes/<%=entry._id%>/availableQuizzes">
 								<button type="submit" class="glyphicon glyphicon-time" ></button>
-							</form>
+							</form>-->
 						</td>
 						<td><a href="/classes/<%=entry._id%>/quizScores"><span class="glyphicon glyphicon-tasks"></a></td>
                         <%}%>

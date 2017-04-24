@@ -25,6 +25,7 @@ var quizResponseSchema = new mongoose.Schema({
             type: Number
         }
     }],
+    percent_marks : Number,
     timestamp	:   String,
     user_id 	:   {type: mongoose.Schema.Types.ObjectId, ref : 'User'},
     fullname 	:   {type: mongoose.Schema.Types.String, ref : 'User'},

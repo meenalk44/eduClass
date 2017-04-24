@@ -67,10 +67,10 @@
         <div class="col-sm-1"></div>
         <div class="col-sm-5">
             <div class="panel panel-primary">
-                <div class="panel panel-heading">
+                <div class="panel-heading">
                     Create New Quiz
                 </div>
-                <div class="panel panel-body">
+                <div class="panel-body">
                     <div class="form-group">
                         <form id="quizForm" action="/createQuiz/class_id/<%=class_id%>" method="post">
                             <label>Quiz Name:</label>
@@ -101,7 +101,6 @@
             <div class="panel panel-default">
 
                 <div class="container-fluid">
-
                     <table class="table table-striped table-condensed">
 
                         <thead>
@@ -110,6 +109,7 @@
                             <th>Created On</th>
                             <th>Evaluate</th>
                             <th>Results</th>
+                            <th>Analytics</th>
 
                             <!--<th>Edit Quiz</th>-->
                             <th>Delete Quiz</th>
@@ -125,16 +125,15 @@
                             <td><%=entry.timestamp%></td>
                             <td><a href="/evaluate/<%=entry._id%>"><span class="btn btn-primary btn-xs glyphicon glyphicon-check"></span></a></td>
                             <td><a href="/viewResults/quiz_id/<%=entry._id%>/"><span class="btn btn-default btn-xs glyphicon glyphicon-tasks"></span></a></td>
-                            <!--<td><span class="bg-primary">Quiz Not Taken</span></td>
-                            <td><a href="/takeQuiz/<%=entry._id%>/student_id/<%=currentUser.id%>">Take Quiz</a></td>-->
-                            <!--<td><button class="btn btn-primary btn-xs glyphicon glyphicon-edit"></button></td>-->
-                            <td><button class="btn btn-danger btn-xs glyphicon glyphicon-trash"></button></td>
+                            <td><a href="/analytics/quiz_id/<%=entry._id%>"><span class="btn btn-warning btn-xs glyphicon glyphicon-stats"></span></a></td>
+                            <td><a href="/delete/class/<%=entry.class_id%>/quiz_id/<%=entry._id%>" ><span class="btn btn-danger btn-xs glyphicon glyphicon-trash"></span></a></td>
 
                         </tr>
                         <%})%>
                         </tbody>
 
                     </table>
+
                 </div>
 
             </div>
