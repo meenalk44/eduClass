@@ -433,7 +433,7 @@ module.exports.showAnalytics = function (req,res) {
 
 };
 
-/*module.exports.softDelete = function (req,res) {
+module.exports.softDelete = function (req,res) {
     var quiz_id = req.param('quiz_id');
     var class_id = req.param('class_id');
     var postdelete = [];
@@ -454,8 +454,7 @@ module.exports.showAnalytics = function (req,res) {
     });
 
 
-};*/
-
+};
 
 
 
