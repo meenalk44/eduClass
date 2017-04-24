@@ -208,6 +208,8 @@ app.get('/evaluateQuizResp/:quiz_id/student_id/:student_id',quizController.evalS
 app.post('/storeScores/quizResp/:quizResp_id/quiz_id/:quiz_id/student_id/:student_id',quizController.storeScores);
 app.get('/viewResults/quiz_id/:quiz_id/',quizController.viewResults);
 app.get('/classes/:class_id/quizScores',quizController.showScore);
+app.get('/analytics/quiz_id/:quiz_id',quizController.showAnalytics);
+app.get('/delete/class/:class_id/quiz_id/:quiz_id',quizController.softDelete);
 
 app.get('/logout', function(req, res) {
     req.logout();
