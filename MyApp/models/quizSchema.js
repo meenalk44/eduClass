@@ -23,8 +23,8 @@ var quizSchema = new mongoose.Schema({
 	timestamp	: String,
 	user_id 	: {type: mongoose.Schema.Types.ObjectId, ref : 'User'},
     fullname 	: {type: mongoose.Schema.Types.String, ref : 'User'},
-    profile_img	: {type: mongoose.Schema.Types.String, ref : 'User'}
-
+    profile_img	: {type: mongoose.Schema.Types.String, ref : 'User'},
+    user_set    : {type: mongoose.Schema.Types.String, ref : 'User'}
 	
 });
 

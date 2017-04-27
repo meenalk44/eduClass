@@ -250,7 +250,7 @@ module.exports.evalStudentResp = function (req,res) {
         ])
         .exec(function (err,solvedQuizzes) {
             if(err)
-                console.log(err)
+                console.log(err);
             else{
                 console.log("Solved------\n"+solvedQuizzes);
                 res.render('evalIndividualResp',{solvedQuizzes:JSON.stringify(solvedQuizzes)});
@@ -352,22 +352,6 @@ module.exports.showAnalytics = function (req,res) {
         else{
             sample_size = responses.length;
             console.log("Marks:---\n"+ responses.length);
-            /*async.eachOf(responses,
-                function (quizResp, index, callback) {
-                    console.log("Marks:---\n"+ quizResp.percent_marks);
-                    marks_obtd[index] = quizResp.percent_marks;
-                    sum += quizResp.percent_marks;
-                    callback();
-
-            },
-                function (err) {
-                    console.log("End of loop " + sum);
-                    var sample_size = marks_obtd.length;
-                    mean = sum/(sample_size - 1);
-                    //res.send(marks_obtd);
-
-            }
-            );*/
             async.series([function (callback) {
                     async.eachOf(responses,
                         function (quizResp, index, callback1) {
@@ -400,7 +384,7 @@ module.exports.showAnalytics = function (req,res) {
                             function (err) {
                                 console.log("End of loop " + sum1);
                                 //var sample_size = responses.length;
-                                variance = sum1/sample_size;
+                                variance = sum1/(sample_size - 1);
                                 //res.send(marks_obtd);
 
                             }
@@ -414,7 +398,7 @@ module.exports.showAnalytics = function (req,res) {
                         std_deviation = Math.sqrt(variance);
                         console.log("Standard dev: "+ std_deviation);
                         console.log("Variance  :" + variance);
-                        value  = z * (std_deviation/Math.sqrt(sample_size));
+                        value  = z * (std_deviation/Math.sqrt(sample_size - 1));
                         ci1 = (mean + value).toFixed(2);
                         ci2 = (mean - value).toFixed(2);
                         console.log("Confidence Interval :" + ci1 + " to " + ci2);
@@ -422,7 +406,7 @@ module.exports.showAnalytics = function (req,res) {
                     }
                 
                 }
-            )
+            );
 
 
 
@@ -433,28 +417,7 @@ module.exports.showAnalytics = function (req,res) {
 
 };
 
-module.exports.softDelete = function (req,res) {
-    var quiz_id = req.param('quiz_id');
-    var class_id = req.param('class_id');
-    var postdelete = [];
-    Quiz.find({'class_id':class_id}).exec(function (err,quizzes) {
-        if (err)
-            console.log(err);
-        else {
-            console.log("-------POSTDEL\n" + quizzes);
-            postdelete = quizzes.filter(function (quiz) {
-                return (quiz._id!=quiz_id);
 
-            });
-            console.log("Postdelete " + postdelete);
-            res.render('quizSettings',{quizzes:JSON.stringify(postdelete),class_id:class_id});
-
-
-        }
-    });
-
-
-};
 
 
 

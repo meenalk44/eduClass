@@ -4,6 +4,8 @@
 	
 	<style>
 		body { padding-top: 60px; padding-bottom: 30px; }
+		td	{	text-align: center;}
+		th	{	text-align: center;}
 	</style>
 	</head>
 <body>
@@ -55,7 +57,7 @@
 						<th>Quiz Scores</th>
 						<%}%>
 						<th>Discussion Forum</th>
-						<th>Google Drive</th>
+						<!--<th>Google Drive</th>-->
 
         			</tr>
         		</thead>
@@ -87,8 +89,9 @@
                         <%}%>
 						<td><a href="/classes/<%=entry._id%>/discussion/<%=entry.discussion_id%>"><span class="glyphicon glyphicon-copy"></a></td>
 
-						<td><form method="get" action="/classes/drive/<%=entry._id%>">
-        				<button type="submit" class="glyphicon glyphicon-folder-open" ></button></td></form>
+						<!--<td><form method="get" action="/classes/drive/<%=entry._id%>">
+        				<button type="submit" class="glyphicon glyphicon-folder-open" ></button></td>-->
+						</form>
 
         			</tr>
         			<%})%>

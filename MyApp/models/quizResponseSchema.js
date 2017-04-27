@@ -31,8 +31,8 @@ var quizResponseSchema = new mongoose.Schema({
     fullname 	:   {type: mongoose.Schema.Types.String, ref : 'User'},
     profile_img	:   {type: mongoose.Schema.Types.String, ref : 'User'},
     marks_obtd  :   Number,
-    total_marks :   Number
-
+    total_marks :   Number,
+    user_set    : {type: mongoose.Schema.Types.String, ref : 'User'}
 
 });
 

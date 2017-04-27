@@ -10,7 +10,7 @@
             <div class="col-sm-2"></div>
             <div class="col-sm-8">
                 <div class="panel panel-default">
-                    <div class="panel-heading"><b>Template Settings</b></div>
+                    <div class="panel-heading"><b>Template Settings - Discussion Forum</b></div>
                     <div class="panel-body">
                         <%var entry = JSON.parse(class_details)%>
                         <form method="post" action="/classes/<%=entry._id%>/changeTemplate">
@@ -19,10 +19,30 @@
                                 <p><label>Current Pattern:</label> <%=entry.template%> </p>
                                 <p></p><label>Select Template Pattern: </label>
                                 <label class="radio-inline">
-                                    <input type="radio" name="radioOpt" id="flat" value="Flat">Flat
+                                    <input type="radio" name="radioOpt" id="flat" value="Flat" checked  >Flat
                                 </label>
                                 <label class="radio-inline">
                                     <input type="radio" name="radioOpt" id="nested" value="Nested">Nested
+                                </label></p>
+                                <input type="submit" class="btn btn-success pull-right" value="Change Pattern">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading"><b>Template Settings - Rating System</b></div>
+                    <div class="panel-body">
+                        <%var entry = JSON.parse(class_details)%>
+                        <form method="post" action="">
+
+                            <div class="form-group">
+                                <p><label>Current Pattern:</label>  </p>
+                                <p></p><label>Select Template Pattern: </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="radioOpt" id="type1" value="UpVote and DownVote" checked  >UpVote and Downvote
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="radioOpt" id="type2" value="Approve">Approve
                                 </label></p>
                                 <input type="submit" class="btn btn-success pull-right" value="Change Pattern">
                             </div>
