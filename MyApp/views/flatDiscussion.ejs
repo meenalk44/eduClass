@@ -11,12 +11,6 @@
                 });
             } );
 
-            /*$( ".selector" ).accordion({
-                collapsible: true,
-                active: 1
-            });*/
-
-
             $(document).ready(function(){
                 $("#askWell").hide();
             });
@@ -91,7 +85,6 @@
 							<div class="panel-body">
   					 			<div id="accordion">
   								<%if(entries){%>
-
 	   							<%entries.forEach((entry, index) =>{%>
 									<div class="title">
 										<span class="label label-default pull-right"> <%=entry.topic%> </span>
@@ -136,7 +129,7 @@
 												<br/><br/><br/>
 											</div>
                                             <% if (entry.answers_level1) { %>
-                                            	<%- init_flat(entry.answers_level1, class_id, discussion_id, entry);%>
+                                            	<%- init_flat(entry.answers_level1, class_id, discussion_id, entry, rating_template);%>
                                             <% } %>
 										</div>
 

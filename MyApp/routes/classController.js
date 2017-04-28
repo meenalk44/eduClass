@@ -7,12 +7,13 @@ var Class = require('../models/classSchema');
 var Promise = require('bluebird');
 
 module.exports.createClass = function(req,res){
-	//console.log(req.body.className +" Radio: "+req.body.radioOpt);
-	var template = req.body.radioOpt;
+	var discussion_template = req.body.radioOpt1;
+	var rating_template = req.body.radioOpt2;
 	var newClass = new Class({
-	class_name	: req.body.className,
-	teacher_id : req.user.id,
-	template	:	template
+		class_name	: req.body.className,
+		teacher_id : req.user.id,
+		template_discussion	:	discussion_template,
+		template_rating	:	rating_template
 	});
 	newClass.save(function(err,entry){
 		if(err)
@@ -20,7 +21,6 @@ module.exports.createClass = function(req,res){
 		else{
 			var newDF = new Discussion({
 				class_id: entry.id
-				//template: template
 
 			});
 			console.log("DF: "+ newDF);
@@ -149,17 +149,32 @@ module.exports.templateSettings = function (req,res) {
 
 };
 
-module.exports.changeTemplate = function(req,res){
+module.exports.changeDiscussionTemplate = function(req,res){
 	var class_id = req.param('id');
-	var newTemplate = req.body.radioOpt;
-	Class.findByIdAndUpdate(class_id, {$set:{template:newTemplate}},{new:true},function (err,class_details) {
+	var newTemplate = req.body.radioOpt1;
+	Class.findByIdAndUpdate(class_id, {$set:{template_discussion:newTemplate}},{new:true},function (err,class_details) {
 		if(err)
 			console.log(err);
 		else{
             res.redirect("/classes/" + class_id+ "/template");
         }
 
-    })
+    });
+};
+
+module.exports.changeRatingTemplate = function (req,res) {
+	var class_id = req.param('class_id');
+	var newTemplate = req.body.radioOpt2;
+    Class.findByIdAndUpdate(class_id, {$set:{template_rating:newTemplate}},{new:true},function (err,class_details) {
+        if(err)
+            console.log(err);
+        else{
+            res.redirect("/classes/" + class_id+ "/template");
+        }
+
+    });
+
+
 };
 
 module.exports.classIndex = function(req,res){

@@ -7,7 +7,11 @@ var classSchema = new mongoose.Schema({
 	teacher_id	:	{type: mongoose.Schema.Types.ObjectId, ref : 'User'},
 	student_ids	:	[{type: mongoose.Schema.Types.ObjectId, ref : 'User'}],
 	discussion_id:	{type: mongoose.Schema.Types.ObjectId, ref : 'Discussion'},
-	template	:	String
+	template_discussion	:	String,
+	template_rating: {
+        type: String,
+        enum : ['UPVOTE','UPVOTE_DOWNVOTE']
+    }
 	
 });
 

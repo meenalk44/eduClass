@@ -20,15 +20,25 @@
         		<form method="post" action="/classCreate">
 					<input type="text" placeholder="Enter Class Name" name="className">
 					<div class="form-group">
-						<label>Template Pattern: </label>
+						<label>Discussion Forum : </label>
 						<label class="radio-inline">
-							<input type="radio" name="radioOpt" id="flat" value="Flat">Flat
+							<input type="radio" name="radioOpt1" id="flat" value="Flat" checked>Flat
 						</label>
 						<label class="radio-inline">
-							<input type="radio" name="radioOpt" id="nested" value="Nested">Nested
+							<input type="radio" name="radioOpt1" id="nested" value="Nested">Nested
 						</label>
-						<input type="submit" class="btn btn-success pull-right" value="Create Class">
 					</div>
+					<div class="form-group">
+						<label>Rating System : </label>
+						<label class="radio-inline">
+							<input type="radio" name="radioOpt2" id="type1" value="UPVOTE_DOWNVOTE" checked>Upvote and Downvote
+						</label>
+						<label class="radio-inline">
+							<input type="radio" name="radioOpt2" id="type2" value="UPVOTE">Upvote
+						</label>
+
+					</div>
+					<input type="submit" class="btn btn-success pull-right" value="Create Class">
         		</form>
         		</div>
         	</div>
@@ -81,9 +91,7 @@
                         <%if(currentUser.role == "Student"){%>
 						<td>
 							<a href="/classes/<%=entry._id%>/availableQuizzes"><span class="glyphicon glyphicon-time"></a>
-							<!--<form method="get" action="/classes/<%=entry._id%>/availableQuizzes">
-								<button type="submit" class="glyphicon glyphicon-time" ></button>
-							</form>-->
+
 						</td>
 						<td><a href="/classes/<%=entry._id%>/quizScores"><span class="glyphicon glyphicon-tasks"></a></td>
                         <%}%>

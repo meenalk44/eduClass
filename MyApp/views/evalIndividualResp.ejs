@@ -3,18 +3,28 @@
         <% include partials/head.ejs %>
         <script>
                 $(document).ready(function () {
-                var total = 0, max_total=0;
+                var max_total=0;
                 $(".marks").change(function(){
+                    var total = 0;
+                    var currentTotalMarks = $(this).parent().parent().find(".totalMarks").val();
+                    currentTotalMarks = parseInt(currentTotalMarks);
 
-                        if($(".totalMarks").val()< $(this).val()){
-                            alert("Obtained marks cannot be greater than Maximum marks");
-                            $(this).focus();
-                        }else{
-                        total += Number($(this).val());
-                        }
-                        $("#totalMarksObtd").val(total);
+                    var currentObtainedMarks = $(this).val();
+                    currentObtainedMarks = parseInt(currentObtainedMarks);
 
+                    var par = $(this).parent();
+
+                    if(currentObtainedMarks > currentTotalMarks) {
+                        $(par).addClass("has-error");
+                    } else {
+                        $(par).removeClass("has-error");
+                        $(".marks").each(function () {
+                            total += Number($(this).val());
+                            $("#totalMarksObtd").val(total);
+                        });
+                    }
                 });
+
                 $(".totalMarks").each(function () {
                      max_total += Number($(this).val());
                      $("#totalMarks").val(max_total);
@@ -52,6 +62,7 @@
 
                         </div>
                         <div class="panel-body">
+                            <form method="post" action="/storeScores/quizResp/<%=entry._id%>/quiz_id/<%=entry.quiz_id._id%>/student_id/<%=entry.user_id%>">
                             <%entry.quiz_id.questions.forEach((que,index)=>{%>
                             <h5>
                                 <label>
@@ -60,9 +71,15 @@
                                 </label>
                                 <%= que.que_body%>
                                 <div class="col-xs-2 pull-right">
-                                    <form method="post" action="/storeScores/quizResp/<%=entry._id%>/quiz_id/<%=entry.quiz_id._id%>/student_id/<%=entry.user_id%>">
-                                    <label>Marks Obtained: </label><input type="number" class="marks form-control" name="marks" min = 0 max="calculateMax()">
-                                    <label>Out Of: </label><input type="number" class="totalMarks form-control" name="max_marks" value="<%=entry.quiz_id.marks[index].max_marks%>" readonly>
+                                    <div class="form-group">
+
+                                        <label class="control-label">Marks Obtained: </label>
+                                        <input type="number" class="marks form-control" name="marks" min = 0 max="<%=entry.quiz_id.marks[index].max_marks%>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Out Of: </label>
+                                        <input type="number" class="totalMarks form-control" name="max_marks" value="<%=entry.quiz_id.marks[index].max_marks%>" readonly>
+                                    </div>
 
                                 </div>
 

@@ -4,7 +4,6 @@ var User = require('../models/userSchema');
 var Question = require('../models/questionSchema');
 
 var answerSchema	=	new mongoose.Schema({
-	//_id				:	String,
 	discussion_id	:	{type: mongoose.Schema.Types.ObjectId, ref : 'Discussion'},
 	que_id			:	{type: mongoose.Schema.Types.ObjectId, ref : 'Question'},
 	timeStamp		:	String,
@@ -13,7 +12,21 @@ var answerSchema	=	new mongoose.Schema({
 	profile_img		:	{type: mongoose.Schema.Types.String, ref : 'User'},
 	ans_body		:	String,
 	ans_level		:	Number,
-	replies			:	[{type: mongoose.Schema.Types.ObjectId, ref : 'Answer'}]
+	replies			:	[{type: mongoose.Schema.Types.ObjectId, ref : 'Answer'}],
+	rating			:	[{
+							rating_type: {
+                                type: String,
+                                enum : ['UPVOTE','UPVOTE_DOWNVOTE']
+                            },
+							rating_by: {
+								type: mongoose.Schema.Types.ObjectId,
+								ref : 'User'
+							}
+						}],
+    rating_val		: {
+						type: Number,
+						default : 0
+					}
 });
 
 module.exports	= mongoose.model('Answer',answerSchema);

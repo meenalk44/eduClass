@@ -1,17 +1,17 @@
 <%
-init = function(ansLevel1, class_id, discussion_id, entry) {
+init = function(ansLevel1, class_id, discussion_id, entry, rating_template) {
 
     var mainHtml = "";
     ansLevel1.forEach(function (ans) {
         mainHtml += "<div class='row text-justify'>";
-        mainHtml += preOrder(ans, "", class_id, discussion_id, entry);
+        mainHtml += preOrder(ans, "", class_id, discussion_id, entry, rating_template);
         mainHtml += "</div>";
     });
 
     return mainHtml;
 }
 
-preOrder = function(ans, ansLevel1Html, class_id, discussion_id, entry) {
+preOrder = function(ans, ansLevel1Html, class_id, discussion_id, entry, rating_template) {
     // 11111 Main Media Div starts
     ansLevel1Html += "<div class='media'>";
     ansLevel1Html +=
@@ -21,11 +21,11 @@ preOrder = function(ans, ansLevel1Html, class_id, discussion_id, entry) {
 
     // 22222 Media Body Div Starts
     ansLevel1Html += "<div class='media-body'>";
-    ansLevel1Html += getHTMLForAnswer(ans, class_id, discussion_id, entry);
+    ansLevel1Html += getHTMLForAnswer(ans, class_id, discussion_id, entry, rating_template);
 
 
     ans.replies.forEach(function (reply) {
-        ansLevel1Html = preOrder(reply, ansLevel1Html, class_id, discussion_id, entry);
+        ansLevel1Html = preOrder(reply, ansLevel1Html, class_id, discussion_id, entry, rating_template);
     });
 
     // 22222 Media Body Div Ends
@@ -37,9 +37,37 @@ preOrder = function(ans, ansLevel1Html, class_id, discussion_id, entry) {
     return ansLevel1Html;
 }
 
-getHTMLForAnswer = function(ans, class_id, discussion_id, entry) {
+getHTMLForAnswer = function(ans, class_id, discussion_id, entry, rating_template) {
     var formAction = "/classes/" + class_id + "/discussion/" + discussion_id +
             "/que/" + entry._id + "/ans/" + ans._id;
+    //console.log("Rating Nested Discussion ------   "+rating_template);
+    if(rating_template == 'UPVOTE'){
+        rating_disp =
+                "<div class='input-group input-group-xs'>"+
+                "<form action='/classes/"+class_id+"/discussion/"+ discussion_id+"/ans/"+ans._id+"/upvote'method='post'>"  +
+                "<button type='submit' class='btn btn-success btn-sm pull-right' ><span class='glyphicon glyphicon-ok-circle'></span></button>"+
+                "</form>"+
+                "<span class='input-group-addon'>"+ans.rating_val+"</span>"+
+                "</div>";
+    }else{
+        rating_disp=
+                "<div class='input-group input-group-xs pull-right'>"+
+                "<form action='/classes/"+class_id+"/discussion/"+ discussion_id+"/ans/"+ans._id+"/upvote' method='post'>"  +
+                "<button type='submit' class='btn btn-success btn-sm pull-right' name = 'upvote' ><span class='glyphicon glyphicon-circle-arrow-up'></span></button>"+
+                "</form>"+
+
+                "<div class='col-xs-3'> "+
+                ans.rating_val+
+                "</div>"+
+
+                "<form action='/classes/"+class_id+"/discussion/"+ discussion_id+"/ans/"+ans._id+"/downvote' method='post'>"  +
+                "<button type='submit' class='btn btn-danger btn-sm pull-right' name = 'upvote' ><span class='glyphicon glyphicon-circle-arrow-down'></span></button>"+
+                "</form>"+
+                "</div>"+
+        "<br/>"+
+        "<br/>"+
+        "<br/>";
+    }
     var html =
             "<h6 class='media-heading'>" +
             ans.fullname + "&nbsp;" +
@@ -48,9 +76,15 @@ getHTMLForAnswer = function(ans, class_id, discussion_id, entry) {
             "</small>" +
             "</h6>" +
             ans.ans_body +
+
+            rating_disp+
+            "<br/>"+
             "<button class='replybtn btn btn-default btn-sm pull-right'>" +
             "<span class='glyphicon glyphicon-comment'></span>" +
             "</button>" +
+
+
+
             "<div class='replyForm collapse in'>" +
             "<form method='post' action='" + formAction + "' >" +
             "<h6>" +
@@ -63,7 +97,9 @@ getHTMLForAnswer = function(ans, class_id, discussion_id, entry) {
             "Post Reply" +
             "</button>" +
             "</form>" +
+
             "</div>" +
+                  "<br/>"+
             "<hr>";
 
     return html;

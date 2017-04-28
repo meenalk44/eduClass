@@ -70,10 +70,10 @@ function isLoggedIn(req, res, next) {
 app.get('*', function(req, res, next) {
 	User.find({}).exec()
 		.then(function (users) {
-			console.log(users);
+			//console.log(users);
 			req.user = users[0];
             res.locals.currentUser = users[0];
-            console.log("USER_______ : "+req.user.id);
+            //console.log("USER_______ : "+req.user.id);
             next();
         });
     /*res.locals.currentUser = req.user;
@@ -84,10 +84,10 @@ app.get('*', function(req, res, next) {
 app.post('*',function (req,res,next) {
     User.find({}).exec()
         .then(function (users) {
-            console.log(users);
+            //console.log(users);
             req.user = users[0];
             res.locals.currentUser = users[0];
-            console.log("USER____POST___ : "+req.user.id);
+            //console.log("USER____POST___ : "+req.user.id);
             next();
         });
     /*res.locals.currentUser = req.user;
@@ -132,7 +132,7 @@ function emailInDB(req, res, next) {
 			if(users.length === 0) {
 				// send error saying not a valid user
 				console.log("No users found");
-				res.render('error',{msg:'Login Failed! You are not registered! To sign up as Teacher click on "Sign Up as Teacher" button.'});
+				res.render('error',{msg:'Login Failed! You are not registered! To sign up as Teacher click on "Sign Up as Teacher" button.',redirect:'/'});
 			} else {
 				return next();
 				
@@ -176,7 +176,8 @@ app.post('/addStudents/:id', classController.addStudents);
 app.get('/classSettings/:class_id/:id',checkRole, classController.removeStudents);
 app.post('/classCreate',checkRole, classController.createClass);
 app.get('/classes/:id/template', classController.templateSettings);
-app.post('/classes/:id/changeTemplate', classController.changeTemplate);
+app.post('/classes/:id/changeDiscussionTemplate', classController.changeDiscussionTemplate);
+app.post('/classes/:class_id/changeRatingTemplate',classController.changeRatingTemplate);
 
 
 app.get('/error',function(req,res){
@@ -193,7 +194,8 @@ app.get('/classes/:class_id/discussion/:id', discussionController.dicussionShow)
 app.post('/classes/:class_id/discussion/:id', discussionController.postQue);
 app.post('/classes/:class_id/discussion/:discussion_id/que/:ques_id',discussionController.postAns);
 app.post('/classes/:class_id/discussion/:discussion_id/que/:ques_id/ans/:ans_id',discussionController.postReply);
-app.get('/test', discussionController.test);
+app.post('/classes/:class_id/discussion/:discussion_id/ans/:ans_id/upvote', discussionController.upvoteAnswer);
+app.post('/classes/:class_id/discussion/:discussion_id/ans/:ans_id/downvote',discussionController.downvoteAnswer);
 
 app.get('/classes/drive/:id',driveController.dController);
 app.get('/driveController', driveController.dController);
@@ -209,7 +211,7 @@ app.post('/storeScores/quizResp/:quizResp_id/quiz_id/:quiz_id/student_id/:studen
 app.get('/viewResults/quiz_id/:quiz_id/',quizController.viewResults);
 app.get('/classes/:class_id/quizScores',quizController.showScore);
 app.get('/analytics/quiz_id/:quiz_id',quizController.showAnalytics);
-app.get('/delete/class/:class_id/quiz_id/:quiz_id',quizController.softDelete);
+
 
 app.get('/logout', function(req, res) {
     req.logout();

@@ -1,6 +1,7 @@
 <html>
     <head>
             <% include partials/head.ejs %>
+
             <style>
                 body { padding-top: 60px; padding-bottom: 30px; }
             </style>
@@ -13,16 +14,16 @@
                     <div class="panel-heading"><b>Template Settings - Discussion Forum</b></div>
                     <div class="panel-body">
                         <%var entry = JSON.parse(class_details)%>
-                        <form method="post" action="/classes/<%=entry._id%>/changeTemplate">
+                        <form method="post" action="/classes/<%=entry._id%>/changeDiscussionTemplate">
 
                             <div class="form-group">
-                                <p><label>Current Pattern:</label> <%=entry.template%> </p>
+                                <p><label>Current Pattern:</label> <%=entry.template_discussion%> </p>
                                 <p></p><label>Select Template Pattern: </label>
                                 <label class="radio-inline">
-                                    <input type="radio" name="radioOpt" id="flat" value="Flat" checked  >Flat
+                                    <input type="radio" name="radioOpt1" id="flat" value="Flat" checked  >Flat
                                 </label>
                                 <label class="radio-inline">
-                                    <input type="radio" name="radioOpt" id="nested" value="Nested">Nested
+                                    <input type="radio" name="radioOpt1" id="nested" value="Nested">Nested
                                 </label></p>
                                 <input type="submit" class="btn btn-success pull-right" value="Change Pattern">
                             </div>
@@ -33,16 +34,21 @@
                     <div class="panel-heading"><b>Template Settings - Rating System</b></div>
                     <div class="panel-body">
                         <%var entry = JSON.parse(class_details)%>
-                        <form method="post" action="">
+                        <form method="post" action="/classes/<%=entry._id%>/changeRatingTemplate">
 
                             <div class="form-group">
-                                <p><label>Current Pattern:</label>  </p>
+                                <%if(entry.template_rating == 'UPVOTE'){%>
+                                <%var temp = 'Upvote' ;%>
+                                <%}else{%>
+                                <%temp = 'Upvote and Downvote';%>
+                                <%}%>
+                                <p><label>Current Pattern:</label> <%=temp%> </p>
                                 <p></p><label>Select Template Pattern: </label>
                                 <label class="radio-inline">
-                                    <input type="radio" name="radioOpt" id="type1" value="UpVote and DownVote" checked  >UpVote and Downvote
+                                    <input type="radio" name="radioOpt2" id="type1" value="UPVOTE_DOWNVOTE" checked>UpVote and Downvote
                                 </label>
                                 <label class="radio-inline">
-                                    <input type="radio" name="radioOpt" id="type2" value="Approve">Approve
+                                    <input type="radio" name="radioOpt2" id="type2" value="UPVOTE">Upvote
                                 </label></p>
                                 <input type="submit" class="btn btn-success pull-right" value="Change Pattern">
                             </div>
