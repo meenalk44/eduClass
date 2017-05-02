@@ -57,55 +57,54 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(flash());
 
-function isLoggedIn(req, res, next) {
-	/*console.log(req.url);
-	if (req.url === "/" || req.url.startsWith("/auth/google") || req.url.startsWith("/auth/google/callback") || req.url.startsWith("/signUp")) {
-         return next();
-	} else {
-        res.redirect('/');
-	}*/
+// development only
+if ('development' == app.get('env')) {
+    app.use(express.errorHandler());
 }
 
 
+
+
+
 app.get('*', function(req, res, next) {
-	User.find({}).exec()
+	/*User.find({}).exec()
 		.then(function (users) {
 			//console.log(users);
 			req.user = users[0];
             res.locals.currentUser = users[0];
             //console.log("USER_______ : "+req.user.id);
             next();
-        });
-    /*res.locals.currentUser = req.user;
-    next();*/
+        });*/
+    res.locals.currentUser = req.user;
+    next();
 
 });
 
-app.post('*',function (req,res,next) {
-    User.find({}).exec()
+app.post('*', function (req,res,next) {
+    /*User.find({}).exec()
         .then(function (users) {
             //console.log(users);
             req.user = users[0];
             res.locals.currentUser = users[0];
             //console.log("USER____POST___ : "+req.user.id);
             next();
-        });
-    /*res.locals.currentUser = req.user;
-    next();*/
+        });*/
+    res.locals.currentUser = req.user;
+    next();
 
 });
 
+function isLoggedIn(req, res, next) {
+    console.log("_______________ISLOGGEDIN________\n"+req.url);
+    if (req.url === "/" || req.url.startsWith("/auth/google") || req.url.startsWith("/auth/google/callback") || req.url.startsWith("/signUp")) {
+        return next();
+    } else {
+        res.redirect('/');
+    }
 
-
-
-
-// development only
-if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
 }
 
-
-app.get('/',function(req,res){
+app.get('/', isLoggedIn,function(req,res){
 	if(req.user) {
 		res.redirect("/profile");
 	} else {
@@ -113,7 +112,7 @@ app.get('/',function(req,res){
 	}
 	
 });
-app.get('/signUp',function(req,res){
+app.get('/signUp',isLoggedIn, function(req,res){
 	res.render('signUp');
 });
 
@@ -122,7 +121,7 @@ app.post('/signUpTeacher',signUpTeacher.signUp);
 
 function emailInDB(req, res, next) {
 	var emailParam = req.param('email');
-	console.log(emailParam);
+	console.log("---EmailInDB--***** "+emailParam);
 
 	User.find({'email': emailParam}, function(err, users) {
 		if(err) {
@@ -145,9 +144,9 @@ function emailInDB(req, res, next) {
 
 app.get('/auth/google', emailInDB, passport.authenticate('google',
 		{ scope : ['profile', 
-		           'email',
-		           'https://www.googleapis.com/auth/drive',
-			       'https://www.googleapis.com/auth/drive.file'] }));
+		           'email']
+		}
+		));
 
 app.get('/auth/google/callback',
         passport.authenticate('google', {
@@ -155,13 +154,14 @@ app.get('/auth/google/callback',
                 failureRedirect : '/'
         }));
 
-app.get('/profile',function(req, res) {
+app.get('/profile', function(req, res) {
+	console.log("Profile************* ");
     res.render('profile.ejs', {
         user : req.user 
     });
 });
 
-app.get('/classes',classController.classIndex);
+
 
 function checkRole(req,res,next){
 	if(req.user.role === "Student")
@@ -170,7 +170,7 @@ function checkRole(req,res,next){
 		return next();
 	
 }
-
+app.get('/classes',classController.classIndex);
 app.get('/classes/:id/manage', checkRole,classController.manageStudents);
 app.post('/addStudents/:id', classController.addStudents);
 app.get('/classSettings/:class_id/:id',checkRole, classController.removeStudents);
@@ -196,6 +196,8 @@ app.post('/classes/:class_id/discussion/:discussion_id/que/:ques_id',discussionC
 app.post('/classes/:class_id/discussion/:discussion_id/que/:ques_id/ans/:ans_id',discussionController.postReply);
 app.post('/classes/:class_id/discussion/:discussion_id/ans/:ans_id/upvote', discussionController.upvoteAnswer);
 app.post('/classes/:class_id/discussion/:discussion_id/ans/:ans_id/downvote',discussionController.downvoteAnswer);
+
+app.get('/analytics/discussion_id/:discussion_id',discussionController.totalParticipation);
 
 app.get('/classes/drive/:id',driveController.dController);
 app.get('/driveController', driveController.dController);

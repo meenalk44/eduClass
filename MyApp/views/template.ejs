@@ -14,43 +14,103 @@
                     <div class="panel-heading"><b>Template Settings - Discussion Forum</b></div>
                     <div class="panel-body">
                         <%var entry = JSON.parse(class_details)%>
-                        <form method="post" action="/classes/<%=entry._id%>/changeDiscussionTemplate">
 
-                            <div class="form-group">
-                                <p><label>Current Pattern:</label> <%=entry.template_discussion%> </p>
-                                <p></p><label>Select Template Pattern: </label>
-                                <label class="radio-inline">
-                                    <input type="radio" name="radioOpt1" id="flat" value="Flat" checked  >Flat
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" name="radioOpt1" id="nested" value="Nested">Nested
-                                </label></p>
-                                <input type="submit" class="btn btn-success pull-right" value="Change Pattern">
+                            <div class="col-sm-6">
+                                <div class="container-fluid">
+                                <label>Set A</label>
+                                    <form method="post" action="/classes/<%=entry._id%>/changeDiscussionTemplate">
+                                        <div class="form-group">
+
+
+                                        <p><label>Current Pattern:</label> <%=entry.template_A.template_discussion%> </p>
+                                        <p></p><label>Select Template Pattern: </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="radioOpt1" id="flat" value="Flat" checked  >Flat
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="radioOpt1" id="nested" value="Nested">Nested
+                                        </label></p>
+                                        <!--<input type="submit" class="btn btn-success pull-right" value="Change Pattern">-->
+
+                                        </div>
+
+                                    <!--</form>-->
                             </div>
-                        </form>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="container-fluid">
+                                <label>Set B</label>
+                                    <!--<form method="post" action="/classes/<%=entry._id%>/changeDiscussionTemplate">-->
+                                        <div class="form-group">
+                                            <p><label>Current Pattern:</label> <%=entry.template_B.template_discussion%> </p>
+                                            <p></p><label>Select Template Pattern: </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="radioOpt1b" id="flat" value="Flat" checked  >Flat
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="radioOpt1b" id="nested" value="Nested">Nested
+                                            </label></p>
+                                            <input type="submit" class="btn btn-success pull-right" value="Change Pattern">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
                     </div>
                 </div>
                 <div class="panel panel-default">
                     <div class="panel-heading"><b>Template Settings - Rating System</b></div>
                     <div class="panel-body">
                         <%var entry = JSON.parse(class_details)%>
-                        <form method="post" action="/classes/<%=entry._id%>/changeRatingTemplate">
 
-                            <div class="form-group">
-                                <%if(entry.template_rating == 'UPVOTE'){%>
-                                <%var temp = 'Upvote' ;%>
-                                <%}else{%>
-                                <%temp = 'Upvote and Downvote';%>
-                                <%}%>
-                                <p><label>Current Pattern:</label> <%=temp%> </p>
-                                <p></p><label>Select Template Pattern: </label>
-                                <label class="radio-inline">
-                                    <input type="radio" name="radioOpt2" id="type1" value="UPVOTE_DOWNVOTE" checked>UpVote and Downvote
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" name="radioOpt2" id="type2" value="UPVOTE">Upvote
-                                </label></p>
-                                <input type="submit" class="btn btn-success pull-right" value="Change Pattern">
+                            <div class="col-sm-6">
+                                <div class="container-fluid">
+                                <label>Set A</label>
+                                    <form method="post" action="/classes/<%=entry._id%>/changeRatingTemplate">
+                                        <div class="form-group">
+                                            <%if(entry.template_A.template_rating == 'UPVOTE'){%>
+                                            <%var temp = 'Upvote' ;%>
+                                            <%}else{%>
+                                            <%temp = 'Upvote and Downvote';%>
+                                            <%}%>
+                                            <p><label>Current Pattern:</label> <%=temp%> </p>
+                                            <p></p><label>Select Template Pattern: </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="radioOpt2" id="type1" value="UPVOTE_DOWNVOTE" checked>UpVote and Downvote
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="radioOpt2" id="type2" value="UPVOTE">Upvote
+                                            </label></p>
+                                           <!-- <input type="submit" class="btn btn-success pull-right" value="Change Pattern">-->
+                                        </div>
+                                   <!-- </form>-->
+                                </div>
+                            </div>
+
+
+                            <div class="col-sm-6">
+                                <div class="container-fluid">
+                                    <label>Set B</label>
+                                    <!--<form method="post" action="/classes/<%=entry._id%>/changeRatingTemplate">-->
+                                        <div class="form-group">
+                                            <%if(entry.template_B.template_rating == 'UPVOTE'){%>
+                                            <%var temp = 'Upvote' ;%>
+                                            <%}else{%>
+                                            <%temp = 'Upvote and Downvote';%>
+                                            <%}%>
+                                            <p><label>Current Pattern:</label> <%=temp%> </p>
+                                            <p></p><label>Select Template Pattern: </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="radioOpt2b" id="type1" value="UPVOTE_DOWNVOTE" checked>UpVote and Downvote
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="radioOpt2b" id="type2" value="UPVOTE">Upvote
+                                            </label></p>
+                                            <input type="submit" class="btn btn-success pull-right" value="Change Pattern">
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </form>
                     </div>

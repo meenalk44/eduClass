@@ -7,12 +7,21 @@ var classSchema = new mongoose.Schema({
 	teacher_id	:	{type: mongoose.Schema.Types.ObjectId, ref : 'User'},
 	student_ids	:	[{type: mongoose.Schema.Types.ObjectId, ref : 'User'}],
 	discussion_id:	{type: mongoose.Schema.Types.ObjectId, ref : 'Discussion'},
-	template_discussion	:	String,
-	template_rating: {
-        type: String,
-        enum : ['UPVOTE','UPVOTE_DOWNVOTE']
-    }
-	
+	template_A :{
+			template_discussion	:	String,
+			template_rating	:	{
+				type: String,
+				enum :	['UPVOTE', 'UPVOTE_DOWNVOTE']
+			}
+		},
+    template_B :{
+			template_discussion	:	String,
+			template_rating	:	{
+				type: String,
+				enum :	['UPVOTE', 'UPVOTE_DOWNVOTE']
+			}
+    	}
+
 });
 
 module.exports = mongoose.model('Class',classSchema);

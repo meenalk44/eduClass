@@ -7,13 +7,23 @@ var Class = require('../models/classSchema');
 var Promise = require('bluebird');
 
 module.exports.createClass = function(req,res){
-	var discussion_template = req.body.radioOpt1;
-	var rating_template = req.body.radioOpt2;
+	var discussion_template_A = req.body.radioOpt1;
+	var discussion_template_B = req.body.radioOpt1b;
+	var rating_template_A = req.body.radioOpt2;
+    var rating_template_B = req.body.radioOpt2b;
 	var newClass = new Class({
 		class_name	: req.body.className,
 		teacher_id : req.user.id,
-		template_discussion	:	discussion_template,
-		template_rating	:	rating_template
+		template_A:{
+
+            template_discussion	:	discussion_template_A,
+            template_rating	:	rating_template_A
+		},
+        template_B:    {
+                template_discussion	:	discussion_template_B,
+                template_rating	:	rating_template_B
+            }
+
 	});
 	newClass.save(function(err,entry){
 		if(err)
@@ -47,6 +57,22 @@ module.exports.createClass = function(req,res){
 	});
 };
 
+module.exports.classIndex = function(req,res){
+    var teacherId = req.user._id;
+    //console.log(teacherId);
+    Class.find({}).exec(function(err, entries){
+        if(err)
+            console.log(err)
+        else{
+            console.log("classDetails: "+ entries);
+            res.render('classes',{entries:JSON.stringify(entries)});
+        }
+    });
+
+};
+
+
+
 module.exports.manageStudents = function(req,res){
 	console.log("in classSettings");
 	var id = req.param('id');
@@ -59,6 +85,7 @@ module.exports.manageStudents = function(req,res){
 		if(err)
 			console.log(err);
 		else{
+
 			res.render('classSettings',{classEntry : JSON.stringify(entry),class_id:id});
 		}
 	});
@@ -81,23 +108,51 @@ module.exports.addStudents = function(req,res){
 				role: 'Student'
 			});
 			console.log(newUser);
-			newUser.save(function(err,entry){
-				if(err){
-					console.log("Error while posting student to db");
-					reject(err);
-				}else{
-					console.log("student saved to db:  "+entry);
-					resolve(entry.id);
-					
+            newUser.save(function(err,entry){
+                if(err){
+                    console.log("Error while posting student to db");
+                    reject(err);
+                }else{
+                    console.log("student saved to db:  "+entry);
+                    resolve(entry.id);
+
+                }
+            });
+			/*//--------------------------check if user already exists in db ------------------
+			User.find({'email':email}).exec(function(err,user){
+				if(err)
+					console.log(err);
+				else{
+					console.log(user);
+					if(user == [] || user =={} || user == null){
+						 newUser.save(function(err,entry){
+							 if(err){
+								 console.log("Error while posting student to db");
+								 reject(err);
+							 }else{
+								 console.log("student saved to db:  "+entry);
+								 resolve(entry.id);
+
+							 }
+						 });
+
+					}
+					else{
+						console.log("User already exists");
+						resolve(user.id);
+					}
+
 				}
-			});
-			
+
+            });*/
+
+
 		});
 		promise_arr.push(p);
 		
 	});
 	
-	console.log("Promise: "+promise_arr);
+	console.log("Promise: "+JSON.stringify(promise_arr));
 	
 	Promise.all(promise_arr)
 		.then(function (stud_id) {
@@ -151,24 +206,34 @@ module.exports.templateSettings = function (req,res) {
 
 module.exports.changeDiscussionTemplate = function(req,res){
 	var class_id = req.param('id');
-	var newTemplate = req.body.radioOpt1;
-	Class.findByIdAndUpdate(class_id, {$set:{template_discussion:newTemplate}},{new:true},function (err,class_details) {
+	var newTemplate_A = req.body.radioOpt1;
+	var newTemplate_B = req.body.radioOpt1b;
+	Class.findById(class_id).exec(function (err,classDetails) {
 		if(err)
 			console.log(err);
 		else{
+			classDetails.template_A.template_discussion = newTemplate_A;
+			classDetails.template_B.template_discussion = newTemplate_B;
+			classDetails.save();
             res.redirect("/classes/" + class_id+ "/template");
-        }
+		}
 
     });
+
 };
 
 module.exports.changeRatingTemplate = function (req,res) {
 	var class_id = req.param('class_id');
-	var newTemplate = req.body.radioOpt2;
-    Class.findByIdAndUpdate(class_id, {$set:{template_rating:newTemplate}},{new:true},function (err,class_details) {
+	var newTemplate_A = req.body.radioOpt2;
+	var newTemplate_B = req.body.radioOpt2b;
+
+    Class.findById(class_id).exec(function (err,classDetails) {
         if(err)
             console.log(err);
         else{
+            classDetails.template_A.template_rating = newTemplate_A;
+            classDetails.template_B.template_rating = newTemplate_B;
+            classDetails.save();
             res.redirect("/classes/" + class_id+ "/template");
         }
 
@@ -177,17 +242,5 @@ module.exports.changeRatingTemplate = function (req,res) {
 
 };
 
-module.exports.classIndex = function(req,res){
-	var teacherId = req.user._id;
-	//console.log(teacherId);
-	Class.find({}).exec(function(err, entries){
-		if(err)
-			console.log(err)
-		else{
-			//console.log("classDetails: "+ entries);
-			res.render('classes',{entries:JSON.stringify(entries)});
-		}
-	});
 
-};
 

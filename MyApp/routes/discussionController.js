@@ -12,107 +12,118 @@ var async = require('async');
 module.exports.dicussionShow = function(req, res){
 	var discussion_id = req.param('id');
 	var class_id = req.param('class_id');
-	var current_discussion_template ='';
-	var current_rating_template = '';
-	console.log("Class_id: ", class_id);
-	console.log("fetching data from mongo");
+	var template_discussion_A ='';
+	var template_discussion_B = '';
+	var template_rating_A = '';
+	var template_rating_B = '';
+	var currentUserSet = req.user.user_set;
+	console.log("curr user set******** "+ currentUserSet);
     Class.findById(class_id)
         .exec(function (err, classInfo) {
             if (err)
                 console.log(err);
             else {
                 console.log(classInfo);
-                current_discussion_template = classInfo.template_discussion;
-                current_rating_template = classInfo.template_rating;
+                template_discussion_A = classInfo.template_A.template_discussion;
+                template_rating_A = classInfo.template_A.template_rating;
 
-                console.log("Templates: "+current_discussion_template + "   Rating   "+ current_rating_template);
-                if (current_discussion_template === 'Flat') {
-                    Question.find({'discussion_id': discussion_id}).sort({'_id': -1})
-                        .exec(function (err, questions) {
-                            if (err)
-                                console.log("ERR0a: " + err);
-                            else {
-                                async.eachOf(questions,
-                                    function (que, index, callback) {
-                                        populateReplies(que)
-                                            .then(function (finalAnswer) {
-                                                que.answers_level1 = finalAnswer;
-                                                callback();
-                                            })
-                                            .catch(function (err) {
-                                                res.send("ERR 0b: " + err);
-
-                                            })
-
-                                    },
-                                    function (err) {
-                                        if (err) {
-                                            console.log(err);
-                                        } else {
-                                            res.render('flatDiscussion', {
-                                                entries: questions,
-                                                class_id: class_id,
-                                                discussion_id: discussion_id,
-                                                template: current_discussion_template,
-                                                rating_template : current_rating_template
-                                            });
-                                        }
-
-                                    }
-                                );
-                            }
-
-                        });
-
-
-
-
-
-                } else {
-                    console.log("Nested posts");
-
-                    Question.find({'discussion_id': discussion_id}).sort({'_id': -1})
-                        .exec(function (err, questions) {
-                            if (err)
-                                console.log("ERR0a: " + err);
-                            else {
-                                async.eachOf(questions,
-                                    function (que, index, callback) {
-                                        populateReplies(que)
-                                            .then(function (finalAnswer) {
-                                                que.answers_level1 = finalAnswer;
-                                                callback();
-                                            })
-                                            .catch(function (err) {
-                                                res.send("ERR 0b: " + err);
-
-                                            })
-
-                                    },
-                                    function (err) {
-                                        if (err) {
-                                            console.log(err);
-                                        } else {
-                                            console.log("Nested answers : ==================\n"+ questions);
-                                            res.render('nestedDiscussion', {
-                                                entries: questions,
-                                                class_id: class_id,
-                                                discussion_id: discussion_id,
-                                                template: current_discussion_template,
-                                                rating_template : current_rating_template
-                                            });
-                                        }
-
-                                    }
-                                );
-                            }
-
-                        });
-
-                }
+                template_discussion_B = classInfo.template_B.template_discussion;
+                template_rating_B = classInfo.template_B.template_rating;
+                if(currentUserSet == 'A')
+                    discussionView(class_id, discussion_id, template_discussion_A, template_rating_A,req,res);
+                else
+                    discussionView(class_id, discussion_id, template_discussion_B, template_rating_B,req,res);
             }
         });
 };
+
+function discussionView(class_id, discussion_id, discussion_template, rating_template,req,res) {
+    console.log("Discussion: "+ discussion_template);
+    console.log("Rating: "+ rating_template);
+    if (discussion_template === 'Flat') {
+        Question.find({'discussion_id': discussion_id}).sort({'_id': -1})
+            .exec(function (err, questions) {
+                if (err)
+                    console.log("ERR0a: " + err);
+                else {
+                    async.eachOf(questions,
+                        function (que, index, callback) {
+                            populateReplies(que)
+                                .then(function (finalAnswer) {
+                                    que.answers_level1 = finalAnswer;
+                                    callback();
+                                })
+                                .catch(function (err) {
+                                    res.send("ERR 0b: " + err);
+
+                                })
+
+                        },
+                        function (err) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                res.render('flatDiscussion', {
+                                    entries: questions,
+                                    class_id: class_id,
+                                    discussion_id: discussion_id,
+                                    template: discussion_template,
+                                    rating_template : rating_template
+                                });
+                            }
+
+                        }
+                    );
+                }
+
+            });
+    } else {
+        console.log("Nested posts");
+
+        Question.find({'discussion_id': discussion_id}).sort({'_id': -1})
+            .exec(function (err, questions) {
+                if (err)
+                    console.log("ERR0a: " + err);
+                else {
+                    async.eachOf(questions,
+                        function (que, index, callback) {
+                            populateReplies(que)
+                                .then(function (finalAnswer) {
+                                    que.answers_level1 = finalAnswer;
+                                    callback();
+                                })
+                                .catch(function (err) {
+                                    res.send("ERR 0b: " + err);
+
+                                })
+
+                        },
+                        function (err) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log("Nested answers : ==================\n"+ questions);
+                                res.render('nestedDiscussion', {
+                                    entries: questions,
+                                    class_id: class_id,
+                                    discussion_id: discussion_id,
+                                    template: discussion_template,
+                                    rating_template : rating_template
+                                });
+                            }
+
+                        }
+                    );
+                }
+
+            });
+
+    }
+
+
+
+};
+
 
 function populateReplies(que) {
 
@@ -242,7 +253,8 @@ module.exports.postQue = function(req,res){
 		timeStamp: time,
 		user_id : req.user._id,
 		fullname : req.user.fullname,
-		profile_img	:	req.user.profile_img
+		profile_img	:	req.user.profile_img,
+        user_set    :   req.user.user_set
 	});
 	//console.log(newQue);
 	newQue.save(function(err, entryQue){
@@ -287,6 +299,7 @@ module.exports.postAns = function (req,res) {
             user_id: req.user.id,
             fullname: req.user.fullname,
             profile_img: req.user.profile_img,
+            user_set    :   req.user.user_set,
             ans_body: req.body.ansBody,
             ans_level: 1,
             timeStamp: time
@@ -327,10 +340,10 @@ module.exports.postReply = function (req,res) {
     var newReply = new Answer({
         discussion_id: discussion_id,
         que_id: ques_id,
-        //ans_id: ans_id,
         user_id: req.user.id,
         fullname: req.user.fullname,
         profile_img: req.user.profile_img,
+        user_set    :   req.user.user_set,
         ans_body: req.body.replyBody,
         timeStamp: time
     });
@@ -377,7 +390,6 @@ module.exports.upvoteAnswer = function (req,res) {
                     async.each(ans.rating, function (ratingObj,callback) {
                         if(ratingObj.rating_by == req.user.id){
                             alreadyRated = 1;
-                            //callback();
                         }
                         callback();
 
@@ -500,6 +512,125 @@ module.exports.downvoteAnswer = function (req,res) {
 
 };
 
+module.exports.totalParticipation  = function (req,res) {
+    var discussion_id = req.param('discussion_id');
+   // var discussion_id = '58ce07d8dd449a20b4f02d22';
+    var totalNumOfStudents_A = 0 , totalNumOfPosts_A = 0, mean_A = 0, std_dev_A =0, variance_A = 0, ci1_A=0, ci2_A =0;
+    var totalNumOfStudents_B = 0 , totalNumOfPosts_B = 0, mean_B = 0, std_dev_B =0, variance_B = 0, ci1_B=0, ci2_B =0;
+    var studentPostsCountArr = [];
+    var numOfPostsByUser = 0;
+    var studentIds = [], students_Set_A = [], students_Set_B = [];
+    var class_name = '';
+    /*// when user sets are not considered
+    Class.findOne({'discussion_id':discussion_id}).exec(function (err,classEntry) {
+        class_name = classEntry.class_name;
+        totalNumOfStudents_A = classEntry.student_ids.length;
+       async.each(classEntry.student_ids,
+           function (stud_id, callback) {
+               Answer.find({'discussion_id':discussion_id, 'user_id':stud_id        })
+                   .exec(function (err,answersByUser) {
+                      // console.log("Ans By User----------\n", answersByUser);
+                       numOfPostsByUser = answersByUser.length;
+                       console.log("Num of posts by "+ stud_id + " : "+ numOfPostsByUser);
+                       var postEntry = {
+                           student_id : stud_id,
+                           numOfPosts : numOfPostsByUser
+                       };
+                       studentPostsCountArr.push(postEntry);
+                       callback();
+                   });
+           },
+           function (err) {
+               if(err)
+                    console.log(err);
+               else{
+                   console.log("Final Array===========\n"+ JSON.stringify(studentPostsCountArr));
+                   async.series([
+                       function (callbackA) {
+                           Answer.find({'discussion_id':discussion_id}).exec(function (err,answerEntries) {
+                               totalNumOfPosts = answerEntries.length;
+                               console.log("Numof Posts"+ totalNumOfPosts);
+                               console.log("Num of students" + totalNumOfStudents);
+                               callbackA();
+                           });
+
+                       
+                       },
+                       function (callbackB) {
+                           mean = totalNumOfPosts/totalNumOfStudents;
+                           console.log("Mean "+ mean);
+                           callbackB();
+                       
+                       }
+                   ],
+                   function (err,results) {
+                       console.log("results ======\n"+results);
+
+                       var sum = 0;
+                       async.each(studentPostsCountArr,
+                           function (arrEntry,callback1) {
+                               sum += Math.pow(arrEntry.numOfPosts - mean,2);
+                               console.log("Sum "+ sum);
+                               callback1();
+                           },
+                           function (err) {
+                               variance = sum/(totalNumOfStudents - 1);
+                               console.log("Variance " + variance);
+                               std_dev = (Math.sqrt(variance)).toFixed(2);
+                               console.log("Std dev : "+ std_dev);
+                               var value = 1.96*(std_dev/Math.sqrt(totalNumOfStudents - 1));
+                               ci1 = (mean - value).toFixed(2);
+                               ci2 = (mean + value).toFixed(2);
+                               console.log("Confidence interval "+ ci1 + " to "+ ci2);
+                               res.render('discussionAnalytics', {class_name:class_name ,ci1: ci1,ci2:ci2, mean:mean, std_dev:std_dev,variance:variance});
+
+
+                           });
+                       
+                   });
+
+
+
+
+
+               }
+           }
+       );
+
+
+
+    });
+    */
+//-------------------------------------------------code when user sets are considered
+    Class.findOne({'discussion_id':discussion_id})
+        .exec(function (err, classEntry) {
+        if(err)
+            console.log(err);
+        else{
+            studentIds = classEntry.student_ids;
+            console.log("Student_ids : "+ classEntry);
+            async.each(studentIds,
+                function(stud_id, callback){
+                    if(stud_id.user_set == 'A')
+                        students_Set_A.push(stud_id);
+                    else
+                        students_Set_B.push(stud_id);
+                    callback();
+
+                },
+                function(err){
+                    console.log("Set A: "+ JSON.stringify(students_Set_A));
+                    console.log("Set B: "+ JSON.stringify(students_Set_B));
+
+
+
+            });
+
+
+        }
+    });
+
+};
 
 
 

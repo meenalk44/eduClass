@@ -45,6 +45,8 @@ getHTMLForAnswer = function(ans, class_id, discussion_id, entry, rating_template
     //console.log("Rating Flat Discussion ------   "+rating_template);
     var rating_disp = "";
     if(rating_template == 'UPVOTE'){
+        if(ans.rating_val < 0)
+            ans.rating_val = 0;
         rating_disp =
                 "<div class='input-group input-group-xs'>"+
                 "<form action='/classes/"+class_id+"/discussion/"+ discussion_id+"/ans/"+ans._id+"/upvote'method='post'>"  +

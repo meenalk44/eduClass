@@ -9,6 +9,7 @@ var questionSchema	=	new mongoose.Schema({
 	user_id			:	{type: mongoose.Schema.Types.ObjectId, ref : 'User'},
 	fullname		:	{type: mongoose.Schema.Types.String, ref : 'User'},
 	profile_img		:	{type: mongoose.Schema.Types.String, ref : 'User'},
+    user_set		:	{type: mongoose.Schema.Types.String, ref : 'User'},
 	topic			:	String,
 	que_body		:	String,
 	answers_level1	:	[{type: mongoose.Schema.Types.ObjectId, ref : 'Answer'}]

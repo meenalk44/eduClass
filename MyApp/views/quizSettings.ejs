@@ -50,9 +50,6 @@
                 for(i=1; i<counter; i++){
                     msg +=  $('#textbox' + i).val();
                 }
-                //alert(msg);
-                //$('#quizForm').append($(msg));
-                //return msg;
 
             });
         });
@@ -114,7 +111,7 @@
                             <th>Analytics</th>
 
                             <!--<th>Edit Quiz</th>-->
-                            <th>Delete Quiz</th>
+                            <!--<th>Delete Quiz</th>-->
                         </tr>
                         </thead>
 
@@ -128,7 +125,7 @@
                             <td><a href="/evaluate/<%=entry._id%>"><span class="btn btn-primary btn-xs glyphicon glyphicon-check"></span></a></td>
                             <td><a href="/viewResults/quiz_id/<%=entry._id%>/"><span class="btn btn-default btn-xs glyphicon glyphicon-tasks"></span></a></td>
                             <td><a href="/analytics/quiz_id/<%=entry._id%>"><span class="btn btn-warning btn-xs glyphicon glyphicon-stats"></span></a></td>
-                            <td><a href="/delete/class/<%=entry.class_id%>/quiz_id/<%=entry._id%>" ><span class="btn btn-danger btn-xs glyphicon glyphicon-trash"></span></a></td>
+                            <!--<td><a href="/delete/class/<%=entry.class_id%>/quiz_id/<%=entry._id%>" ><span class="btn btn-danger btn-xs glyphicon glyphicon-trash"></span></a></td>-->
 
                         </tr>
                         <%})%>

@@ -42,6 +42,8 @@ getHTMLForAnswer = function(ans, class_id, discussion_id, entry, rating_template
             "/que/" + entry._id + "/ans/" + ans._id;
     //console.log("Rating Nested Discussion ------   "+rating_template);
     if(rating_template == 'UPVOTE'){
+        if(ans.rating_val < 0)
+            ans.rating_val = 0;
         rating_disp =
                 "<div class='input-group input-group-xs'>"+
                 "<form action='/classes/"+class_id+"/discussion/"+ discussion_id+"/ans/"+ans._id+"/upvote'method='post'>"  +
@@ -53,7 +55,7 @@ getHTMLForAnswer = function(ans, class_id, discussion_id, entry, rating_template
         rating_disp=
                 "<div class='input-group input-group-xs pull-right'>"+
                 "<form action='/classes/"+class_id+"/discussion/"+ discussion_id+"/ans/"+ans._id+"/upvote' method='post'>"  +
-                "<button type='submit' class='btn btn-success btn-sm pull-right' name = 'upvote' ><span class='glyphicon glyphicon-circle-arrow-up'></span></button>"+
+                "<button type='submit' class='btn btn-success btn-sm pull-right' name = 'upvote' ><span class='glyphicon glyphicon-arrow-up'></span></button>"+
                 "</form>"+
 
                 "<div class='col-xs-3'> "+
@@ -61,7 +63,7 @@ getHTMLForAnswer = function(ans, class_id, discussion_id, entry, rating_template
                 "</div>"+
 
                 "<form action='/classes/"+class_id+"/discussion/"+ discussion_id+"/ans/"+ans._id+"/downvote' method='post'>"  +
-                "<button type='submit' class='btn btn-danger btn-sm pull-right' name = 'upvote' ><span class='glyphicon glyphicon-circle-arrow-down'></span></button>"+
+                "<button type='submit' class='btn btn-danger btn-sm pull-right' name = 'upvote' ><span class='glyphicon glyphicon-arrow-down'></span></button>"+
                 "</form>"+
                 "</div>"+
         "<br/>"+
@@ -93,7 +95,7 @@ getHTMLForAnswer = function(ans, class_id, discussion_id, entry, rating_template
             "<textarea class='form-control' rows='2' name='replyBody'>" +
             "</textarea>" +
             "<br />" +
-            "<button type='submit' class='btn btn-success btn-xs pull-right'>" +
+            "<button type='submit' class='btn btn-default btn-xs pull-right'>" +
             "Post Reply" +
             "</button>" +
             "</form>" +

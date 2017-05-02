@@ -11,39 +11,67 @@
 <body>
 	<%if(currentUser.role != "Student"){%>
 	<div class="row">
-		<div class="col-sm-4"></div>
-		<div class="col-sm-4">
+		<div class="col-sm-2"></div>
+		<div class="col-sm-8">
 			<div class="panel panel-default">
 				<div class="panel-heading"><b>Create A New Class</b></div>
 				<div class="panel-body">
 
         		<form method="post" action="/classCreate">
+					<label>Class Name: </label>
 					<input type="text" placeholder="Enter Class Name" name="className">
-					<div class="form-group">
-						<label>Discussion Forum : </label>
-						<label class="radio-inline">
-							<input type="radio" name="radioOpt1" id="flat" value="Flat" checked>Flat
-						</label>
-						<label class="radio-inline">
-							<input type="radio" name="radioOpt1" id="nested" value="Nested">Nested
-						</label>
-					</div>
-					<div class="form-group">
-						<label>Rating System : </label>
-						<label class="radio-inline">
-							<input type="radio" name="radioOpt2" id="type1" value="UPVOTE_DOWNVOTE" checked>Upvote and Downvote
-						</label>
-						<label class="radio-inline">
-							<input type="radio" name="radioOpt2" id="type2" value="UPVOTE">Upvote
-						</label>
+					<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label>Set A:</label>
+							<label>Discussion Forum : </label>
+							<label class="radio-inline">
+								<input type="radio" name="radioOpt1" id="flat" value="Flat" checked>Flat
+							</label>
+							<label class="radio-inline">
+								<input type="radio" name="radioOpt1" id="nested" value="Nested">Nested
+							</label>
+						</div>
+						<div class="form-group">
+							<label>Rating System : </label>
+							<label class="radio-inline">
+								<input type="radio" name="radioOpt2" id="type1" value="UPVOTE_DOWNVOTE" checked>Upvote and Downvote
+							</label>
+							<label class="radio-inline">
+								<input type="radio" name="radioOpt2" id="type2" value="UPVOTE">Upvote
+							</label>
 
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label>Set B:</label>
+							<label>Discussion Forum : </label>
+							<label class="radio-inline">
+								<input type="radio" name="radioOpt1b" id="flat" value="Flat" checked>Flat
+							</label>
+							<label class="radio-inline">
+								<input type="radio" name="radioOpt1b" id="nested" value="Nested">Nested
+							</label>
+						</div>
+						<div class="form-group">
+							<label>Rating System : </label>
+							<label class="radio-inline">
+								<input type="radio" name="radioOpt2b" id="type1" value="UPVOTE_DOWNVOTE" checked>Upvote and Downvote
+							</label>
+							<label class="radio-inline">
+								<input type="radio" name="radioOpt2b" id="type2" value="UPVOTE">Upvote
+							</label>
+
+						</div>
+					</div>
 					</div>
 					<input type="submit" class="btn btn-success pull-right" value="Create Class">
         		</form>
         		</div>
         	</div>
 		</div>
-		<div class="col-sm-4"></div>
+		<div class="col-sm-2"></div>
 	</div>
 	<%}%>
 	<div class="row">
@@ -54,23 +82,24 @@
         			<table class="table table-striped table-condensed">
 
         				<thead>
-        			<tr>
-        				<th>Subject</th>
-						<%if(currentUser.role == "Teacher"){%>
-        				<th>#Students</th>
-        				<th>Manage Students</th>
-						<th>Template Settings</th>
-						<th>Quiz Settings</th>
-        				<%}%>
-                        <%if(currentUser.role == "Student"){%>
-        				<th>Quizzes</th>
-						<th>Quiz Scores</th>
-						<%}%>
-						<th>Discussion Forum</th>
-						<!--<th>Google Drive</th>-->
+							<tr>
+								<th>Subject</th>
+								<%if(currentUser.role == "Teacher"){%>
+								<th>#Students</th>
+								<th>Manage Students</th>
+								<th>Template Settings</th>
+								<th>Quiz Settings</th>
+								<th>Discussion Forum Analytics</th>
+								<%}%>
+								<%if(currentUser.role == "Student"){%>
+								<th>Quizzes</th>
+								<th>Quiz Scores</th>
+								<%}%>
+								<th>Discussion Forum</th>
+								<!--<th>Google Drive</th>-->
 
-        			</tr>
-        		</thead>
+							</tr>
+        				</thead>
         	
         				<tbody>
         			<%var entries = JSON.parse(entries)%>
@@ -81,13 +110,18 @@
 						<%if(currentUser.role == "Teacher"){%>
         				<td><span class="badge"><%= entry.student_ids.length%></td>
 						<td>
-        				<form method="get" action="/classes/<%=entry._id%>/manage">
-        				<button type="submit" class="glyphicon glyphicon-cog" ></button></td></form>
-						<td><form method="get" action="/classes/<%=entry._id%>/template">
-						<button type="submit" class="glyphicon glyphicon-text-size" ></button></form></td>
-						<td><form method="get" action="/classes/<%=entry._id%>/quizSettings">
-						<button type="submit" class="glyphicon glyphicon-wrench" ></button></form></td>
-                        <%}%>
+							<a href='/classes/<%=entry._id%>/manage'><span class='glyphicon glyphicon-cog'></span></a>
+						</td>
+        				<td>
+							<a href='/classes/<%=entry._id%>/template'><span class='glyphicon glyphicon-text-size'></span></a>
+						</td>
+						<td>
+							<a href='/classes/<%=entry._id%>/quizSettings'><span class='glyphicon glyphicon-wrench'></span></a>
+						</td>
+						<td>
+							<a href='/analytics/discussion_id/<%=entry.discussion_id%>'><span class='glyphicon glyphicon-stats'></span></a>
+						</td>
+						<%}%>
                         <%if(currentUser.role == "Student"){%>
 						<td>
 							<a href="/classes/<%=entry._id%>/availableQuizzes"><span class="glyphicon glyphicon-time"></a>
@@ -96,9 +130,6 @@
 						<td><a href="/classes/<%=entry._id%>/quizScores"><span class="glyphicon glyphicon-tasks"></a></td>
                         <%}%>
 						<td><a href="/classes/<%=entry._id%>/discussion/<%=entry.discussion_id%>"><span class="glyphicon glyphicon-copy"></a></td>
-
-						<!--<td><form method="get" action="/classes/drive/<%=entry._id%>">
-        				<button type="submit" class="glyphicon glyphicon-folder-open" ></button></td>-->
 						</form>
 
         			</tr>

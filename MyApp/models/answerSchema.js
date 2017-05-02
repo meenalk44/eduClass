@@ -10,6 +10,7 @@ var answerSchema	=	new mongoose.Schema({
 	user_id			:	{type: mongoose.Schema.Types.ObjectId, ref : 'User'},
 	fullname		:	{type: mongoose.Schema.Types.String, ref : 'User'},
 	profile_img		:	{type: mongoose.Schema.Types.String, ref : 'User'},
+    user_set		:	{type: mongoose.Schema.Types.String, ref : 'User'},
 	ans_body		:	String,
 	ans_level		:	Number,
 	replies			:	[{type: mongoose.Schema.Types.ObjectId, ref : 'Answer'}],

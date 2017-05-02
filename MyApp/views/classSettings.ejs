@@ -22,12 +22,16 @@
         	
       		</div>
       		<div class="col-sm-5">
+				<div class="panel panel-default">
         		<%if(classEntry){%>
         		<%var entry = JSON.parse(classEntry)%>
+
+
         		<table class="table table-striped">
         			<thead>
         				<tr>
         					<th>Enrolled Students</th>
+							<th>Remove</th>
         				</tr>
         			</thead>
         			<tbody>
@@ -57,6 +61,7 @@
         			</tbody>
         		</table>
         		<%}%>
+				</div>
         	</div> 
         	<div class="col-sm-1">
         	<a href="/classes">Back</a>
