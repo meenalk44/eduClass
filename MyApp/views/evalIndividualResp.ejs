@@ -3,43 +3,64 @@
         <% include partials/head.ejs %>
         <script>
                 $(document).ready(function () {
-                var max_total=0;
-                $(".marks").change(function(){
+                    var max_total=0;
                     var total = 0;
-                    var currentTotalMarks = $(this).parent().parent().find(".totalMarks").val();
-                    currentTotalMarks = parseInt(currentTotalMarks);
+                    $(".marks").change(function(){
 
-                    var currentObtainedMarks = $(this).val();
-                    currentObtainedMarks = parseInt(currentObtainedMarks);
+                        var currentTotalMarks = $(this).parent().parent().find(".totalMarks").val();
+                        currentTotalMarks = parseInt(currentTotalMarks);
 
-                    var par = $(this).parent();
+                        var currentObtainedMarks = $(this).val();
+                        currentObtainedMarks = parseInt(currentObtainedMarks);
 
-                    if(currentObtainedMarks > currentTotalMarks) {
-                        $(par).addClass("has-error");
-                    } else {
-                        $(par).removeClass("has-error");
-                        $(".marks").each(function () {
-                            total += Number($(this).val());
-                            $("#totalMarksObtd").val(total);
-                        });
-                    }
-                });
+                        var par = $(this).parent();
 
-                $(".totalMarks").each(function () {
-                     max_total += Number($(this).val());
-                     $("#totalMarks").val(max_total);
-                });
-
-               /* $(".btnTot").on(function () {
-                    $(".totalMarks").each(function () {
-
-                        alert($(".totalMarks") );
-                        alert($(".marks").val() );
-
-
+                        if(currentObtainedMarks > currentTotalMarks) {
+                            $(par).addClass("has-error");
+                            alert("Obtained marks cannot be greater than total marks!");
+                            event.preventDefault();
+                        } else {
+                            $(par).removeClass("has-error");
+                            total = 0;
+                            $(".marks").each(function () {
+                                total += Number($(this).val());
+                                $("#totalMarksObtd").val(total);
+                            });
+                        }
                     });
-                });*/
 
+                    $(".totalMarks").each(function () {
+                         max_total += Number($(this).val());
+                         $("#totalMarks").val(max_total);
+                    });
+
+                    $("#evalStudResp").submit(function (event) {
+                        var total = 0;
+                        var currentTotalMarks = $(this).parent().parent().find(".totalMarks").val();
+                        currentTotalMarks = parseInt(currentTotalMarks);
+
+                        var currentObtainedMarks = $(this).val();
+                        currentObtainedMarks = parseInt(currentObtainedMarks);
+
+                        var par = $(this).parent();
+
+                        if(currentObtainedMarks > currentTotalMarks) {
+                            alert("Obtained marks cannot be greater than total marks!");
+                            event.preventDefault();
+                        } else {
+                            total = 0;
+
+                            $(".marks").each(function () {
+                                total += Number($(this).val());
+                                $("#totalMarksObtd").val(total);
+                            });
+                            alert("Final Score: \n Marks Obtained : "+ total +"\n Total Marks : "+ max_total);
+                            return;
+
+                        }
+
+                        
+                    });
 
 
             });
@@ -62,7 +83,7 @@
 
                         </div>
                         <div class="panel-body">
-                            <form method="post" action="/storeScores/quizResp/<%=entry._id%>/quiz_id/<%=entry.quiz_id._id%>/student_id/<%=entry.user_id%>">
+                            <form method="post" id="evalStudResp" action="/storeScores/quizResp/<%=entry._id%>/quiz_id/<%=entry.quiz_id._id%>/student_id/<%=entry.user_id%>">
                             <%entry.quiz_id.questions.forEach((que,index)=>{%>
                             <h5>
                                 <label>

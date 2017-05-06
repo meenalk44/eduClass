@@ -49,9 +49,10 @@ getHTMLForAnswer = function(ans, class_id, discussion_id, entry, rating_template
                 "<form action='/classes/"+class_id+"/discussion/"+ discussion_id+"/ans/"+ans._id+"/upvote'method='post'>"  +
                 "<button type='submit' class='btn btn-success btn-sm pull-right' ><span class='glyphicon glyphicon-ok-circle'></span></button>"+
                 "</form>"+
-                "<span class='input-group-addon'>"+ans.rating_val+"</span>"+
+                "<span class='input-group-addon'>"+ans.num_of_upvotes+"</span>"+
                 "</div>";
     }else{
+        var rating_val = ans.num_of_upvotes - ans.num_of_downvotes;
         rating_disp=
                 "<div class='input-group input-group-xs pull-right'>"+
                 "<form action='/classes/"+class_id+"/discussion/"+ discussion_id+"/ans/"+ans._id+"/upvote' method='post'>"  +
@@ -59,7 +60,7 @@ getHTMLForAnswer = function(ans, class_id, discussion_id, entry, rating_template
                 "</form>"+
 
                 "<div class='col-xs-3'> "+
-                ans.rating_val+
+                rating_val+
                 "</div>"+
 
                 "<form action='/classes/"+class_id+"/discussion/"+ discussion_id+"/ans/"+ans._id+"/downvote' method='post'>"  +

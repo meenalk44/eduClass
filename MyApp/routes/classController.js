@@ -58,16 +58,36 @@ module.exports.createClass = function(req,res){
 };
 
 module.exports.classIndex = function(req,res){
-    var teacherId = req.user._id;
+    var showClasses = [];
+	var currUserID = req.user.id;
     //console.log(teacherId);
-    Class.find({}).exec(function(err, entries){
-        if(err)
-            console.log(err)
-        else{
-            console.log("classDetails: "+ entries);
-            res.render('classes',{entries:JSON.stringify(entries)});
-        }
-    });
+	if(req.user.role == 'Student'){
+		Class.find({}).exec(function(err,classes) {
+			if(err)
+				console.log(err);
+			else{
+
+                showClasses = classes.filter(function (classDetails) {
+                    return classDetails.student_ids.indexOf(currUserID) >= 0;
+                });
+                console.log("-Classes-----------\n"+JSON.stringify(showClasses));
+                res.render('classes',{entries:JSON.stringify(showClasses)});
+			}
+
+        });
+	}else{
+        var teacherId = req.user._id;
+        Class.find({'teacher_id':teacherId}).exec(function (err,classes) {
+        	if(err)
+        		console.log(err);
+        	else{
+        		console.log("-Classes---Teacher--------\n"+classes);
+                res.render('classes',{entries:JSON.stringify(classes)});
+			}
+
+        });
+	}
+
 
 };
 
@@ -107,23 +127,13 @@ module.exports.addStudents = function(req,res){
 				email: email,
 				role: 'Student'
 			});
-			console.log(newUser);
-            newUser.save(function(err,entry){
-                if(err){
-                    console.log("Error while posting student to db");
-                    reject(err);
-                }else{
-                    console.log("student saved to db:  "+entry);
-                    resolve(entry.id);
-
-                }
-            });
-			/*//--------------------------check if user already exists in db ------------------
-			User.find({'email':email}).exec(function(err,user){
+			//console.log(newUser);
+           //--------------------check if user already exists in db ------------------
+			User.findOne({'email':email}).exec(function(err,user){
 				if(err)
 					console.log(err);
 				else{
-					console.log(user);
+					console.log("----*****----"+user);
 					if(user == [] || user =={} || user == null){
 						 newUser.save(function(err,entry){
 							 if(err){
@@ -144,7 +154,7 @@ module.exports.addStudents = function(req,res){
 
 				}
 
-            });*/
+            });
 
 
 		});
@@ -198,7 +208,12 @@ module.exports.templateSettings = function (req,res) {
             console.log(err)
         else{
             //console.log("classDetails: "+ entries);
-            res.render('template',{class_details:JSON.stringify(class_details)});
+            res.render('template',{class_details:JSON.stringify(class_details),
+									currDiscussionTemplateA : class_details.template_A.template_discussion,
+                					currDiscussionTemplateB : class_details.template_B.template_discussion,
+                					currRatingTemplateA : class_details.template_A.template_rating,
+               						currRatingTemplateB : class_details.template_B.template_rating});
+
         }
     });
 

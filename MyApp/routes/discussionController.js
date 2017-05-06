@@ -374,12 +374,18 @@ module.exports.upvoteAnswer = function (req,res) {
     var discussion_id = req.param('discussion_id');
     var answer_id = req.param('ans_id');
     var ratingTemplate = "";
-    var numOfApproves = 0;
+    var numOfUpvotes = 0;
+    var currUser = req.user.id;
+    var currUserSet = req.user.user_set;
+
     Class.findById(class_id).exec(function (err,classResp) {
         if(err)
             console.log(err);
         else{
-            ratingTemplate = classResp.template_rating;
+            if(currUserSet === 'A')
+                ratingTemplate = classResp.template_A.template_rating;
+            else
+                ratingTemplate = classResp.template_B.template_rating;
 
 
             Answer.findById(answer_id).exec(function (err, ans) {
@@ -387,51 +393,46 @@ module.exports.upvoteAnswer = function (req,res) {
                     console.log(err);
                 else{
                     var alreadyRated = 0;
-                    async.each(ans.rating, function (ratingObj,callback) {
-                        if(ratingObj.rating_by == req.user.id){
-                            alreadyRated = 1;
+                    async.each(ans.rating,
+                        function (ratingObj,callback) {
+                            if(ratingObj.rating_by == req.user.id){
+                                alreadyRated = 1;
+                            }
+                            callback();
+
+                        },
+                        function (err) {
+                            console.log("***************End for: "+alreadyRated);
+                            if(alreadyRated == 1){
+                                console.log("^^^^^^^^^^^SHOW ERROR");
+                                //res.redirect('/classes/'+class_id+'/discussion/'+discussion_id);
+                                res.render('error',{msg:"You have already rated this answer! You cannot rate again!",
+                                    redirect:'/classes/'+class_id+'/discussion/'+discussion_id});
+
+                            }else{
+                                //numOfApproves = ans.rating_val;
+                                numOfUpvotes = ans.num_of_upvotes;
+                                if(numOfUpvotes == null)
+                                    numOfUpvotes = 1;
+                                else
+                                    numOfUpvotes += 1;
+
+                                var newRatingObj = {
+                                    rating_type  : ratingTemplate,
+                                    rating_by :   req.user.id
+
+                                };
+
+                                ans.rating.push(newRatingObj);
+                                ans.num_of_upvotes = numOfUpvotes;
+                                ans.save();
+                                console.log("\n------ Updated Answer rating -------\n"+ans);
+                                res.redirect('/classes/'+class_id+'/discussion/'+discussion_id);
+
+                            }
                         }
-                        callback();
-
-                    },function (err) {
-                        console.log("***************End for: "+alreadyRated);
-
-
-                    if(alreadyRated == 1){
-                        console.log("^^^^^^^^^^^SHOW ERROR");
-                        //res.redirect('/classes/'+class_id+'/discussion/'+discussion_id);
-                        res.render('error',{msg:"You have already rated this answer! You cannot rate again!",
-                            redirect:'/classes/'+class_id+'/discussion/'+discussion_id});
-
-                    }else{
-                        numOfApproves = ans.rating_val;
-                        if(numOfApproves == null)
-                            numOfApproves = 1;
-                        else
-                            numOfApproves += 1;
-
-                        var newRatingObj = {
-                            rating_type  : ratingTemplate,
-                            rating_by :   req.user.id
-
-                        };
-
-                        ans.rating.push(newRatingObj);
-                        ans.rating_val = numOfApproves;
-                        ans.save();
-                        console.log("\n------ Updated Answer rating -------\n"+ans);
-                        res.redirect('/classes/'+class_id+'/discussion/'+discussion_id);
-
-                    }
-                    });
-
-
-
-
+                    );
                 }
-
-
-
             });
         }
 
@@ -515,14 +516,14 @@ module.exports.downvoteAnswer = function (req,res) {
 module.exports.totalParticipation  = function (req,res) {
     var discussion_id = req.param('discussion_id');
    // var discussion_id = '58ce07d8dd449a20b4f02d22';
-    var totalNumOfStudents_A = 0 , totalNumOfPosts_A = 0, mean_A = 0, std_dev_A =0, variance_A = 0, ci1_A=0, ci2_A =0;
-    var totalNumOfStudents_B = 0 , totalNumOfPosts_B = 0, mean_B = 0, std_dev_B =0, variance_B = 0, ci1_B=0, ci2_B =0;
-    var studentPostsCountArr = [];
-    var numOfPostsByUser = 0;
+    var totalNumOfStudents_A = 0, totalNumOfStudents_B = 0;
+    var outputA = {}; var outputB = {};
+    //var totalNumOfStudents_B = 0 , totalNumOfPosts_B = 0, mean_B = 0, std_dev_B =0, variance_B = 0, ci1_B=0, ci2_B =0;
+
     var studentIds = [], students_Set_A = [], students_Set_B = [];
     var class_name = '';
-    /*// when user sets are not considered
-    Class.findOne({'discussion_id':discussion_id}).exec(function (err,classEntry) {
+   // when user sets are not considered
+   /* Class.findOne({'discussion_id':discussion_id}).exec(function (err,classEntry) {
         class_name = classEntry.class_name;
         totalNumOfStudents_A = classEntry.student_ids.length;
        async.each(classEntry.student_ids,
@@ -599,32 +600,69 @@ module.exports.totalParticipation  = function (req,res) {
 
 
 
-    });
-    */
+    });*/
+
 //-------------------------------------------------code when user sets are considered
-    Class.findOne({'discussion_id':discussion_id})
+   Class.findOne({'discussion_id':discussion_id})
+       .populate('student_ids')
         .exec(function (err, classEntry) {
         if(err)
             console.log(err);
         else{
             studentIds = classEntry.student_ids;
             console.log("Student_ids : "+ classEntry);
-            async.each(studentIds,
-                function(stud_id, callback){
-                    if(stud_id.user_set == 'A')
-                        students_Set_A.push(stud_id);
-                    else
-                        students_Set_B.push(stud_id);
-                    callback();
 
-                },
-                function(err){
-                    console.log("Set A: "+ JSON.stringify(students_Set_A));
-                    console.log("Set B: "+ JSON.stringify(students_Set_B));
-
-
+            students_Set_A = classEntry.student_ids.filter(function (stud_id) {
+                return stud_id.user_set === 'A';
 
             });
+
+            students_Set_B = classEntry.student_ids.filter(function (stud_id) {
+                return stud_id.user_set === 'B';
+            });
+
+
+            class_name = classEntry.class_name;
+            async.parallel([
+                function (cbk) {
+                    totalNumOfStudents_A = students_Set_A.length;
+                    totalNumOfStudents_B = students_Set_B.length;
+                    cbk();
+
+                },
+                function (cbk) {
+                    outputA = calculateConfidenceInterval(students_Set_A, discussion_id, totalNumOfStudents_A);
+                    cbk();
+
+                },
+                function (cbk) {
+                    outputB = calculateConfidenceInterval(students_Set_B, discussion_id, totalNumOfStudents_B);
+                    cbk();
+                }
+            ],
+                function (err) {
+                    if(err)
+                        console.log(err);
+                    else{
+                        console.log("-----------------------------------------------------------\n");
+                        console.log("Set A: "+ outputA);
+                        console.log("Set B: "+ JSON.stringify(outputB));
+                        console.log("-----------------------------------------------------------\n");
+                        //res.send("12345");
+                        res.render('discussionAnalytics', {class_name:class_name ,
+                            outputA: JSON.stringify(outputA),
+                            outputB: JSON.stringify(outputB)
+                        });
+
+                    }
+
+                }
+            );
+
+
+
+
+
 
 
         }
@@ -632,5 +670,95 @@ module.exports.totalParticipation  = function (req,res) {
 
 };
 
+function calculateConfidenceInterval(student_ids, discussion_id, totalNumOfStudents) {
+    var totalNumOfPosts = 0, numOfPostsByUser = 0, mean = 0, std_dev =0, variance = 0, ci1=0, ci2 =0;
+    var studentPostsCountArr = [];
+    var numOfPostsByUser = 0;
 
+    //Class.findOne({'discussion_id':discussion_id}).exec(function (err,classEntry) {
+
+        async.each(student_ids,
+            function (stud_id, callback) {
+                Answer.find({'discussion_id':discussion_id, 'user_id':stud_id})
+                    .exec(function (err,answersByUser) {
+                        // console.log("Ans By User----------\n", answersByUser);
+                        numOfPostsByUser = answersByUser.length;
+                        console.log("Num of posts by "+ stud_id + " : "+ numOfPostsByUser);
+                        var postEntry = {
+                            student_id : stud_id,
+                            numOfPosts : numOfPostsByUser
+                        };
+                        studentPostsCountArr.push(postEntry);
+                        callback();
+                    });
+            },
+            function (err) {
+                if(err)
+                    console.log(err);
+                else{
+                    console.log("Final Array===========\n"+ JSON.stringify(studentPostsCountArr));
+                    async.series([
+                            function (callbackA) {
+                                Answer.find({'discussion_id':discussion_id}).exec(function (err,answerEntries) {
+                                    totalNumOfPosts = answerEntries.length;
+                                    console.log("Numof Posts"+ totalNumOfPosts);
+                                    console.log("Num of students" + totalNumOfStudents);
+                                    callbackA();
+                                });
+
+
+                            },
+                            function (callbackB) {
+                                mean = totalNumOfPosts/totalNumOfStudents;
+                                console.log("Mean "+ mean);
+                                callbackB();
+
+                            }
+                        ],
+                        function (err,results) {
+                            console.log("results ======\n"+results);
+
+                            var sum = 0;
+                            async.each(studentPostsCountArr,
+                                function (arrEntry,callback1) {
+                                    sum += Math.pow(arrEntry.numOfPosts - mean,2);
+                                    console.log("Sum "+ sum);
+                                    callback1();
+                                },
+                                function (err) {
+                                    variance = sum/(totalNumOfStudents - 1);
+                                    console.log("Variance " + variance);
+                                    std_dev = (Math.sqrt(variance)).toFixed(2);
+                                    console.log("Std dev : "+ std_dev);
+                                    var value = 1.96*(std_dev/Math.sqrt(totalNumOfStudents - 1));
+                                    ci1 = (mean - value).toFixed(2);
+                                    ci2 = (mean + value).toFixed(2);
+                                    console.log("Confidence interval "+ ci1 + " to "+ ci2);
+                                    var output = {
+                                        mean : mean,
+                                        std_dev: std_dev,
+                                        variance: variance,
+                                        ci1: ci1,
+                                        ci2: ci2
+                                    };
+                                    console.log("output=================================\n"+output);
+                                    return output;
+
+                                });
+
+                        });
+
+
+
+
+
+                }
+            }
+        );
+
+
+
+    //})
+
+};
 

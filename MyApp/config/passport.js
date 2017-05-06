@@ -1,4 +1,4 @@
-var GoogleStrategy = require('passport-google-oauth2').Strategy;
+var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var User = require('../models/userSchema');
 var configAuth = require('./auth');
 var async = require('async');
@@ -25,6 +25,9 @@ module.exports = function(passport){
     function(accessToken, refreshToken, profile, done){
     	process.nextTick(function() {
     		console.log("*** passport :"+ profile.id);
+    		console.log("--------------------\n");
+            console.log(profile);
+            console.log("--------------------\n");
             //find the user based on their google id
             User.findOne({ 'google_id' : profile.id }, function(err, user) {
                 if (err){
@@ -32,14 +35,6 @@ module.exports = function(passport){
                 }
                 if (user) {
                     console.log("User found: "+ user);
-                	/*User.find({}).exec(function(err,entries){
-        				if(err){
-        					res.send("Error");
-        				}else{
-        					console.log(entries);
-        				}
-
-        			});*/
                     // user is found, log them in
                     return done(null, user);
                 } else {
@@ -49,17 +44,18 @@ module.exports = function(passport){
                         if (err) {
                             res.send("Error");
                         } else {
-                            console.log(users);
+                            console.log("-------Users in DB currently-----\n"+users);
                             var length = users.length;
+
                             if(length <=1 ){
                                 newUserSet = 'A';
 
                             }else{
-                                if(users[length - 2] == 'A')
+                                if(users[length - 2].user_set === 'A')
                                     newUserSet = 'B';
                                 else
                                     newUserSet = 'A';
-                                console.log("New User Set "+ newUserSet);
+
                                 var newUser = {
                                     google_id : profile.id,
                                     token : accessToken,

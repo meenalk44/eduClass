@@ -24,10 +24,14 @@ var answerSchema	=	new mongoose.Schema({
 								ref : 'User'
 							}
 						}],
-    rating_val		: {
+    num_of_upvotes		: {
 						type: Number,
 						default : 0
-					}
+						},
+    num_of_downvotes	: {
+						type: Number,
+						default : 0
+						}
 });
 
 module.exports	= mongoose.model('Answer',answerSchema);

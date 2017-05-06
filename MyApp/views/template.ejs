@@ -2,6 +2,45 @@
     <head>
             <% include partials/head.ejs %>
 
+        <script>
+
+            $(document).ready(function () {
+
+                var discTempA = '<%= currDiscussionTemplateA%>';
+                var discTempB = '<%= currDiscussionTemplateB%>';
+                //console.log("ifChecked" + discTempA);
+                if ( discTempA == 'Flat') {
+                    $('#flatA').prop("checked", true);
+                } else {
+                    $('#nestedA').prop("checked", true);
+                }
+                if (discTempB == 'Flat') {
+                    $('#flatB').prop("checked", true);
+                } else {
+                    $('#nestedB').prop("checked", true);
+                }
+
+                var ratingTempA = '<%= currRatingTemplateA%>';
+                var ratingTempB = '<%= currRatingTemplateB%>';
+                console.log("ifChecked" + ratingTempB);
+                if ( ratingTempA == 'UPVOTE') {
+                    $('#upA').prop("checked", true);
+                } else {
+                    $('#upDownA').prop("checked", true);
+                }
+                if (ratingTempB == 'UPVOTE') {
+                    $('#upB').prop("checked", true);
+                } else {
+                    $('#upDownB').prop("checked", true);
+                }
+
+
+            });
+
+        </script>
+
+
+
             <style>
                 body { padding-top: 60px; padding-bottom: 30px; }
             </style>
@@ -22,13 +61,14 @@
                                         <div class="form-group">
 
 
+
                                         <p><label>Current Pattern:</label> <%=entry.template_A.template_discussion%> </p>
                                         <p></p><label>Select Template Pattern: </label>
                                         <label class="radio-inline">
-                                            <input type="radio" name="radioOpt1" id="flat" value="Flat" checked  >Flat
+                                            <input type="radio" name="radioOpt1" id="flatA" value="Flat">Flat
                                         </label>
                                         <label class="radio-inline">
-                                            <input type="radio" name="radioOpt1" id="nested" value="Nested">Nested
+                                            <input type="radio" name="radioOpt1" id="nestedA" value="Nested">Nested
                                         </label></p>
                                         <!--<input type="submit" class="btn btn-success pull-right" value="Change Pattern">-->
 
@@ -46,10 +86,10 @@
                                             <p><label>Current Pattern:</label> <%=entry.template_B.template_discussion%> </p>
                                             <p></p><label>Select Template Pattern: </label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="radioOpt1b" id="flat" value="Flat" checked  >Flat
+                                                <input type="radio" name="radioOpt1b" id="flatB" value="Flat"   >Flat
                                             </label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="radioOpt1b" id="nested" value="Nested">Nested
+                                                <input type="radio" name="radioOpt1b" id="nestedB" value="Nested">Nested
                                             </label></p>
                                             <input type="submit" class="btn btn-success pull-right" value="Change Pattern">
                                         </div>
@@ -77,10 +117,10 @@
                                             <p><label>Current Pattern:</label> <%=temp%> </p>
                                             <p></p><label>Select Template Pattern: </label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="radioOpt2" id="type1" value="UPVOTE_DOWNVOTE" checked>UpVote and Downvote
+                                                <input type="radio" name="radioOpt2" id="upDownA" value="UPVOTE_DOWNVOTE" checked>UpVote and Downvote
                                             </label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="radioOpt2" id="type2" value="UPVOTE">Upvote
+                                                <input type="radio" name="radioOpt2" id="upA" value="UPVOTE">Upvote
                                             </label></p>
                                            <!-- <input type="submit" class="btn btn-success pull-right" value="Change Pattern">-->
                                         </div>
@@ -102,10 +142,10 @@
                                             <p><label>Current Pattern:</label> <%=temp%> </p>
                                             <p></p><label>Select Template Pattern: </label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="radioOpt2b" id="type1" value="UPVOTE_DOWNVOTE" checked>UpVote and Downvote
+                                                <input type="radio" name="radioOpt2b" id="upDownB" value="UPVOTE_DOWNVOTE" checked>UpVote and Downvote
                                             </label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="radioOpt2b" id="type2" value="UPVOTE">Upvote
+                                                <input type="radio" name="radioOpt2b" id="upB" value="UPVOTE">Upvote
                                             </label></p>
                                             <input type="submit" class="btn btn-success pull-right" value="Change Pattern">
                                         </div>

@@ -303,7 +303,7 @@ module.exports.storeScores = function (req,res) {
                 doc.status = "GRADED";
                 doc.marks_obtd = totalObtd;
                 doc.total_marks = total;
-                doc.percent_marks = percentage;
+                doc.percent_marks = percentage.toFixed(2);
                 doc.save();
                 res.render('success', {msg: 'Quiz has been evaluated!', redirect: '/classes'});
             }
@@ -355,153 +355,152 @@ module.exports.showAnalytics = function (req,res) {
 
             function (cbk) {
                 // function for user_set A
-                QuizResponse.find({'quiz_id':quiz_id,'user_set':'A'}).exec(function(err,responses){
-                    if(err)
-                        console.log(err);
-                    else{
-                        quizResps = responses;
-                        quizName = quizResps[0].quiz_name;
-                        console.log("QuizResponse=========\n "+ quizResps[0].quiz_name);
-                        sample_size = responses.length;
-                        console.log("Marks:---\n"+ responses.length);
-                        async.series([function (callback) {
-                                async.eachOf(responses,
-                                    function (quizResp, index, callback1) {
-                                        console.log("Marks:---\n"+ quizResp.percent_marks);
-                                        marks_obtd[index] = quizResp.percent_marks;
-                                        sum += quizResp.percent_marks;
-                                        callback1();
+                QuizResponse.find({'quiz_id':quiz_id,'user_set':'A'})
+                    .exec(function(err,responses){
+                        if(err)
+                            console.log(err);
+                        else{
+                            quizResps = responses;
+                            quizName = quizResps[0].quiz_name;
+                            console.log("QuizResponse=========\n "+ quizResps[0].quiz_name);
+                            sample_size = responses.length;
+                            console.log("Marks:---\n"+ responses.length);
+                            async.series([function (callback1) {
+                                        async.eachOf(responses,
+                                            function (quizResp, index, callback11) {
+                                                console.log("Marks:---\n"+ quizResp.percent_marks);
+                                                marks_obtd[index] = quizResp.percent_marks;
+                                                sum += quizResp.percent_marks;
+                                                callback11();
 
-                                    },
-                                    function (err) {
-                                        console.log("End of loop " + sum);
-                                        //var sample_size = marks_obtd.length;
-                                        mean = sum/(sample_size);
-                                        console.log("Mean ---- : "+mean);
-                                        //res.send(marks_obtd);
+                                            },
+                                            function (err) {
+                                                console.log("End of loop " + sum);
+                                                //var sample_size = marks_obtd.length;
+                                                mean = sum/(sample_size);
+                                                console.log("Mean ---- : "+mean);
+                                                //res.send(marks_obtd);
+                                                callback1();
+                                            }
+                                        );
+
 
                                     }
-                                );
-                                callback();
+                                        ,function (callback2) {
+                                        async.eachOf(responses,
+                                            function (quizResp, index, callback22) {
+                                                console.log("Marks:---\n"+ quizResp.percent_marks);
+                                                sum1 += Math.pow(quizResp.percent_marks - mean, 2);
+                                                callback22();
 
-                            }
-                                ,function (callback) {
-                                    async.eachOf(responses,
-                                        function (quizResp, index, callback2) {
-                                            console.log("Marks:---\n"+ quizResp.percent_marks);
-                                            sum1 += Math.pow(quizResp.percent_marks - mean, 2);
-                                            callback2();
-
-                                        },
-                                        function (err) {
-                                            console.log("End of loop " + sum1);
-                                            //var sample_size = responses.length;
-                                            variance = sum1/(sample_size - 1);
-                                            //res.send(marks_obtd);
-
-                                        }
-                                    );
-                                    callback();
-                                }]
-                            ,function(err){
-                                if(err)
-                                    console.log(err);
-                                else{
-                                    std_deviation = (Math.sqrt(variance)).toFixed(2);
-                                    console.log("Standard dev: "+ std_deviation);
-                                    console.log("Variance  :" + variance);
-                                    value  = z * (std_deviation/Math.sqrt(sample_size - 1));
-                                    ci1 = (mean - value).toFixed(2);
-                                    ci2 = (mean + value).toFixed(2);
-                                    console.log("Confidence Interval :" + ci1 + " to " + ci2);
-                                    //res.render('showAnalyticsResult',{quiz_name:responses[0].quiz_name ,ci1: ci1,ci2:ci2, mean:mean, std_dev:std_deviation,variance:variance});
+                                            },
+                                            function (err) {
+                                                console.log("End of loop " + sum1);
+                                                //var sample_size = responses.length;
+                                                variance = sum1/(sample_size - 1);
+                                                //res.send(marks_obtd);
+                                                callback2();
+                                            }
+                                        );
+                                    }]
+                                ,function(err){
+                                    if(err)
+                                        console.log(err);
+                                    else{
+                                        std_deviation = (Math.sqrt(variance)).toFixed(2);
+                                        console.log("Standard dev: "+ std_deviation);
+                                        console.log("Variance  :" + variance);
+                                        value  = z * (std_deviation/Math.sqrt(sample_size - 1));
+                                        ci1 = (mean - value).toFixed(2);
+                                        ci2 = (mean + value).toFixed(2);
+                                        console.log("Confidence Interval :" + ci1 + " to " + ci2);
+                                        //res.render('showAnalyticsResult',{quiz_name:responses[0].quiz_name ,ci1: ci1,ci2:ci2, mean:mean, std_dev:std_deviation,variance:variance});
+                                    }
+                                    cbk();
                                 }
-
-                            }
-                        );
+                            );
 
 
 
 
-                    }
+                        }
 
-                });
-                cbk();
+                    });
 
 
             },
             function (cbk) {
                 // function for user set B
-                QuizResponse.find({'quiz_id':quiz_id,'user_set':'B'}).exec(function(err,responses) {
-                    if (err)
-                        console.log(err);
-                    else {
-                        console.log("QuizResponse=========\n " + responses);
-                        sample_sizeB = responses.length;
-                        console.log("Marks:---\n" + responses.length);
-                        async.series([function (callbackB) {
-                                async.eachOf(responses,
-                                    function (quizResp, index, callback1B) {
-                                        console.log("Marks:---\n" + quizResp.percent_marks);
-                                        marks_obtdB[index] = quizResp.percent_marks;
-                                        sumB += quizResp.percent_marks;
-                                        callback1B();
+                QuizResponse.find({'quiz_id':quiz_id,'user_set':'B'})
+                    .exec(function(err,responses) {
+                        if (err)
+                            console.log(err);
+                        else {
+                            console.log("QuizResponse=========\n " + responses);
+                            sample_sizeB = responses.length;
+                            console.log("Marks:---\n" + responses.length);
+                            async.series([function (callback1) {
+                                        async.eachOf(responses,
+                                            function (quizResp, index, callback11) {
+                                                console.log("Marks:---\n" + quizResp.percent_marks);
+                                                marks_obtdB[index] = quizResp.percent_marks;
+                                                sumB += quizResp.percent_marks;
+                                                callback11();
 
-                                    },
-                                    function (err) {
-                                        console.log("End of loop " + sumB);
-                                        //var sample_size = marks_obtd.length;
-                                        meanB = sumB / (sample_sizeB);
-                                        console.log("Mean ---- : " + meanB);
-                                        //res.send(marks_obtd);
+                                            },
+                                            function (err) {
+                                                console.log("End of loop " + sumB);
+                                                //var sample_size = marks_obtd.length;
+                                                meanB = sumB / (sample_sizeB);
+                                                console.log("Mean ---- : " + meanB);
+                                                //res.send(marks_obtd);
+                                                callback1();
+                                            }
+                                        );
 
                                     }
-                                );
-                                callbackB();
+                                    , function (callback2) {
+                                        async.eachOf(responses,
+                                            function (quizResp, index, callback22) {
+                                                console.log("Marks:---\n" + quizResp.percent_marks);
+                                                sum1B += Math.pow(quizResp.percent_marks - meanB, 2);
+                                                callback22();
 
-                            }
-                                , function (callbackB) {
-                                    async.eachOf(responses,
-                                        function (quizResp, index, callback2B) {
-                                            console.log("Marks:---\n" + quizResp.percent_marks);
-                                            sum1B += Math.pow(quizResp.percent_marks - mean, 2);
-                                            callback2B();
+                                            },
+                                            function (err) {
+                                                console.log("End of loop " + sum1B +"Sample size B---- "+sample_sizeB);
+                                                //var sample_size = responses.length;
+                                                varianceB = sum1B / (sample_sizeB - 1);
+                                                //res.send(marks_obtd);
 
-                                        },
-                                        function (err) {
-                                            console.log("End of loop " + sum1);
-                                            //var sample_size = responses.length;
-                                            varianceB = sum1B / (sample_sizeB - 1);
-                                            //res.send(marks_obtd);
+                                                callback2();
+                                            }
+                                        );
+                                    }]
+                                    , function (err) {
+                                    if (err)
+                                        console.log(err);
+                                    else {
+                                        std_deviationB = (Math.sqrt(varianceB)).toFixed(2);
+                                        console.log("Standard dev: " + std_deviationB);
+                                        console.log("Variance  :" + varianceB);
+                                        valueB = z * (std_deviationB / Math.sqrt(sample_sizeB - 1));
+                                        ci1B = (meanB - valueB).toFixed(2);
+                                        ci2B = (meanB + valueB).toFixed(2);
+                                        console.log("Confidence Interval :" + ci1B + " to " + ci2B);
 
-                                        }
-                                    );
-                                    callbackB();
-                                }]
-                            , function (err) {
-                                if (err)
-                                    console.log(err);
-                                else {
-                                    std_deviationB = (Math.sqrt(varianceB)).toFixed(2);
-                                    console.log("Standard dev: " + std_deviationB);
-                                    console.log("Variance  :" + varianceB);
-                                    valueB = z * (std_deviationB / Math.sqrt(sample_sizeB - 1));
-                                    ci1B = (meanB - valueB).toFixed(2);
-                                    ci2B = (meanB + valueB).toFixed(2);
-                                    console.log("Confidence Interval :" + ci1B + " to " + ci2B);
+                                    }
+                                    cbk();
 
                                 }
-
-                            }
-                        );
-                    }
-                });
-                cbk();
+                            );
+                        }
+                    });
         }
         ],
         function (err) {
             if(err)
-                console.log(err)
+                console.log(err);
             else{
                 console.log("Mean------ "+ mean +"  "+meanB);
                 res.render('showAnalyticsResult',{quiz_name:quizName ,
