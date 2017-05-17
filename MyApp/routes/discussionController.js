@@ -623,21 +623,27 @@ module.exports.totalParticipation  = function (req,res) {
 
 
             class_name = classEntry.class_name;
+
+
             async.parallel([
                 function (cbk) {
-                    totalNumOfStudents_A = students_Set_A.length;
-                    totalNumOfStudents_B = students_Set_B.length;
-                    cbk();
+                    calculateConfidenceInterval(students_Set_A, discussion_id, students_Set_A.length,function (opA){
+                        console.log("OUTPUT A:\n"+ JSON.stringify(opA));
+                        outputA= opA;
+                        cbk();
+                        }
+                    );
+
 
                 },
                 function (cbk) {
-                    outputA = calculateConfidenceInterval(students_Set_A, discussion_id, totalNumOfStudents_A);
-                    cbk();
+                    calculateConfidenceInterval(students_Set_B, discussion_id, students_Set_B.length,function (opB){
+                        console.log("OUTPUT B:\n"+ JSON.stringify(opB));
+                        outputB= opB;
+                        cbk();
+                        }
+                    );
 
-                },
-                function (cbk) {
-                    outputB = calculateConfidenceInterval(students_Set_B, discussion_id, totalNumOfStudents_B);
-                    cbk();
                 }
             ],
                 function (err) {
@@ -645,7 +651,7 @@ module.exports.totalParticipation  = function (req,res) {
                         console.log(err);
                     else{
                         console.log("-----------------------------------------------------------\n");
-                        console.log("Set A: "+ outputA);
+                        console.log("Set A: "+ JSON.stringify(outputA));
                         console.log("Set B: "+ JSON.stringify(outputB));
                         console.log("-----------------------------------------------------------\n");
                         //res.send("12345");
@@ -670,7 +676,7 @@ module.exports.totalParticipation  = function (req,res) {
 
 };
 
-function calculateConfidenceInterval(student_ids, discussion_id, totalNumOfStudents) {
+function calculateConfidenceInterval(student_ids, discussion_id, totalNumOfStudents, outputCb) {
     var totalNumOfPosts = 0, numOfPostsByUser = 0, mean = 0, std_dev =0, variance = 0, ci1=0, ci2 =0;
     var studentPostsCountArr = [];
     var numOfPostsByUser = 0;
@@ -683,7 +689,7 @@ function calculateConfidenceInterval(student_ids, discussion_id, totalNumOfStude
                     .exec(function (err,answersByUser) {
                         // console.log("Ans By User----------\n", answersByUser);
                         numOfPostsByUser = answersByUser.length;
-                        console.log("Num of posts by "+ stud_id + " : "+ numOfPostsByUser);
+                        console.log("Num of posts by "+ stud_id.id + " : "+ numOfPostsByUser);
                         var postEntry = {
                             student_id : stud_id,
                             numOfPosts : numOfPostsByUser
@@ -696,62 +702,61 @@ function calculateConfidenceInterval(student_ids, discussion_id, totalNumOfStude
                 if(err)
                     console.log(err);
                 else{
-                    console.log("Final Array===========\n"+ JSON.stringify(studentPostsCountArr));
+                    //async.each(studentPostsCountArr,)
+                    console.log("Final Array===========\n"+ studentPostsCountArr);
                     async.series([
-                            function (callbackA) {
-                                Answer.find({'discussion_id':discussion_id}).exec(function (err,answerEntries) {
-                                    totalNumOfPosts = answerEntries.length;
-                                    console.log("Numof Posts"+ totalNumOfPosts);
-                                    console.log("Num of students" + totalNumOfStudents);
-                                    callbackA();
-                                });
+                        function (cbkA) {
+                            totalNumOfStudents = studentPostsCountArr.length;
+                            async.each(studentPostsCountArr,function (entry,cbk1) {
+                                totalNumOfPosts += entry.numOfPosts;
+                                cbk1();
 
-
-                            },
-                            function (callbackB) {
+                            },function (err) {
                                 mean = totalNumOfPosts/totalNumOfStudents;
-                                console.log("Mean "+ mean);
-                                callbackB();
+                                cbkA();
 
-                            }
-                        ],
-                        function (err,results) {
-                            console.log("results ======\n"+results);
+                            });
+
+                        },
+                        function (cbkB) {
 
                             var sum = 0;
                             async.each(studentPostsCountArr,
                                 function (arrEntry,callback1) {
                                     sum += Math.pow(arrEntry.numOfPosts - mean,2);
-                                    console.log("Sum "+ sum);
+
                                     callback1();
                                 },
                                 function (err) {
+                                    console.log("Sum "+ sum);
                                     variance = sum/(totalNumOfStudents - 1);
                                     console.log("Variance " + variance);
                                     std_dev = (Math.sqrt(variance)).toFixed(2);
-                                    console.log("Std dev : "+ std_dev);
+                                    //console.log("Std dev : "+ std_dev);
                                     var value = 1.96*(std_dev/Math.sqrt(totalNumOfStudents - 1));
                                     ci1 = (mean - value).toFixed(2);
                                     ci2 = (mean + value).toFixed(2);
-                                    console.log("Confidence interval "+ ci1 + " to "+ ci2);
-                                    var output = {
-                                        mean : mean,
-                                        std_dev: std_dev,
-                                        variance: variance,
-                                        ci1: ci1,
-                                        ci2: ci2
-                                    };
-                                    console.log("output=================================\n"+output);
-                                    return output;
-
+                                    //console.log("Confidence interval "+ ci1 + " to "+ ci2);
+                                    cbkB();
                                 });
+                        }
+                    ],
+                    function (err) {
+                        var output = {
+                            mean : mean,
+                            std_dev: std_dev,
+                            variance: variance,
+                            ci1: ci1,
+                            ci2: ci2
+                        };
+                        console.log("output=================================\n"+JSON.stringify(output));
+                        //return output;
+                        outputCb(output);
 
-                        });
 
+                    });
 
-
-
-
+                   
                 }
             }
         );
