@@ -515,11 +515,8 @@ module.exports.downvoteAnswer = function (req,res) {
 
 module.exports.totalParticipation  = function (req,res) {
     var discussion_id = req.param('discussion_id');
-   // var discussion_id = '58ce07d8dd449a20b4f02d22';
     var totalNumOfStudents_A = 0, totalNumOfStudents_B = 0;
     var outputA = {}; var outputB = {};
-    //var totalNumOfStudents_B = 0 , totalNumOfPosts_B = 0, mean_B = 0, std_dev_B =0, variance_B = 0, ci1_B=0, ci2_B =0;
-
     var studentIds = [], students_Set_A = [], students_Set_B = [];
     var class_name = '';
    // when user sets are not considered
@@ -750,20 +747,13 @@ function calculateConfidenceInterval(student_ids, discussion_id, totalNumOfStude
                             ci2: ci2
                         };
                         console.log("output=================================\n"+JSON.stringify(output));
-                        //return output;
                         outputCb(output);
-
-
                     });
 
                    
                 }
             }
         );
-
-
-
-    //})
 
 };
 
