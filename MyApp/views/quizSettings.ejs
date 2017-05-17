@@ -19,10 +19,10 @@
 
                 newTextBoxDiv.after().html('<label>Question # '+ counter + ' : </label>' +'&nbsp;'+
                     '<input type="text" name="textbox' + counter +
-                    '" id="textbox' + counter + '" value="" >'+
+                    '" id="textbox' + counter + '" value="" required>'+
                     '<br/><label>Total Marks : </label>' +'&nbsp;&nbsp;&nbsp;'+
                     '<input type="text" name="markbox' + counter +
-                    '" id="markbox' + counter + '" value="" >');
+                    '" id="markbox' + counter + '" value="" required>');
 
                 //newTextBoxDiv.appendTo("#TextBoxDiv1");
 
@@ -73,13 +73,13 @@
                     <div class="form-group">
                         <form id="quizForm" action="/createQuiz/class_id/<%=class_id%>" method="post">
                             <label>Quiz Name:</label>
-                            <input type="textbox" class="form-group"  name="quiz_name">
+                            <input type="textbox" class="form-group"  name="quiz_name" required>
 
                             <div class='TextBoxesGroup'>
                                 <div id="TextBoxDiv1">
                                     <label>Enter Questions : </label>&nbsp;
-                                    <br/><label>Question # 1: &nbsp;</label><input type="textarea" rows="2" name="textbox1" ></input>
-                                    <br/><label>Total Marks :  </label>  &nbsp;&nbsp;<input type="textbox"  name="markbox1"></input>
+                                    <br/><label>Question # 1: &nbsp;</label><input type="textarea" rows="2" name="textbox1" required></input>
+                                    <br/><label>Total Marks :  </label>  &nbsp;&nbsp;<input type="textbox"  name="markbox1" required></input>
                                 </div>
                             </div>
                             <input type='button' class="btn btn-default" value='Add a Question' id='addBtn'>
